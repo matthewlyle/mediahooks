@@ -7,6 +7,8 @@ Forward Plex Media Server webhooks to other webhooks.
 - See the last 100 events sent from Plex and whether they were delivered or not
 - See the latest deliveries to each hook and their full request and payload 
 
+![The webhook editor: a Discord template with a live preview of a new movie](docs/editor.png)
+
 ## Requirements
 
 - Plex Media Server with Plex Pass on the owner's account 
