@@ -16,8 +16,10 @@ Smoke runs: `AUTH=off` skips sign-in, a short `GROUP_QUIET_MS` shortens new-epis
 `PLEX_TV_URL` points plex.tv calls at a fake. The README documents only `PLEX_URL`, `PORT` and
 `PUBLIC_URL`; keep the rest out of it.
 
-Release: push a `vX.Y.Z` tag to GitHub; `release.yml` tests and publishes
-`ghcr.io/matthewlyle/mediahooks` (`X.Y.Z`, `X.Y`, `X`, `latest`).
+Commit messages use Conventional Commits (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`,
+`ci:`; `!` for breaking). release-please turns `feat`/`fix` commits into a release PR; merging it
+tags, writes `CHANGELOG.md` and the GitHub Release, and publishes `ghcr.io/matthewlyle/mediahooks`.
+Don't tag by hand.
 
 ## Don't break
 
