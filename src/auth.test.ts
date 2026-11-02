@@ -178,8 +178,6 @@ test("/api routes need a session; pages, /healthz and /thumbs/<key> don't; /plex
   await app.dispatcher.idle();
   expect(db.listEvents()).toHaveLength(1);
 
-  expect((await call(app, "/api/thumbs/latest")).status).toBe(401);
-  expect((await call(app, "/api/thumbs/latest", { headers: { cookie: cookie! } })).headers.get("content-type")).toBe("image/jpeg");
   const { id, thumbKey } = db.listEvents()[0]!;
   expect((await call(app, `/thumbs/${thumbKey}`)).status).toBe(200);
   expect((await call(app, `/thumbs/${id}`)).status).toBe(404);

@@ -29,7 +29,6 @@ test("old databases are migrated, idempotently, keep their rows, and accept new 
     const db = openDb(path);
     expect(db.listWebhooks()[0]?.attachPoster).toBe(false);
     expect(db.listEvents()[0]?.thumbKey).toBeNull();
-    expect(db.latestThumb()).toBeNull();
     expect(db.listDeliveries(1)).toEqual([
       { id: 1, webhookId: 1, event: "media.play", status: 200, ok: true, error: null, durationMs: 12, attempts: 1, createdAt: 0 },
     ]);

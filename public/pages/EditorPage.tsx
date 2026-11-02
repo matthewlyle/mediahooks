@@ -52,7 +52,7 @@ type PreviewSource = { payload: PlexPayload; poster: string | null; eventId: num
 function previewSource(recent: IncomingEvent[], kind: Sample, filters: Filters): PreviewSource {
   const ofKind = recent.filter((e) => e.payload.Metadata?.type === kind);
   const e = ofKind.find((x) => matches(filters, x.payload)) ?? ofKind[0];
-  if (!e) return { payload: PREVIEW_SAMPLES[kind], poster: "/api/thumbs/latest", eventId: null };
+  if (!e) return { payload: PREVIEW_SAMPLES[kind], poster: null, eventId: null };
   return { payload: e.payload, poster: e.thumbKey ? `/thumbs/${e.thumbKey}` : null, eventId: e.id };
 }
 

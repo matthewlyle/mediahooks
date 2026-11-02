@@ -20,7 +20,7 @@ afterAll(async () => {
 
 const event = (e: string, title: string): PlexPayload => ({ event: e, Metadata: { type: "movie", title } });
 const older = db.recordEvent(event("media.play", "Older Play"), [], null).id;
-db.recordEvent(event("library.new", "Newest Added"), [], null);
+db.recordEvent(event("library.new", "Newest Added"), [], { bytes: new Uint8Array([0xff, 0xd8, 0xff]), type: "image/jpeg" });
 
 async function sendTest(extra: object): Promise<string> {
   const res = await fetch(new URL("/api/send-test", app.server.url), {
@@ -38,4 +38,8 @@ test("a test sends the event the preview shows, the sample when it shows the sam
   expect(await sendTest({})).toBe("media.play Older Play");
   expect(await sendTest({ events: ["media.stop"] })).toBe("media.play Pilot");
   expect(await sendTest({ eventId: 9999 })).toBe("media.play Pilot");
+});
+
+test("the sample goes out without another event's poster", async () => {
+  expect(await sendTest({ eventId: null, attachPoster: true })).toBe("media.play Pilot");
 });

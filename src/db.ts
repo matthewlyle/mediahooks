@@ -15,6 +15,7 @@ import { NEW_KEY, migrate } from "./migrations.ts";
 
 const DELIVERY_LIMIT = 50;
 const EVENT_LIMIT = 100;
+const EVENTS_PER_KIND = 10;
 
 type EventRow = {
   id: number;
@@ -147,7 +148,6 @@ export interface Db {
   listEvents(): IncomingEvent[];
   getEvent(id: number): IncomingEvent | null;
   getThumb(key: string): Poster | null;
-  latestThumb(): { thumbKey: string; poster: Poster } | null;
   latestEventAt(): number | null;
   getSetting(key: string): string | null;
   setSetting(key: string, value: string): void;
@@ -208,21 +208,24 @@ export function openDb(path: string): Db {
     updateRouting: db.query<unknown, { id: number; routing: string }>(
       "UPDATE events SET routing = $routing WHERE id = $id",
     ),
-    pruneEvents: db.query<unknown, { limit: number }>(
-      "DELETE FROM events WHERE id NOT IN (SELECT id FROM events ORDER BY id DESC LIMIT $limit)",
+    pruneEvents: db.query<unknown, { limit: number; per_kind: number }>(
+      `DELETE FROM events
+       WHERE id NOT IN (SELECT id FROM events ORDER BY id DESC LIMIT $limit)
+         AND id NOT IN (
+           SELECT id FROM (
+             SELECT id, row_number() OVER (PARTITION BY json_extract(payload, '$.Metadata.type') ORDER BY id DESC) AS n
+             FROM events WHERE json_extract(payload, '$.Metadata.type') IS NOT NULL
+           ) WHERE n <= $per_kind
+         )`,
     ),
-    events: db.query<EventRow, { limit: number }>(
-      `SELECT id, event, payload, routing, received_at, thumb_key
-       FROM events ORDER BY id DESC LIMIT $limit`,
+    events: db.query<EventRow, []>(
+      "SELECT id, event, payload, routing, received_at, thumb_key FROM events ORDER BY id DESC",
     ),
     event: db.query<EventRow, { id: number }>(
       "SELECT id, event, payload, routing, received_at, thumb_key FROM events WHERE id = $id",
     ),
     thumb: db.query<ThumbRow, { key: string }>(
       "SELECT thumb, thumb_type FROM events WHERE thumb_key = $key AND thumb IS NOT NULL",
-    ),
-    latestThumb: db.query<ThumbRow & { thumb_key: string }, []>(
-      "SELECT thumb, thumb_type, thumb_key FROM events WHERE thumb IS NOT NULL ORDER BY id DESC LIMIT 1",
     ),
     latestEventAt: db.query<{ at: number | null }, []>("SELECT MAX(received_at) AS at FROM events"),
     getSetting: db.query<{ value: string }, { key: string }>("SELECT value FROM settings WHERE key = $key"),
@@ -291,13 +294,13 @@ export function openDb(path: string): Db {
         thumb: poster?.bytes ?? null,
         thumb_type: poster?.type ?? null,
       })!;
-      q.pruneEvents.run({ limit: EVENT_LIMIT });
+      q.pruneEvents.run({ limit: EVENT_LIMIT, per_kind: EVENTS_PER_KIND });
       return { id: row.id, thumbKey: row.thumb_key };
     },
     updateRouting(eventId: number, routing: Routing[]): void {
       q.updateRouting.run({ id: eventId, routing: JSON.stringify(routing) });
     },
-    listEvents: (): IncomingEvent[] => q.events.all({ limit: EVENT_LIMIT }).map(toEvent),
+    listEvents: (): IncomingEvent[] => q.events.all().map(toEvent),
     getEvent(id: number): IncomingEvent | null {
       const row = q.event.get({ id });
       return row ? toEvent(row) : null;
@@ -305,10 +308,6 @@ export function openDb(path: string): Db {
     getThumb(key: string): Poster | null {
       const row = q.thumb.get({ key });
       return row ? toPoster(row) : null;
-    },
-    latestThumb() {
-      const row = q.latestThumb.get();
-      return row ? { thumbKey: row.thumb_key, poster: toPoster(row) } : null;
     },
     latestEventAt: (): number | null => q.latestEventAt.get()?.at ?? null,
     getSetting: (key: string): string | null => q.getSetting.get({ key })?.value ?? null,

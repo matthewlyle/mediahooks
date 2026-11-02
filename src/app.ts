@@ -57,11 +57,7 @@ export function createApp(config: AppConfig): App {
         : eventId === undefined
           ? (db.listEvents().find((x) => matches(filters, x.payload)) ?? null)
           : null;
-    if (!e) {
-      const latest = db.latestThumb();
-      const ctx = latest ? { poster: latest.poster, thumbUrl: posterUrl(publicUrl, latest.thumbKey) } : {};
-      return { payload: SAMPLE_PAYLOAD, ctx };
-    }
+    if (!e) return { payload: SAMPLE_PAYLOAD, ctx: {} };
     const poster = e.thumbKey ? db.getThumb(e.thumbKey) : null;
     return { payload: e.payload, ctx: poster ? { poster, thumbUrl: posterUrl(publicUrl, e.thumbKey) } : {} };
   }
@@ -139,15 +135,6 @@ export function createApp(config: AppConfig): App {
       },
       "/api/events": {
         GET: () => Response.json(db.listEvents()),
-      },
-      "/api/thumbs/latest": {
-        GET: () => {
-          const latest = db.latestThumb();
-          if (!latest) return notFound();
-          return new Response(latest.poster.bytes, {
-            headers: { "content-type": latest.poster.type, "cache-control": "no-cache" },
-          });
-        },
       },
       "/thumbs/:key": {
         GET: (req) => {
