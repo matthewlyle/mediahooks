@@ -21,6 +21,9 @@ Commit messages use Conventional Commits (`feat:`, `fix:`, `docs:`, `refactor:`,
 tags, writes `CHANGELOG.md` and the GitHub Release, and publishes `ghcr.io/matthewlyle/mediahooks`.
 Don't tag by hand.
 
+Working an issue: a branch `issue-<n>-<slug>` in its own worktree, a pull request whose title is a
+Conventional Commit (it becomes the squash commit) and whose body says `Fixes #<n>`. Never merge it.
+
 ## Don't break
 
 - Never open a running container's DB with `sqlite3` from a macOS host: the VM file share doesn't
