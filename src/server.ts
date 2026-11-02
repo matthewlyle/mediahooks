@@ -7,12 +7,7 @@ import { openDb } from "./db.ts";
 const PORT = Number(process.env.PORT ?? 8787);
 const DB_PATH = process.env.DB_PATH ?? "data/mediahooks.db";
 const AUTH = process.env.AUTH !== "off";
-const PLEX_URL = process.env.PLEX_URL;
-
-if (!PLEX_URL) {
-  console.error("PLEX_URL is required: the address mediahooks uses to reach your Plex server, e.g. http://localhost:32400");
-  process.exit(1);
-}
+const PLEX_URL = process.env.PLEX_URL || "http://localhost:32400";
 
 mkdirSync(dirname(DB_PATH), { recursive: true });
 const { server, dispatcher } = createApp({

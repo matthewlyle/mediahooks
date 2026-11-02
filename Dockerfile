@@ -3,7 +3,8 @@ FROM oven/bun:1.4
 WORKDIR /app
 ENV NODE_ENV=production \
     PORT=8787 \
-    DB_PATH=/data/mediahooks.db
+    DB_PATH=/data/mediahooks.db \
+    PLEX_URL=http://host.docker.internal:32400
 
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile --production

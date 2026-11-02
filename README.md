@@ -3,10 +3,9 @@
 Forward Plex Media Server webhooks to other webhooks.
 
 - Pre-made templates for Discord, Slack, ntfy and Home Assistant 
-- Live previews 
-- See the last 100 events sent from Plex and whether they were delivered or not. 
+- Live previews and template variables 
+- See the last 100 events sent from Plex and whether they were delivered or not
 - See the latest deliveries to each hook and their full request and payload 
-
 
 ## Requirements
 
@@ -24,8 +23,6 @@ services:
     restart: unless-stopped
     ports:
       - "8787:8787"
-    environment:
-      PLEX_URL: http://host.docker.internal:32400
     extra_hosts:
       - host.docker.internal:host-gateway
     volumes:
@@ -39,9 +36,9 @@ volumes:
 docker compose up -d
 ```
 
-`PLEX_URL` is the Plex server's address as seen from the container. The example is for Plex
-running on the same machine outside Docker. For Plex in another container, use its service name,
-e.g. `http://plex:32400`.
+mediahooks looks for Plex at `http://host.docker.internal:32400`, which is Plex running on the same
+machine outside Docker (`extra_hosts` makes that name work on Linux). If Plex is somewhere else,
+set `PLEX_URL` under `environment:`, e.g. `http://plex:32400` for a Plex container named `plex`.
 
 The container runs as uid 1000. A bind-mounted `/data` folder must be writable by that user.
 
@@ -50,9 +47,11 @@ To run from source instead:
 ```sh
 git clone https://github.com/matthewlyle/mediahooks.git && cd mediahooks
 bun install
-cp .env.example .env    # set PLEX_URL
 NODE_ENV=production bun run start
 ```
+
+This looks for Plex at `http://localhost:32400`. Set `PLEX_URL` in the environment or a `.env`
+file if it's elsewhere.
 
 ## Setup
 
@@ -63,13 +62,9 @@ webhook URL from the Help page and add it in Plex Web under **Settings → Webho
 
 | Variable | Default | |
 |---|---|---|
-| `PLEX_URL` | (required) | Address of the Plex server |
+| `PLEX_URL` | `http://host.docker.internal:32400` (`http://localhost:32400` from source) | Address of the Plex server |
 | `PORT` | `8787` | |
-| `DB_PATH` | `/data/mediahooks.db` | SQLite database (`data/mediahooks.db` from source) |
 | `PUBLIC_URL` | (unset) | Base address for `{{thumb_url}}` poster links |
-| `GROUP_QUIET_MS` | `120000` | Send grouped new episodes this long after the last one arrives |
-| `GROUP_MAX_MS` | `600000` | or this long after the first, whichever is sooner |
-| `AUTH` | (on) | `off` disables sign-in, for when plex.tv is down |
 
 Poster links only load where `PUBLIC_URL` is reachable. If you make mediahooks reachable from the
 internet for that, expose only `/thumbs/*`.

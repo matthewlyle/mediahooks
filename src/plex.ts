@@ -100,7 +100,7 @@ export function createPlexClient(opts: PlexClientOptions): PlexClient {
         signal: AbortSignal.timeout(init.timeoutMs ?? TIMEOUT_MS),
       });
     } catch {
-      throw new PlexError(base === tv ? "Couldn't reach plex.tv." : "Couldn't reach your Plex server.");
+      throw new PlexError(base === tv ? "Couldn't reach plex.tv." : "Couldn't reach your Plex server. Check PLEX_URL.");
     }
   }
 

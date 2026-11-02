@@ -5,13 +5,15 @@ Receives Plex Media Server webhooks (Plex Pass) and fans each event out to user-
 
 ## Configuration
 
-Env: `PLEX_URL` (required; how mediahooks reaches the Plex server, e.g. `http://localhost:32400`, or
-`http://host.docker.internal:32400` from a container when Plex runs on the host; the app exits
-without it; see Auth), `PORT` (default 8787), `DB_PATH` (default `data/mediahooks.db`; the image
+Env: `PLEX_URL` (how mediahooks reaches the Plex server; default `http://localhost:32400`, and the
+image defaults to `http://host.docker.internal:32400` for Plex on the Docker host; see Auth),
+`PORT` (default 8787), `DB_PATH` (default `data/mediahooks.db`; the image
 uses `/data/mediahooks.db`), optional `PUBLIC_URL` (base for `{{thumb_url}}`; see Posters),
 optional `GROUP_QUIET_MS` / `GROUP_MAX_MS` (new-episode grouping windows, default 120000 / 600000;
 set a short `GROUP_QUIET_MS` to smoke-test grouping without waiting), optional `PLEX_TV_URL`
 (default `https://plex.tv`; tests and smoke runs point it at a mock) and `AUTH=off` (see Auth).
+The README documents only `PLEX_URL`, `PORT` and `PUBLIC_URL`. The rest are for development and
+smoke runs; keep them out of the README.
 Bun loads `.env` automatically, so `.env` (gitignored; see `.env.example`) holds local values;
 `.dockerignore` keeps it out of the image.
 
@@ -26,7 +28,7 @@ loses recent writes. Inspect through the API, or stop the container first.
 ## Commands
 
 ```sh
-cp .env.example .env   # then point PLEX_URL at your Plex server
+cp .env.example .env   # only if Plex isn't on this machine: set PLEX_URL
 bun install
 bun run dev        # hot-reloading dev server on :8788, own DB in ./data
 bun test
