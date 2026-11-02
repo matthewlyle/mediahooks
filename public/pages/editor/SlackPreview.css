@@ -1,0 +1,122 @@
+.sl {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px 12px;
+  background: #1a1d21;
+  color: #d1d2d3;
+  font-family: Lato, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.46668;
+  white-space: normal;
+}
+.sl a {
+  color: #1d9bd1;
+  text-decoration: none;
+}
+.sl a:hover {
+  text-decoration: underline;
+}
+.sl code {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 2px 3px 1px;
+  border: 1px solid rgba(232, 232, 232, 0.13);
+  border-radius: 3px;
+  background: rgba(232, 232, 232, 0.04);
+  color: #e8912d;
+}
+.sl-avatar {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+  background: #e5a00d;
+  color: #1a1d21;
+  font-weight: 900;
+}
+.sl-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.sl-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.sl-name {
+  font-weight: 900;
+  color: #ffffff;
+}
+.sl-app {
+  padding: 1px 3px;
+  border-radius: 2px;
+  background: rgba(232, 232, 232, 0.13);
+  color: #ababad;
+  font-size: 10px;
+  font-weight: 700;
+}
+.sl-time {
+  font-size: 12px;
+  color: #ababad;
+}
+.sl-text,
+.sl-section-main {
+  overflow-wrap: anywhere;
+}
+.sl-header {
+  font-size: 18px;
+  font-weight: 900;
+  color: #ffffff;
+}
+.sl-divider {
+  width: 100%;
+  margin: 4px 0;
+  border: none;
+  border-top: 1px solid rgba(232, 232, 232, 0.13);
+}
+.sl-section {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.sl-section-main {
+  flex: 1;
+  min-width: 0;
+}
+.sl-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 16px;
+  margin-top: 6px;
+}
+.sl-accessory {
+  flex: none;
+  width: 88px;
+  height: 88px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+.sl-image {
+  max-width: 360px;
+  width: 100%;
+  border-radius: 6px;
+}
+.sl-context {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  font-size: 12px;
+  color: #ababad;
+}
+.sl-context-image {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  object-fit: cover;
+}

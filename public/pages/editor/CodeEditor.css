@@ -1,0 +1,58 @@
+.code-editor {
+  min-width: 0;
+}
+.code-editor .cm-editor {
+  transition:
+    background-color 150ms ease,
+    box-shadow 150ms ease;
+}
+.code-editor .cm-editor.cm-focused {
+  outline: none;
+  box-shadow: var(--glow);
+}
+.code-editor .cm-scroller {
+  min-height: 240px;
+  max-height: 520px;
+  overflow: auto;
+  line-height: 1.55;
+}
+.code-editor.headers-editor .cm-scroller {
+  min-height: 96px;
+  max-height: 240px;
+}
+.code-editor.is-invalid .cm-editor {
+  box-shadow: inset 0 0 0 1px rgba(255, 92, 92, 0.55);
+}
+.code-editor.is-invalid .cm-editor.cm-focused {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 92, 92, 0.8),
+    0 0 12px rgba(255, 92, 92, 0.25);
+}
+.code-editor .cm-content[aria-invalid] {
+  box-shadow: none;
+}
+.code-editor .cm-template-var,
+.code-editor .cm-template-var * {
+  color: var(--accent) !important;
+}
+.code-editor .cm-template-var {
+  background: var(--accent-dim);
+  border-radius: 2px;
+}
+.code-editor .cm-lintRange-error {
+  background-image: none;
+  text-decoration: underline wavy var(--error);
+  text-decoration-skip-ink: none;
+  text-underline-offset: 3px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .code-editor .cm-editor:not(.cm-focused):hover {
+    background-color: var(--inset);
+  }
+}
+@media (max-width: 640px) {
+  .code-editor .cm-scroller {
+    min-height: 160px;
+    max-height: 360px;
+  }
+}

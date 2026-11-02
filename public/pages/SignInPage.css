@@ -1,0 +1,43 @@
+.page-signin {
+  display: grid;
+  place-items: center;
+  min-height: calc(100dvh - 200px);
+}
+.signin-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: min(360px, 100%);
+  padding: 40px 24px;
+}
+button.signin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 200px;
+  padding: 8px 16px;
+  font-size: 13px;
+}
+.signin-btn .spinner {
+  border-color: #041016;
+  border-top-color: transparent;
+}
+.signin-note {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+}
+.signin-note.error {
+  color: var(--error);
+}
+.signin-note a {
+  color: var(--accent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .signin-note a:hover {
+    color: var(--accent-hover);
+  }
+}
