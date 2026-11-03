@@ -5,6 +5,7 @@ import { Check } from "../public/ui/Check.tsx";
 import { CopyButton } from "../public/ui/CopyButton.tsx";
 import { FieldError } from "../public/ui/FieldError.tsx";
 import { Menu } from "../public/ui/Menu.tsx";
+import { NavLink } from "../public/ui/NavLink.tsx";
 import { Popover, type PopoverProps } from "../public/ui/Popover.tsx";
 import { RefreshButton, type RefreshButtonProps } from "../public/ui/RefreshButton.tsx";
 import { RelativeTime } from "../public/ui/RelativeTime.tsx";
@@ -43,6 +44,7 @@ export const fixtures: Record<string, Fixture> = {
   Badge: { component: Badge, props: { children: "Paused" } },
   Button: { component: Button, props: { children: "Save" } },
   LinkButton: { component: LinkButton, props: { to: "/", children: "Back" } },
+  NavLink: { component: NavLink, props: { to: "/", label: "Webhooks", active: true } },
   Menu: {
     component: Menu,
     props: {

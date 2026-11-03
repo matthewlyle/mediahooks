@@ -3,12 +3,13 @@ import { useEffect, useRef, useState, type ReactElement } from "react";
 import { useLocation } from "wouter";
 import type { AuthUser, Webhook } from "../src/types.ts";
 import { LinkButton } from "./ui/Button.tsx";
+import { NavLink } from "./ui/NavLink.tsx";
 import { Menu } from "./ui/Menu.tsx";
 import { Modal } from "./components/Modal.tsx";
 import { ToastProvider } from "./ui/Toast.tsx";
 import { api, setUnauthorizedHandler } from "./lib/api.ts";
-import { EASE, SPRING, TAP, ids, routeDirection, useFinePointer } from "./lib/motion.ts";
-import { PendingHeadingFocus, useLinkProps, useNav } from "./lib/nav.ts";
+import { EASE, SPRING, routeDirection, useFinePointer } from "./lib/motion.ts";
+import { PendingHeadingFocus, useNav } from "./lib/nav.ts";
 import { StoreProvider, useStore } from "./lib/store.tsx";
 import { DetailPage } from "./pages/DetailPage.tsx";
 import { EditorPage } from "./pages/EditorPage.tsx";
@@ -234,33 +235,6 @@ function AccountMenu({ user, onSignOut }: { user: AuthUser; onSignOut: () => voi
         )}
       </Menu>
     </motion.div>
-  );
-}
-
-function NavLink({ to, label, active }: { to: string; label: string; active: boolean }) {
-  const link = useLinkProps(to);
-  const reduce = useReducedMotion();
-  return (
-    <motion.a
-      {...link}
-      className="nav-link"
-      aria-current={active ? "page" : undefined}
-      whileTap={reduce ? undefined : TAP}
-      transition={SPRING.press}
-    >
-      {active && (
-        <motion.span
-          layoutId={ids.nav}
-          className="nav-indicator"
-          style={{ borderRadius: 2 }}
-          transition={SPRING.morph}
-          aria-hidden="true"
-        />
-      )}
-      <span className="nav-label" data-label={label}>
-        <span>{label}</span>
-      </span>
-    </motion.a>
   );
 }
 
