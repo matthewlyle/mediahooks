@@ -28,22 +28,13 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 type Move = { label: string; transition: Record<string, unknown> };
 
-function movesOf(name: string): Move[] {
-  const v = (motionModule as Record<string, unknown>)[name];
-  if (Array.isArray(v) && v.length === 4 && v.every((n) => typeof n === "number")) return [{ label: name, transition: { duration: 0.8, ease: v } }];
-  if (v && typeof v === "object") {
-    const o = v as Record<string, unknown>;
-    if (o.type === "spring" || "duration" in o) return [{ label: name, transition: o }];
-    if (o.transition && typeof o.transition === "object") return [{ label: name, transition: o.transition as Record<string, unknown> }];
-    return Object.entries(o).flatMap(([k, e]) => movesOf2(`${name}.${k}`, e));
-  }
-  return [];
-}
-
-function movesOf2(label: string, e: unknown): Move[] {
-  if (Array.isArray(e) && e.length === 4 && e.every((n) => typeof n === "number")) return [{ label, transition: { duration: 0.8, ease: e } }];
-  if (e && typeof e === "object" && (e as Record<string, unknown>).type === "spring") return [{ label, transition: e as Record<string, unknown> }];
-  return [];
+function movesOf(label: string, v: unknown): Move[] {
+  if (Array.isArray(v) && v.length === 4 && v.every((n) => typeof n === "number")) return [{ label, transition: { duration: 0.8, ease: v } }];
+  if (!v || typeof v !== "object") return [];
+  const o = v as Record<string, unknown>;
+  if (o.type === "spring" || "duration" in o) return [{ label, transition: o }];
+  if (o.transition && typeof o.transition === "object") return [{ label, transition: o.transition as Record<string, unknown> }];
+  return Object.entries(o).flatMap(([k, e]) => movesOf(`${label}.${k}`, e));
 }
 
 function Replay({ move, run }: { move: Move; run: number }) {
@@ -66,7 +57,7 @@ function Replay({ move, run }: { move: Move; run: number }) {
 export function TokensPage({ data }: { data: Extracted }) {
   const [run, setRun] = useState(0);
   const groups = Object.groupBy(data.cssTokens, group);
-  const moves = data.motionTokens.flatMap((t) => movesOf(t.name).map((m) => ({ t, m })));
+  const moves = data.motionTokens.flatMap((t) => movesOf(t.name, (motionModule as Record<string, unknown>)[t.name]).map((m) => ({ t, m })));
 
   return (
     <article>
