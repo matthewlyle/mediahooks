@@ -17,7 +17,7 @@
   overflow: auto;
   line-height: 1.55;
 }
-.code-editor.headers-editor .cm-scroller {
+.code-editor.is-compact .cm-scroller {
   min-height: 96px;
   max-height: 240px;
 }
