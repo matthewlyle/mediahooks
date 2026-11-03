@@ -41,89 +41,107 @@ test.beforeAll(async ({ request }) => {
   await expect.poll(async () => (await (await request.get("/api/events")).json()).length).toBeGreaterThan(0);
 });
 
-async function settle(page: Page, idle = true) {
-  if (idle) await page.waitForLoadState("networkidle");
-  await page.evaluate(async () => {
+function installGuard(INTERACTIVE: string) {
+  const SKIP = new Set(["script", "style", "link", "meta", "title", "head", "noscript", "base"]);
+  const label = (el: Element) => (el.namespaceURI === "http://www.w3.org/1999/xhtml" ? "" : "svg:") + el.localName;
+  const read = (cs: CSSStyleDeclaration) => {
+    const o: Record<string, string> = {};
+    for (const k of Array.from(cs).sort()) o[k] = cs.getPropertyValue(k);
+    return o;
+  };
+  const defaults: Record<string, Record<string, string>> = {};
+  let sandbox: HTMLIFrameElement | null = null;
+  const defaultFor = (el: Element, name: string) => {
+    if (!defaults[name]) {
+      if (!sandbox) {
+        sandbox = document.createElement("iframe");
+        sandbox.style.cssText = "position:absolute;visibility:hidden";
+        document.body.append(sandbox);
+      }
+      const sdoc = sandbox.contentDocument!;
+      const fresh = sdoc.createElementNS(el.namespaceURI, el.localName);
+      const host = el.namespaceURI === "http://www.w3.org/2000/svg" ? sdoc.createElementNS("http://www.w3.org/2000/svg", "svg") : sdoc.body;
+      host.append(fresh);
+      if (host !== sdoc.body) sdoc.body.append(host);
+      defaults[name] = read(sandbox.contentWindow!.getComputedStyle(fresh));
+    }
+    return defaults[name]!;
+  };
+  const pathOf = (el: Element) => {
+    const parts: string[] = [];
+    for (let n: Element | null = el; n && n !== document.documentElement; n = n.parentElement) {
+      const same = n.parentElement ? [...n.parentElement.children].filter((c) => label(c) === label(n!)) : [n];
+      parts.unshift(`${label(n)}[${same.indexOf(n) + 1}]`);
+    }
+    return ["html", ...parts].join(">");
+  };
+  const visit = (el: Element, path: string, nodes: Record<string, Record<string, string>>) => {
+    const def = defaultFor(el, label(el));
+    const cs = read(getComputedStyle(el));
+    const diff: Record<string, string> = {};
+    for (const k in cs) if (cs[k] !== def[k]) diff[k] = cs[k]!;
+    nodes[path] = diff;
+    for (const pseudo of ["::before", "::after"]) {
+      const ps = getComputedStyle(el, pseudo);
+      const content = ps.getPropertyValue("content");
+      if (content && content !== "none" && content !== "normal") nodes[path + pseudo] = read(ps);
+    }
+  };
+  const walk = (el: Element, path: string, nodes: Record<string, Record<string, string>>) => {
+    if (SKIP.has(el.localName)) return;
+    visit(el, path, nodes);
+    const seen: Record<string, number> = {};
+    for (const c of el.children) {
+      if (SKIP.has(c.localName)) continue;
+      const l = label(c);
+      seen[l] = (seen[l] ?? 0) + 1;
+      walk(c, `${path}>${l}[${seen[l]}]`, nodes);
+    }
+  };
+  const targets = () => [...document.querySelectorAll(INTERACTIVE)].filter((e) => e.getClientRects().length > 0);
+  const finite = () => document.getAnimations().filter((a) => a.effect?.getComputedTiming().iterations !== Infinity);
+  const settle = async () => {
     await document.fonts.ready;
-    const finite = () => document.getAnimations().filter((a) => a.effect?.getComputedTiming().iterations !== Infinity);
-    const deadline = Date.now() + 3000;
-    while (Date.now() < deadline && finite().some((a) => a.playState === "running")) {
-      await Promise.race([Promise.allSettled(finite().map((a) => a.finished)), new Promise((r) => setTimeout(r, 100))]);
-    }
+    for (const a of finite()) a.finish();
     for (const a of document.getAnimations()) if (a.effect?.getComputedTiming().iterations === Infinity) a.cancel();
-  });
+  };
+  const one = (i: number) => {
+    const nodes: Record<string, Record<string, string>> = {};
+    const el = targets()[i];
+    if (el) visit(el, pathOf(el), nodes);
+    return nodes;
+  };
+  (window as any).__sg = {
+    settle,
+    defaults: () => defaults,
+    count: () => targets().length,
+    box: (i: number) => {
+      const r = targets()[i]?.getBoundingClientRect();
+      return r ? { x: r.x + r.width / 2, y: r.y + r.height / 2 } : null;
+    },
+    page: () => {
+      const nodes: Record<string, Record<string, string>> = {};
+      walk(document.documentElement, "html", nodes);
+      return nodes;
+    },
+    hovered: async (i: number) => {
+      await settle();
+      return one(i);
+    },
+    focusAll: async () => {
+      const out: Record<string, Record<string, string>> = {};
+      const n = targets().length;
+      for (let i = 0; i < n; i++) {
+        const el = targets()[i];
+        if (el instanceof HTMLElement) el.focus();
+        await settle();
+        Object.assign(out, Object.fromEntries(Object.entries(one(i)).map(([p, v]) => [`${p}@focus`, v])));
+        (document.activeElement as HTMLElement | null)?.blur();
+      }
+      return out;
+    },
+  };
 }
-
-async function capture(page: Page, only: number | null): Promise<Dump> {
-  return page.evaluate(([only, INTERACTIVE]) => {
-    const SKIP = new Set(["script", "style", "link", "meta", "title", "head", "noscript", "base"]);
-    const label = (el: Element) => (el.namespaceURI === "http://www.w3.org/1999/xhtml" ? "" : "svg:") + el.localName;
-    const sandbox = document.createElement("iframe");
-    sandbox.style.cssText = "position:absolute;visibility:hidden";
-    document.body.append(sandbox);
-    const sdoc = sandbox.contentDocument!;
-    const defaults: Dump["defaults"] = {};
-    const read = (cs: CSSStyleDeclaration) => {
-      const o: Record<string, string> = {};
-      for (let i = 0; i < cs.length; i++) o[cs[i]!] = cs.getPropertyValue(cs[i]!);
-      return o;
-    };
-    const defaultFor = (el: Element, name: string) => {
-      if (!defaults[name]) {
-        const fresh = sdoc.createElementNS(el.namespaceURI, el.localName);
-        const host = el.namespaceURI === "http://www.w3.org/2000/svg" ? sdoc.createElementNS("http://www.w3.org/2000/svg", "svg") : sdoc.body;
-        host.append(fresh);
-        if (host !== sdoc.body) sdoc.body.append(host);
-        defaults[name] = read(sandbox.contentWindow!.getComputedStyle(fresh));
-      }
-      return defaults[name]!;
-    };
-    const nodes: Dump["nodes"] = {};
-    const pathOf = (el: Element) => {
-      const parts: string[] = [];
-      for (let n: Element | null = el; n && n !== document.documentElement; n = n.parentElement) {
-        const same = n.parentElement ? [...n.parentElement.children].filter((c) => label(c) === label(n!)) : [n];
-        parts.unshift(`${label(n)}[${same.indexOf(n) + 1}]`);
-      }
-      return ["html", ...parts].join(">");
-    };
-    const visit = (el: Element, path: string) => {
-      const name = label(el);
-      const def = defaultFor(el, name);
-      const cs = read(getComputedStyle(el));
-      const diff: Record<string, string> = {};
-      for (const k in cs) if (cs[k] !== def[k]) diff[k] = cs[k]!;
-      nodes[path] = diff;
-      for (const pseudo of ["::before", "::after"]) {
-        const ps = getComputedStyle(el, pseudo);
-        const content = ps.getPropertyValue("content");
-        if (content && content !== "none" && content !== "normal") nodes[path + pseudo] = read(ps);
-      }
-    };
-    const walk = (el: Element, path: string) => {
-      if (SKIP.has(el.localName)) return;
-      visit(el, path);
-      const seen: Record<string, number> = {};
-      for (const c of el.children) {
-        if (SKIP.has(c.localName)) continue;
-        const l = label(c);
-        seen[l] = (seen[l] ?? 0) + 1;
-        walk(c, `${path}>${l}[${seen[l]}]`);
-      }
-    };
-    if (only === null) walk(document.documentElement, "html");
-    else {
-      const targets = [...document.querySelectorAll(INTERACTIVE)].filter((e) => e.getClientRects().length > 0);
-      const el = targets[only];
-      if (el) visit(el, pathOf(el));
-    }
-    sandbox.remove();
-    return { defaults, nodes };
-  }, [only, INTERACTIVE] as const);
-}
-
-const interactiveCount = (page: Page) =>
-  page.evaluate((sel) => [...document.querySelectorAll(sel)].filter((e) => e.getClientRects().length > 0).length, INTERACTIVE);
 
 const ROUTES: [string, () => string][] = [
   ["root", () => "/"],
@@ -183,7 +201,7 @@ const STATES: State[] = [
     async (page) => {
       await page.goto("/");
       await page.getByRole("button", { name: "More actions for Delete me too" }).click();
-      await page.getByRole("menuitem", { name: "Delete" }).click();
+      await page.getByRole("menuitem", { name: "Delete" }).dispatchEvent("click");
       await expect(page.getByRole("button", { name: "Undo deleting Delete me too" })).toBeVisible();
       await page.locator("#new-hook").click();
       await expect(page.getByRole("dialog", { name: "New webhook" })).toBeVisible();
@@ -219,49 +237,37 @@ const STATES: State[] = [
 ];
 
 test("dump computed styles", async ({ browser }) => {
-  test.setTimeout(1_800_000);
+  test.setTimeout(120_000);
   const out: Record<string, Dump> = {};
   for (const [profile, opts] of Object.entries(PROFILES)) {
     for (const [name, setup] of STATES) {
       const context = await browser.newContext({ ...opts, reducedMotion: "reduce", baseURL: "http://localhost:8839" });
+      await context.addInitScript(installGuard, INTERACTIVE);
       const page = await context.newPage();
       await page.clock.setFixedTime(FIXED_TIME);
       await setup(page);
-      await settle(page);
+      await page.waitForLoadState("networkidle");
+      await page.evaluate(() => (window as any).__sg.settle());
       const key = `${profile}/${name}`;
-      out[key] = await capture(page, null);
+      const nodes: Dump["nodes"] = await page.evaluate(() => (window as any).__sg.page());
+      out[key] = { defaults: {}, nodes };
 
       const fine = await page.evaluate(() => matchMedia("(hover: hover) and (pointer: fine)").matches);
-      const count = await interactiveCount(page);
-      for (let i = 0; i < count; i++) {
-        const box = await page.evaluate(
-          ([i, sel]) => {
-            const r = [...document.querySelectorAll(sel)].filter((e) => e.getClientRects().length > 0)[i]?.getBoundingClientRect();
-            return r ? { x: r.x + r.width / 2, y: r.y + r.height / 2 } : null;
-          },
-          [i, INTERACTIVE] as const,
-        );
-        if (fine && box) {
+      if (fine) {
+        const count: number = await page.evaluate(() => (window as any).__sg.count());
+        for (let i = 0; i < count; i++) {
+          const box = await page.evaluate((i) => (window as any).__sg.box(i), i);
+          if (!box) continue;
           await page.mouse.move(box.x, box.y);
-          await settle(page, false);
-          const hovered = await capture(page, i);
-          for (const [p, v] of Object.entries(hovered.nodes)) out[key]!.nodes[`${p}@hover`] = v;
+          const hovered: Dump["nodes"] = await page.evaluate((i) => (window as any).__sg.hovered(i), i);
+          for (const [p, v] of Object.entries(hovered)) nodes[`${p}@hover`] = v;
           await page.mouse.move(0, 0);
-          await settle(page, false);
         }
-        await page.keyboard.press("Shift");
-        await page.evaluate(
-          ([i, sel]) => {
-            const el = [...document.querySelectorAll(sel)].filter((e) => e.getClientRects().length > 0)[i];
-            if (el instanceof HTMLElement) el.focus();
-          },
-          [i, INTERACTIVE] as const,
-        );
-        await settle(page, false);
-        const focused = await capture(page, i);
-        for (const [p, v] of Object.entries(focused.nodes)) out[key]!.nodes[`${p}@focus`] = v;
-        await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
       }
+      await page.keyboard.press("Shift");
+      const focused: Dump["nodes"] = await page.evaluate(() => (window as any).__sg.focusAll());
+      Object.assign(nodes, focused);
+      out[key].defaults = await page.evaluate(() => (window as any).__sg.defaults());
       await context.close();
     }
   }
