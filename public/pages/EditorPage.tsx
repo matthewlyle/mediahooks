@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useEffect, useId, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { forwardRef, useEffect, useId, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { EmptyState } from "../ui/EmptyState.tsx";
 import { CodeBlock } from "../ui/CodeBlock.tsx";
 import { matches, type Filters } from "../../src/filters.ts";
@@ -8,6 +8,7 @@ import type { IncomingEvent, PlexPayload, Webhook } from "../../src/types.ts";
 import { SAMPLE_MOVIE_PAYLOAD, SAMPLE_PAYLOAD, SAMPLE_TRACK_PAYLOAD } from "../../src/sample.ts";
 import { isJsonContentType, renderBody, renderHeaders, templateVars } from "../../src/template.ts";
 import { Button, LinkButton } from "../ui/Button.tsx";
+import { Field as FormField, FieldInput, useFieldControl } from "../ui/Field.tsx";
 import { FieldError } from "../ui/FieldError.tsx";
 import { SectionHeader } from "../ui/SectionHeader.tsx";
 import { Segmented } from "../ui/Segmented.tsx";
@@ -34,7 +35,7 @@ import {
   type FieldErrors,
   type FormState,
 } from "./editor/form.ts";
-import { CodeEditor, type CodeEditorHandle } from "../ui/CodeEditor.tsx";
+import { CodeEditor, type CodeEditorHandle, type CodeEditorProps } from "../ui/CodeEditor.tsx";
 import { Panel } from "../ui/Panel.tsx";
 import { DiscordPreview, isDiscordMessage } from "./editor/DiscordPreview.tsx";
 import { SlackPreview, isSlackMessage } from "./editor/SlackPreview.tsx";
@@ -63,6 +64,11 @@ function previewSource(recent: IncomingEvent[], kind: Sample, filters: Filters):
   if (!e) return { payload: PREVIEW_SAMPLES[kind], poster: null, eventId: null };
   return { payload: e.payload, poster: e.thumbKey ? `/thumbs/${e.thumbKey}` : null, eventId: e.id };
 }
+
+const FieldCodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(function FieldCodeEditor(props, ref) {
+  const { invalid, describedBy } = useFieldControl();
+  return <CodeEditor ref={ref} ariaDescribedBy={describedBy} invalid={invalid} {...props} />;
+});
 
 export function EditorPage({ id, back: closeTo }: { id: number | null; back?: string }) {
   const navigate = useNav();
@@ -208,8 +214,6 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
   const [serverErrors, setServerErrors] = useState<FieldErrors>({});
   const edited = useRef(new Set<Field>());
   const shown = (f: Field) => serverErrors[f] ?? (touched.has(f) ? errors[f] : undefined);
-  const invalidProps = (f: Field) =>
-    shown(f) ? { "aria-invalid": true, "aria-describedby": errId(f) } : { "aria-invalid": false };
   const [focusRequest, setFocusRequest] = useState<{ field: Field } | null>(null);
 
   const sentinel = useRef<HTMLDivElement>(null);
@@ -473,13 +477,8 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
       <Panel as="form" id={formId} className="editor" onSubmit={onSave} noValidate {...PANEL_MOTION}>
         <div className="editor-section">
           <div className="row row-destination">
-            <div className="field">
-              <label htmlFor={`${uid}-name`}>
-                <span className="field-name">
-                  Name <span className="required">required</span>
-                </span>
-              </label>
-              <input
+            <FormField id={`${uid}-name`} label="Name" hint="required" error={shown("name")} errorId={errId("name")}>
+              <FieldInput
                 ref={nameField}
                 id={`${uid}-name`}
                 name="name"
@@ -489,17 +488,10 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
                 value={form.name}
                 onChange={(e) => set("name", e.target.value)}
                 onBlur={touch("name")}
-                {...invalidProps("name")}
               />
-              <FieldError id={errId("name")} error={shown("name")} />
-            </div>
-            <div className="field">
-              <label htmlFor={`${uid}-url`}>
-                <span className="field-name">
-                  URL <span className="required">required</span>
-                </span>
-              </label>
-              <input
+            </FormField>
+            <FormField id={`${uid}-url`} label="URL" hint="required" error={shown("url")} errorId={errId("url")}>
+              <FieldInput
                 ref={urlField}
                 id={`${uid}-url`}
                 name="url"
@@ -510,10 +502,8 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
                 value={form.url}
                 onChange={(e) => onUrlChange(e.target.value)}
                 onBlur={touch("url")}
-                {...invalidProps("url")}
               />
-              <FieldError id={errId("url")} error={shown("url")} />
-            </div>
+            </FormField>
           </div>
         </div>
 
@@ -543,14 +533,17 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
             open={optionsOpen}
             onOpenChange={setOptionsOpen}
           >
-            <div className="field options-body">
-              <CodeEditor
+            <FormField
+              id={`${uid}-headers`}
+              className="options-body"
+              error={shown("headers")}
+              errorId={errId("headers")}
+            >
+              <FieldCodeEditor
                 ref={headersEditor}
                 id={`${uid}-headers`}
                 compact
                 ariaLabelledBy={`${uid}-headers-toggle`}
-                ariaDescribedBy={shown("headers") ? errId("headers") : undefined}
-                invalid={Boolean(shown("headers"))}
                 language="plain"
                 completions={completionData}
                 placeholder={"Authorization: Bearer …\nTitle: {{display_title}}"}
@@ -558,22 +551,58 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
                 onChange={(v) => set("headers", v)}
                 onBlur={touch("headers")}
               />
-              <FieldError id={errId("headers")} error={shown("headers")} />
-            </div>
+            </FormField>
           </Disclosure>
           <div className="message-grid">
-            <div className="field">
-              <label id={`${uid}-body-label`} onClick={() => bodyEditor.current?.focus()}>
-                <span className="field-name">
-                  Body <span className="optional">optional</span>
-                </span>
-              </label>
-              <CodeEditor
+            <FormField
+              id={`${uid}-body`}
+              label="Body"
+              hint="optional"
+              labelId={`${uid}-body-label`}
+              onLabelClick={() => bodyEditor.current?.focus()}
+              error={shown("bodyTemplate")}
+              errorId={errId("bodyTemplate")}
+              footer={
+                <>
+                  <Disclosure label="Template variables" open={varsOpen} onOpenChange={setVarsOpen}>
+                    <div className="var-chips" role="group" aria-label="Insert a variable">
+                      {meta.templateVars.map((v) => (
+                        <Button
+                          key={v}
+                          className="var-chip"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => insertVariable(v)}
+                        >
+                          {`{{${v}}}`}
+                        </Button>
+                      ))}
+                    </div>
+                    <p className="vars-hint">
+                      Payload paths work too, like <code>{"{{Metadata.summary}}"}</code>.
+                    </p>
+                  </Disclosure>
+                  <AnimatePresence initial={false}>
+                    {(discord !== null || form.attachPoster) && (
+                      <Reveal key="poster">
+                        <label className="inline poster-option">
+                          <input
+                            type="checkbox"
+                            checked={form.attachPoster}
+                            onChange={(e) => set("attachPoster", e.target.checked)}
+                          />
+                          <span className="poster-label">Attach poster</span>
+                          <span className="poster-hint">sent as a file, Discord's format</span>
+                        </label>
+                      </Reveal>
+                    )}
+                  </AnimatePresence>
+                </>
+              }
+            >
+              <FieldCodeEditor
                 ref={bodyEditor}
                 id={`${uid}-body`}
                 ariaLabelledBy={`${uid}-body-label`}
-                ariaDescribedBy={shown("bodyTemplate") ? errId("bodyTemplate") : undefined}
-                invalid={Boolean(shown("bodyTemplate"))}
                 language={bodyIsJson ? "json" : "plain"}
                 completions={completionData}
                 placeholder='{"content": "{{user}} {{action}} {{display_title}}"}'
@@ -581,40 +610,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
                 onChange={(v) => set("bodyTemplate", v)}
                 onBlur={touch("bodyTemplate")}
               />
-              <FieldError id={errId("bodyTemplate")} error={shown("bodyTemplate")} />
-              <Disclosure label="Template variables" open={varsOpen} onOpenChange={setVarsOpen}>
-                <div className="var-chips" role="group" aria-label="Insert a variable">
-                  {meta.templateVars.map((v) => (
-                    <Button
-                      key={v}
-                      className="var-chip"
-                      onMouseDown={(e) => e.preventDefault()}
-                      onClick={() => insertVariable(v)}
-                    >
-                      {`{{${v}}}`}
-                    </Button>
-                  ))}
-                </div>
-                <p className="vars-hint">
-                  Payload paths work too, like <code>{"{{Metadata.summary}}"}</code>.
-                </p>
-              </Disclosure>
-              <AnimatePresence initial={false}>
-                {(discord !== null || form.attachPoster) && (
-                  <Reveal key="poster">
-                    <label className="inline poster-option">
-                      <input
-                        type="checkbox"
-                        checked={form.attachPoster}
-                        onChange={(e) => set("attachPoster", e.target.checked)}
-                      />
-                      <span className="poster-label">Attach poster</span>
-                      <span className="optional">sent as a file, Discord's format</span>
-                    </label>
-                  </Reveal>
-                )}
-              </AnimatePresence>
-            </div>
+            </FormField>
             <div className="preview">
               <SectionHeader className="preview-head">
                 <Segmented
