@@ -6,7 +6,7 @@ const SIGNED_OUT_PORT = 8840;
 export default defineConfig({
   workers: 1,
   reporter: [["list"]],
-  use: { baseURL: `http://localhost:${PORT}` },
+  use: { baseURL: `http://localhost:${PORT}`, actionTimeout: 5_000 },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: [
     {
