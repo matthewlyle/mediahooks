@@ -8,22 +8,24 @@ export type SwitchProps = {
   checked: boolean;
   /** Called with the new state when the switch is toggled. */
   onChange: (next: boolean) => void;
-  /** Accessible name announced for the switch. */
-  label: string;
+  /** Visible text beside the switch that names it; clicking it toggles the switch. */
+  label?: string;
+  /** Accessible name for a switch with no visible label. */
+  "aria-label"?: string;
   /** Prevents toggling and dims the switch. */
   disabled?: boolean;
 };
 
 /** A two-state toggle with a sliding knob, exposed to assistive tech as a switch. */
-export function Switch({ checked, onChange, label, disabled }: SwitchProps) {
+export function Switch({ checked, onChange, label, "aria-label": ariaLabel, disabled }: SwitchProps) {
   const [hovered, setHovered] = useState(false);
-  return (
+  const control = (
     <button
       type="button"
       role="switch"
       className="switch"
       aria-checked={checked}
-      aria-label={label}
+      aria-label={ariaLabel}
       disabled={disabled}
       onClick={() => onChange(!checked)}
       onPointerEnter={(e) => e.pointerType === "mouse" && setHovered(true)}
@@ -36,5 +38,12 @@ export function Switch({ checked, onChange, label, disabled }: SwitchProps) {
         transition={SPRING.toggle}
       />
     </button>
+  );
+  if (label === undefined) return control;
+  return (
+    <label className="switch-label">
+      {label}
+      {control}
+    </label>
   );
 }

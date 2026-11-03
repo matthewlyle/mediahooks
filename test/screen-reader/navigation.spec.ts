@@ -61,3 +61,18 @@ test("Edit and Save announce the editor and detail headings", async ({ page, req
   await voiceOver.capture(() => save.press("Enter"), { capture: true });
   await expectHeadingAnnounced(page, voiceOver, "Kitchen alerts");
 });
+
+test("the editor's Enabled switch is announced once with its state", async ({ page, voiceOver }) => {
+  await page.goto("/new");
+  const toggle = page.getByRole("switch", { name: "Enabled" });
+  await expect(toggle).toBeVisible();
+  await voiceOver.navigateToWebContent();
+
+  await voiceOver.capture(() => toggle.focus(), { capture: true });
+
+  await expect
+    .poll(async () => (await voiceOver.spokenPhraseLog()).filter((p) => p.includes("Enabled")).length, { timeout: 15_000 })
+    .toBeGreaterThan(0);
+  const phrase = (await voiceOver.spokenPhraseLog()).find((p) => p.includes("Enabled"))!;
+  expect(phrase.match(/Enabled/g)).toHaveLength(1);
+});

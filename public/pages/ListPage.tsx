@@ -217,7 +217,7 @@ function Row({ w, last, index, enter }: RowProps) {
       </div>
       <Toolbar className="card-actions">
         <StatusBadge delivery={last} />
-        <Switch checked={w.enabled} onChange={onToggle} label={`${w.enabled ? "Disable" : "Enable"} ${w.name}`} />
+        <Switch checked={w.enabled} onChange={onToggle} aria-label={`${w.enabled ? "Disable" : "Enable"} ${w.name}`} />
         <Menu
           label={`More actions for ${w.name}`}
           triggerClassName="more-btn"

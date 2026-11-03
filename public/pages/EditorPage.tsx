@@ -420,9 +420,6 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
         </div>
         <Toolbar className="form-actions" gap="medium" {...fadeIn}>
           <span className="bar-enabled">
-            <span aria-hidden="true" onClick={() => set("enabled", !form.enabled)}>
-              Enabled
-            </span>
             <Switch checked={form.enabled} onChange={(on) => set("enabled", on)} label="Enabled" />
           </span>
           <Button
