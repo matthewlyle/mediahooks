@@ -1,8 +1,12 @@
 import { AnimatePresence } from "motion/react";
 import { EASE } from "../lib/motion.ts";
-import { Badge } from "../ui/Badge.tsx";
+import { Badge } from "./Badge.tsx";
 
-export function PausedBadge({ paused }: { paused: boolean }) {
+/** A "Paused" badge that fades in and out as its `paused` flag turns on and off. */
+export function PausedBadge({ paused }: {
+  /** Whether to show the badge. False removes it with a fade. */
+  paused: boolean;
+}) {
   return (
     <AnimatePresence initial={false}>
       {paused && (

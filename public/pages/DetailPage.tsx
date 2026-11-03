@@ -2,11 +2,11 @@ import { AnimatePresence, motion, useIsPresent, useReducedMotion } from "motion/
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Delivery, DeliveryDetail, Webhook } from "../../src/types.ts";
 import { Button, LinkButton } from "../ui/Button.tsx";
-import { PausedBadge } from "../components/PausedBadge.tsx";
+import { PausedBadge } from "../ui/PausedBadge.tsx";
 import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
 import { RelativeTime } from "../ui/RelativeTime.tsx";
 import { Table, TableRow, useHeight } from "../ui/Table.tsx";
-import { SentenceSummary } from "../components/SentenceSummary.tsx";
+import { Sentence } from "../ui/Sentence.tsx";
 import { StatusBadge } from "../components/StatusBadge.tsx";
 import { Switch } from "../ui/Switch.tsx";
 import { useToast } from "../ui/Toast.tsx";
@@ -14,7 +14,7 @@ import { api } from "../lib/api.ts";
 import { EASE, SPRING, fadeIn, flash, ids, pageTransition } from "../lib/motion.ts";
 import { useEscape, useNav, useRouteHeading } from "../lib/nav.ts";
 import { useRefetchOnReturn } from "../lib/refetch.ts";
-import { eventWords } from "../lib/sentence.ts";
+import { eventWords, webhookParts } from "../lib/sentence.ts";
 import { useStore } from "../lib/store.tsx";
 import "./DetailPage.css";
 
@@ -180,7 +180,7 @@ function Head({ w, direct }: HeadProps) {
           {w.url}
         </motion.div>
         <motion.div {...fadeIn}>
-          <SentenceSummary w={w} className="detail-sentence" />
+          <Sentence parts={webhookParts(w)} className="detail-sentence" highlight />
         </motion.div>
         {failure && (
           <motion.p className="detail-error" {...fadeIn}>
