@@ -190,27 +190,9 @@ textarea:focus-visible {
   grid-template-columns: 1fr auto;
   gap: var(--space-4) var(--space-16);
   align-items: center;
-  cursor: pointer;
 }
 .card-actions {
   cursor: auto;
-}
-.card-text {
-  position: relative;
-  min-width: 0;
-
-  border-radius: var(--radius-2);
-}
-.card-text:has(.card-main:focus-visible) {
-  outline: var(--focus-ring);
-  outline-offset: 4px;
-}
-.card-main {
-  position: absolute;
-  inset: -10px 0 -10px -14px;
-}
-.card-main:focus-visible {
-  outline: none;
 }
 
 .test-btn {
