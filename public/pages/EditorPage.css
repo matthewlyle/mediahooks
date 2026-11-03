@@ -16,7 +16,7 @@
 .editor-bar[data-stuck] {
   box-shadow: 0 10px 12px -10px var(--black-70);
 }
-.editor-bar > .reveal {
+.editor-bar > .bar-reveal {
   flex-basis: 100%;
 }
 .bar-lead {

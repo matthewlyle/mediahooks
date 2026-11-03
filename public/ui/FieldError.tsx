@@ -13,7 +13,7 @@ export function FieldError({ id, error }: {
     <div className="reveal-region" role="status">
       <AnimatePresence initial={false}>
         {error && (
-          <Reveal key="error">
+          <Reveal key="error" className="field-error-reveal">
             <p id={id} className="field-error">
               {error}
             </p>
