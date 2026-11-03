@@ -251,7 +251,9 @@ function NavLink({ to, label, active }: { to: string; label: string; active: boo
           aria-hidden="true"
         />
       )}
-      <span className="nav-label">{label}</span>
+      <span className="nav-label" data-label={label}>
+        <span>{label}</span>
+      </span>
     </motion.a>
   );
 }
