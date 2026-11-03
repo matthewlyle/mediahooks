@@ -477,7 +477,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
             Save
           </Button>
         </motion.div>
-        <p className="sr-only" role="status">
+        <p className="sr-only" role="status" aria-live="assertive">
           {sending ? "Sending test…" : result && line ? `${result.ok ? "Test delivered" : "Test failed"}: ${line.full}` : ""}
         </p>
         <AnimatePresence initial={false}>

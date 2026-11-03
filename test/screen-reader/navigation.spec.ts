@@ -13,7 +13,7 @@ async function createWebhook(request: APIRequestContext, name: string) {
 async function expectHeadingAnnounced(page: Page, voiceOver: VoiceOverPlaywright, name: string) {
   await expect(page.getByRole("heading", { level: 2, name })).toBeFocused();
   await expect
-    .poll(async () => (await voiceOver.spokenPhraseLog()).some((p) => new RegExp(`${name}.*heading`, "i").test(p)), {
+    .poll(async () => (await voiceOver.spokenPhraseLog()).some((p) => p.includes(name) && /heading/i.test(p)), {
       timeout: 15_000,
     })
     .toBe(true);
