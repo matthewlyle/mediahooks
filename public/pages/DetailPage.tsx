@@ -11,7 +11,7 @@ import { SectionHeader } from "../ui/SectionHeader.tsx";
 import { RelativeTime } from "../ui/RelativeTime.tsx";
 import { HeightReveal } from "../ui/HeightReveal.tsx";
 import { Table, TableRow } from "../ui/Table.tsx";
-import { StatusBadge } from "../components/StatusBadge.tsx";
+import { StatusBadge, StatusMark } from "../ui/StatusBadge.tsx";
 import { Switch } from "../ui/Switch.tsx";
 import { Toolbar } from "../ui/Toolbar.tsx";
 import { useToast } from "../ui/Toast.tsx";
@@ -243,7 +243,8 @@ function DeliveryRow({ d, fresh }: { d: Delivery; fresh: boolean }) {
       transition={{ duration: 0.25, ease: EASE.outQuint, layout: SPRING.morph }}
       summary={
         <>
-          <span className={`result ${d.ok ? "ok" : "fail"}`}>
+          <span>
+            <StatusMark status={d.ok ? "success" : "failure"} className="status-mark-inline" />
             <span className="sr-only">{d.ok ? "Delivered" : "Failed"}: </span>
             {d.status ?? "ERR"} · {detail}
           </span>
