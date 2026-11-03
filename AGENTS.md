@@ -40,6 +40,8 @@ Don't tag by hand.
 
 Working an issue: a branch `issue-<n>-<slug>` in its own worktree, a pull request whose title is a
 Conventional Commit (it becomes the squash commit) and whose body says `Fixes #<n>`. Never merge it.
+Issues and worker agents follow the user-level `github-issue` and `work-issue` skills
+(`matthewlyle/agent-skills`), with this repo's specifics in `.agents/workflow.md`.
 
 ## Don't break
 
