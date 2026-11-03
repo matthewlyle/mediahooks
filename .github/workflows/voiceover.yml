@@ -2,6 +2,7 @@ name: VoiceOver
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
   workflow_dispatch:
     inputs:
       ref:
@@ -24,8 +25,12 @@ jobs:
           fetch-depth: 2
       # voiceover is a required check: skip the job here, never filter the trigger with paths:
       - id: changes
+        env:
+          LABELS: ${{ toJSON(github.event.pull_request.labels.*.name) }}
         run: |
-          if [ "$GITHUB_EVENT_NAME" != pull_request ] ||
+          if [ "$GITHUB_EVENT_NAME" != pull_request ]; then
+            echo ui=true >> "$GITHUB_OUTPUT"
+          elif ! echo "$LABELS" | jq -e 'index("skip: voiceover")' > /dev/null &&
             git diff --name-only HEAD^1 HEAD | grep -v '\.test\.ts$' |
               grep -qE '^(public/|src/|test/screen-reader/|package\.json$|bun\.lock$|\.github/workflows/voiceover\.yml$)'; then
             echo ui=true >> "$GITHUB_OUTPUT"
