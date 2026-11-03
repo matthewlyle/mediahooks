@@ -76,3 +76,4 @@ internet for that, expose only `/thumbs/*`.
 ```sh
 docker compose pull && docker compose up -d
 ```
+
