@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.0](https://github.com/matthewlyle/mediahooks/compare/v1.2.1...v1.3.0) (2026-11-03)
+
+
+### Features
+
+* log refused sign-ins ([f424983](https://github.com/matthewlyle/mediahooks/commit/f4249832d0c4faf5dc1a716292fd0d60c4f23878))
+* show the running version on the Help page and at startup ([f424983](https://github.com/matthewlyle/mediahooks/commit/f4249832d0c4faf5dc1a716292fd0d60c4f23878))
+
+
+### Bug Fixes
+
+* don't print a localhost webhook URL at startup ([f424983](https://github.com/matthewlyle/mediahooks/commit/f4249832d0c4faf5dc1a716292fd0d60c4f23878))
+* tag ntfy notifications with the media type instead of always tv ([f424983](https://github.com/matthewlyle/mediahooks/commit/f4249832d0c4faf5dc1a716292fd0d60c4f23878))
+
 ## [1.2.1](https://github.com/matthewlyle/mediahooks/compare/v1.2.0...v1.2.1) (2026-11-03)
 
 
