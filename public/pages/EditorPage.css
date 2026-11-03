@@ -122,6 +122,12 @@ form.editor {
   display: flow-root; /* children's margins count in the measured height */
   padding-top: var(--reveal-gap, 14px);
 }
+.reveal-region {
+  margin-top: calc(-1 * var(--reveal-gap, 14px));
+}
+.reveal-region > .reveal {
+  margin-top: 0;
+}
 
 .field-error {
   margin: 0;
@@ -263,8 +269,8 @@ form.editor {
 .send-test > span {
   grid-area: 1 / 1;
 }
-.send-test-label[aria-hidden="true"] {
-  visibility: hidden;
+.send-test[aria-busy="true"] .send-test-label {
+  opacity: 0;
 }
 
 @media (max-width: 640px) {
