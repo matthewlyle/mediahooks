@@ -5,6 +5,7 @@ import type { AuthUser, Webhook } from "../src/types.ts";
 import { LinkButton } from "./ui/Button.tsx";
 import { NavLink } from "./ui/NavLink.tsx";
 import { Menu } from "./ui/Menu.tsx";
+import { Toolbar } from "./ui/Toolbar.tsx";
 import { Modal } from "./ui/Modal.tsx";
 import { ToastProvider } from "./ui/Toast.tsx";
 import { api, setUnauthorizedHandler } from "./lib/api.ts";
@@ -208,12 +209,12 @@ function Header({ path, section, signedIn, user, onSignOut, inert }: HeaderProps
           )}
         </AnimatePresence>
       </div>
-      <div className="header-action">
+      <Toolbar className="header-action" gap="large" end>
         <AnimatePresence initial={false}>
           {signedIn && path !== "/new" && <NewWebhookButton key="new" />}
           {user && <AccountMenu key="account" user={user} onSignOut={onSignOut} />}
         </AnimatePresence>
-      </div>
+      </Toolbar>
     </motion.header>
   );
 }
