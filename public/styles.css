@@ -85,40 +85,19 @@ textarea:focus-visible {
     color 150ms ease,
     opacity 150ms ease;
 }
-.editor input:not([type="checkbox"]),
-.editor select {
-  transition:
-    background-color 150ms ease,
-    border-color 150ms ease,
-    box-shadow 150ms ease;
-}
 @media (hover: hover) and (pointer: fine) {
   .editor label.inline:hover {
     color: var(--accent-hover);
-  }
-  .editor input:not([type="checkbox"]):not(:focus):hover,
-  .editor select:not(:focus):hover {
-    background-color: var(--inset);
-  }
-}
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .more-btn:not(:disabled):hover .dot:first-child {
-    translate: -2px 0;
-  }
-  .more-btn:not(:disabled):hover .dot:last-child {
-    translate: 2px 0;
   }
 }
 
 @media (pointer: coarse) {
   .ingest-btn,
-  .test-btn,
-  .more-btn {
+  .test-btn {
     position: relative;
   }
   .ingest-btn::before,
-  .test-btn::before,
-  .more-btn::before {
+  .test-btn::before {
     content: "";
     position: absolute;
     inset: -9px;
@@ -215,36 +194,13 @@ textarea:focus-visible {
 .card-actions {
   cursor: auto;
 }
-.plex-status {
-  margin: var(--space-8) 0 0;
-  font-family: var(--mono);
-  font-size: var(--text-11);
-  line-height: 18px;
-  color: var(--muted);
-}
 
 .test-btn {
   min-width: 52px;
 }
-.more-btn {
-  align-self: stretch;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-4);
-  padding: 0 var(--space-10);
-}
-.more-btn .dot {
-  width: 3px;
-  height: 3px;
-  border-radius: var(--radius-full);
-  background: currentColor;
-  transition: translate 150ms ease;
-}
 
 .editor {
   position: relative;
-  background: var(--surface);
-  padding: var(--space-16) var(--space-14);
 }
 form.editor {
   display: flex;
@@ -292,21 +248,6 @@ form.editor {
   font-size: var(--text-12);
   font-weight: 400;
   min-width: 0;
-}
-.editor input:not([type="checkbox"]),
-.editor select {
-  font-family: var(--mono);
-  font-size: var(--text-12);
-  color: var(--fg);
-  background: var(--bg);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-2);
-  padding: var(--space-8) var(--space-10);
-  width: 100%;
-}
-.editor input[name="name"] {
-  font-family: var(--sans);
-  font-size: var(--text-14);
 }
 .editor input[type="checkbox"] {
   accent-color: var(--accent);
@@ -404,9 +345,6 @@ form.editor {
     margin-right: auto;
   }
 
-  .editor {
-    padding: var(--space-14) var(--space-12);
-  }
   .form-actions {
     flex-wrap: wrap;
   }
@@ -417,18 +355,11 @@ form.editor {
 
 /* Touch screens: 16px fields (iOS zooms into smaller ones) and ~40px tap targets. */
 @media (pointer: coarse) {
-  .editor input:not([type="checkbox"]),
-  .editor select,
   .editor-bar .template-picker,
   .code-editor .cm-editor .cm-content {
     font-size: var(--text-16);
   }
-  .editor input:not([type="checkbox"]),
   .editor-bar .template-picker {
     min-height: 40px;
-  }
-  .more-btn {
-    min-width: 40px;
-    justify-content: center;
   }
 }

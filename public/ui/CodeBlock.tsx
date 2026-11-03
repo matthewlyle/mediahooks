@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { EmptyState } from "./EmptyState.tsx";
 import "./CodeBlock.css";
 
 export type CodeBlockProps = {
@@ -22,7 +23,7 @@ export function CodeBlock({ label, note, head, inset = true, className, children
     <>
       {label && <span className="code-label">{label}</span>}
       {note !== undefined ? (
-        <p className="muted">{note}</p>
+        <EmptyState size="plain">{note}</EmptyState>
       ) : (
         <pre className={["code-block", inset ? "code-block-inset" : "code-block-plain", "mono", className].filter(Boolean).join(" ")}>
           {head && <span className="code-block-head">{head}</span>}
