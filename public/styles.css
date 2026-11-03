@@ -307,9 +307,6 @@ form.editor {
   min-width: 0;
 }
 .preview-head {
-  display: flex;
-  align-items: center;
-  gap: var(--space-8);
   padding: var(--space-4) var(--space-10);
   padding-bottom: var(--space-6);
 }
