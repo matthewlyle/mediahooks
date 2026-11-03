@@ -248,7 +248,7 @@ function NewWebhookButton() {
       to="/new"
       variant="primary"
       className="icon-reveal"
-      style={{ borderRadius: 2 }}
+      style={{ borderRadius: "var(--radius-2)" }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, transition: { duration: 0.15, ease: EASE.css } }}

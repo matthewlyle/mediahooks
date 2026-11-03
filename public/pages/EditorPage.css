@@ -93,13 +93,6 @@ form.editor {
   grid-template-columns: 1fr 2fr;
 }
 
-.editor input:not([type="checkbox"])[aria-invalid="true"] {
-  border-color: var(--error-80);
-}
-.editor input:not([type="checkbox"])[aria-invalid="true"]:focus-visible {
-  box-shadow: 0 0 12px var(--error-25);
-}
-
 .options-body {
   padding-top: var(--space-10);
 }
@@ -156,13 +149,6 @@ form.editor {
 }
 .send-test > span {
   grid-area: 1 / 1;
-}
-.send-test[data-busy] {
-  opacity: 0.6;
-  pointer-events: none;
-}
-.send-test[data-busy] .send-test-label {
-  opacity: 0;
 }
 
 @media (max-width: 640px) {
