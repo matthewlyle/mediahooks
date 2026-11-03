@@ -82,3 +82,4 @@ Issues and worker agents follow the user-level `github-issue` and `work-issue` s
 - Hovers only under `(hover: hover) and (pointer: fine)`. On coarse pointers: 16px text in fields,
   ~40px tap targets. Under 640px popovers become bottom sheets.
 - Copy: sentence case, no filler text, no uppercase letter-spaced labels, no left accent bars.
+- A `public/ui/` component keeps its rules and `@keyframes` in its own CSS file; nothing outside it relies on them.
