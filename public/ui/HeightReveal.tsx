@@ -43,7 +43,7 @@ export type HeightRevealProps = {
 
 /** A wrapper whose height animates to fit its content as the content changes, or as it mounts and unmounts. */
 export function HeightReveal({ children, className, innerClassName, id, presence = false, animated = true }: HeightRevealProps) {
-  const reduce = useReducedMotion();
+  const still = useReducedMotion() || !animated;
   const [inner, height] = useHeight<HTMLDivElement>();
   const content = (
     <div ref={inner} className={innerClassName}>
@@ -58,7 +58,7 @@ export function HeightReveal({ children, className, innerClassName, id, presence
         className={className}
         initial={false}
         animate={{ height: height ?? "auto" }}
-        transition={animated && !reduce ? SPRING.morph : { duration: 0 }}
+        transition={still ? { duration: 0 } : SPRING.morph}
       >
         {content}
       </motion.div>
@@ -69,10 +69,10 @@ export function HeightReveal({ children, className, innerClassName, id, presence
     <motion.div
       id={id}
       className={className}
-      initial={reduce ? { opacity: 0 } : { opacity: 0, height: 0 }}
-      animate={reduce ? { opacity: 1 } : { opacity: 1, height: height ?? 0 }}
+      initial={still ? { opacity: 0 } : { opacity: 0, height: 0 }}
+      animate={still ? { opacity: 1 } : { opacity: 1, height: height ?? 0 }}
       exit={
-        reduce
+        still
           ? { opacity: 0, transition: FADE_OUT }
           : { opacity: 0, height: 0, transition: { height: HEIGHT_OUT, opacity: FADE_OUT } }
       }
