@@ -11,10 +11,6 @@
   padding: var(--space-40) var(--space-24);
 }
 button.signin-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-8);
   min-width: 200px;
 }
 .signin-note {

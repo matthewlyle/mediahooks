@@ -1,4 +1,4 @@
 import { Button } from "../../public/ui/Button.tsx";
 import type { Fixture } from "../fixture.ts";
 
-export default { component: Button, props: { children: "Save" } } satisfies Fixture;
+export default { component: Button, props: { children: "Save", busy: false, spinner: true } } satisfies Fixture;

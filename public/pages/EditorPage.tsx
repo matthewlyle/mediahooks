@@ -13,7 +13,6 @@ import { FieldError } from "../ui/FieldError.tsx";
 import { SectionHeader } from "../ui/SectionHeader.tsx";
 import { Segmented } from "../ui/Segmented.tsx";
 import { burst } from "../components/burst.ts";
-import { Spinner } from "../ui/Spinner.tsx";
 import { Checkbox } from "../ui/Checkbox.tsx";
 import { Switch } from "../ui/Switch.tsx";
 import { api, type Meta } from "../lib/api.ts";
@@ -416,17 +415,8 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
         </div>
         <Toolbar className="form-actions" gap="medium" {...fadeIn}>
           <Switch className="bar-enabled" checked={form.enabled} onChange={(on) => set("enabled", on)} label="Enabled" />
-          <Button
-            ref={sendButton}
-            className="test-btn send-test"
-            onClick={onSendTest}
-          >
-            <span className="send-test-label">Send test</span>
-            {sending && (
-              <span className="send-test-busy" aria-hidden="true">
-                {reduce ? "Sending…" : <Spinner />}
-              </span>
-            )}
+          <Button ref={sendButton} className="test-btn" busy={sending} onClick={onSendTest}>
+            Send test
           </Button>
           <Button onClick={() => navigate(back)}>Cancel</Button>
           <Button type="submit" form={formId} variant="primary" disabled={saving}>
