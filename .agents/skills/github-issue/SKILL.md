@@ -16,8 +16,9 @@ Issues go to `matthewlyle/mediahooks` on GitHub.
 - Group by problem, not by place. When the same problem shows up in several places, file one
   issue and list every location. Split only when the fixes are unrelated. Each issue should be
   one changelog line and one reviewable PR.
-- Every issue gets `agent`, a topic label (such as `accessibility`), one `severity: <level>`
-  label matching the body's severity, and one verification label:
+- Every issue gets `agent`, a topic label (such as `accessibility`) and one `severity: <level>`
+  label matching the body's severity. A bug (something broken that can be reproduced) also gets
+  one verification label; feature requests and `enhancement` issues get none:
   - `verified: browser`: reproduced in a running app.
   - `verified: code`: found by reading code and not yet reproduced.
 - Add `review: design` when the fix changes how the app looks or needs a UX decision. For a
@@ -99,7 +100,7 @@ Write the body to a file so Markdown doesn't get mangled by shell quoting:
 ```sh
 gh issue create -R matthewlyle/mediahooks \
   --title "Area: problem" \
-  --label agent --label <topic> --label "severity: <level>" --label "verified: <browser|code>" \
+  --label agent --label <topic> --label "severity: <level>" [--label "verified: <browser|code>"] \
   --body-file /tmp/issue-<slug>.md
 ```
 
