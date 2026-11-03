@@ -287,9 +287,6 @@ form.editor {
 .preview-error {
   margin-left: auto;
   min-width: 0;
-  font-size: var(--text-11);
-  color: var(--error);
-  overflow-wrap: anywhere;
 }
 .editor .row {
   display: grid;
@@ -328,14 +325,6 @@ form.editor {
 }
 .editor input[type="checkbox"] {
   accent-color: var(--accent);
-}
-.form-error {
-  font-family: var(--mono);
-  font-size: var(--text-12);
-  color: var(--error);
-  background: var(--error-8);
-  border-radius: var(--radius-2);
-  padding: var(--space-8) var(--space-12);
 }
 .form-actions {
   margin-left: auto;

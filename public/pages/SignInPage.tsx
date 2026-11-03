@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import type { AuthUser } from "../../src/types.ts";
+import { ErrorMessage } from "../ui/ErrorMessage.tsx";
 import { Button } from "../ui/Button.tsx";
 import { Spinner } from "../ui/Spinner.tsx";
 import { api } from "../lib/api.ts";
@@ -82,6 +83,9 @@ export function SignInPage({ onSignedIn }: { onSignedIn: (user: AuthUser) => voi
     }
   }
 
+  const isError = !link && note?.error === true;
+  const Note = isError ? ErrorMessage : motion.p;
+
   return (
     <motion.div
       className="page page-signin"
@@ -106,9 +110,9 @@ export function SignInPage({ onSignedIn }: { onSignedIn: (user: AuthUser) => voi
           {waiting && !link && <span className="sr-only">Waiting for Plex…</span>}
           <AnimatePresence initial={false} mode="wait">
             {(link || note) && (
-              <motion.p
+              <Note
                 key={link ? "link" : note!.text}
-                className={`signin-note${note?.error ? " error" : ""}`}
+                className={isError ? "signin-error" : "signin-note"}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1, transition: { duration: 0.2, ease: EASE.css } }}
                 exit={{ opacity: 0, transition: { duration: 0.12, ease: EASE.css } }}
@@ -120,7 +124,7 @@ export function SignInPage({ onSignedIn }: { onSignedIn: (user: AuthUser) => voi
                 ) : (
                   note!.text
                 )}
-              </motion.p>
+              </Note>
             )}
           </AnimatePresence>
         </div>
