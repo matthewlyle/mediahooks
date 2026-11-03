@@ -79,12 +79,30 @@ function Row({ w, last, index, enter }: RowProps) {
 
   const link = useLinkProps(`/webhooks/${w.id}`);
 
-  function onRowClick(event: MouseEvent<HTMLLIElement>) {
+  function rowLink(event: MouseEvent<HTMLLIElement>): HTMLAnchorElement | null {
     const target = event.target as Element;
     // Clicks inside the menu portal bubble here through React; only real descendants count.
-    if (!event.currentTarget.contains(target) || target.closest(".card-actions")) return;
-    if (getSelection()?.toString()) return;
+    if (!event.currentTarget.contains(target) || target.closest("button")) return null;
+    const anchor = event.currentTarget.querySelector<HTMLAnchorElement>(".card-main");
+    return anchor === target ? null : anchor;
+  }
+
+  function onRowClick(event: MouseEvent<HTMLLIElement>) {
+    const anchor = rowLink(event);
+    if (!anchor || getSelection()?.toString()) return;
+    const { metaKey, ctrlKey, shiftKey, altKey } = event;
+    if (metaKey || ctrlKey || shiftKey || altKey) {
+      anchor.dispatchEvent(new MouseEvent("click", { cancelable: true, view: window, metaKey, ctrlKey, shiftKey, altKey }));
+      return;
+    }
     link.onClick(event);
+  }
+
+  function onRowAuxClick(event: MouseEvent<HTMLLIElement>) {
+    const anchor = rowLink(event);
+    if (!anchor || event.button !== 1) return;
+    const mac = /Mac|iPhone|iPad/.test(navigator.userAgent);
+    anchor.dispatchEvent(new MouseEvent("click", { cancelable: true, view: window, metaKey: mac, ctrlKey: !mac }));
   }
 
   async function onToggle(enabled: boolean) {
@@ -186,8 +204,10 @@ function Row({ w, last, index, enter }: RowProps) {
         layout: SPRING.morph,
       }}
       onClick={onRowClick}
+      onAuxClick={onRowAuxClick}
     >
-      <a className="card-main" {...link}>
+      <div className="card-text">
+        <a className="card-main" aria-label={w.name} {...link} />
         <div className="card-title">
           <motion.span
             layoutId={ids.name(w.id)}
@@ -209,7 +229,7 @@ function Row({ w, last, index, enter }: RowProps) {
           {w.url}
         </motion.div>
         <SentenceSummary w={w} className="card-summary" />
-      </a>
+      </div>
       <div className="card-actions">
         <StatusBadge delivery={last} />
         <Switch checked={w.enabled} onChange={onToggle} label={`${w.enabled ? "Disable" : "Enable"} ${w.name}`} />
