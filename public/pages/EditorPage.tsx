@@ -419,9 +419,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
           </select>
         </div>
         <Toolbar className="form-actions" gap="medium" {...fadeIn}>
-          <span className="bar-enabled">
-            <Switch checked={form.enabled} onChange={(on) => set("enabled", on)} label="Enabled" />
-          </span>
+          <Switch className="bar-enabled" checked={form.enabled} onChange={(on) => set("enabled", on)} label="Enabled" />
           <Button
             ref={sendButton}
             className="test-btn send-test"

@@ -12,12 +12,14 @@ export type SwitchProps = {
   label?: string;
   /** Accessible name for a switch with no visible label. */
   "aria-label"?: string;
+  /** Extra class names for the label wrapper when `label` is set. */
+  className?: string;
   /** Prevents toggling and dims the switch. */
   disabled?: boolean;
 };
 
 /** A two-state toggle with a sliding knob, exposed to assistive tech as a switch. */
-export function Switch({ checked, onChange, label, "aria-label": ariaLabel, disabled }: SwitchProps) {
+export function Switch({ checked, onChange, label, "aria-label": ariaLabel, className, disabled }: SwitchProps) {
   const [hovered, setHovered] = useState(false);
   const control = (
     <button
@@ -41,7 +43,7 @@ export function Switch({ checked, onChange, label, "aria-label": ariaLabel, disa
   );
   if (label === undefined) return control;
   return (
-    <label className="switch-label">
+    <label className={className ? `switch-label ${className}` : "switch-label"}>
       {label}
       {control}
     </label>
