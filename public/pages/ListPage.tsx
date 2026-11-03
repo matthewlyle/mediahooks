@@ -5,10 +5,10 @@ import type { Delivery, Webhook } from "../../src/types.ts";
 import { EmptyState } from "../ui/EmptyState.tsx";
 import { burst } from "../components/burst.ts";
 import { Menu } from "../ui/Menu.tsx";
-import { PausedBadge } from "../ui/PausedBadge.tsx";
-import { Sentence } from "../ui/Sentence.tsx";
+import { WebhookIdentity } from "../ui/WebhookIdentity.tsx";
 import { StatusBadge } from "../components/StatusBadge.tsx";
 import { Switch } from "../ui/Switch.tsx";
+import { Toolbar } from "../ui/Toolbar.tsx";
 import { useToast } from "../ui/Toast.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING, flash, ids, pageTransition } from "../lib/motion.ts";
@@ -183,7 +183,7 @@ function Row({ w, last, index, enter }: RowProps) {
       layoutId={ids.card(w.id)}
       layoutCrossfade={false}
       data-id={w.id}
-      className={w.enabled ? "card" : "card disabled"}
+      className="card"
       style={{ borderRadius: 2 }}
       initial={
         reduce
@@ -213,28 +213,9 @@ function Row({ w, last, index, enter }: RowProps) {
     >
       <div className="card-text">
         <a className="card-main" aria-label={w.name} {...link} />
-        <div className="card-title">
-          <motion.span
-            layoutId={ids.name(w.id)}
-            layoutCrossfade={false}
-            className="card-name"
-            transition={{ layout: SPRING.morph }}
-          >
-            {w.name}
-          </motion.span>
-          <PausedBadge paused={!w.enabled} />
-        </div>
-        <motion.div
-          layoutId={ids.url(w.id)}
-          layoutCrossfade={false}
-          className="card-url"
-          transition={{ layout: SPRING.morph }}
-        >
-          {w.url}
-        </motion.div>
-        <Sentence parts={webhookParts(w)} className="card-summary" />
+        <WebhookIdentity id={w.id} name={w.name} url={w.url} paused={!w.enabled} parts={webhookParts(w)} variant="card" />
       </div>
-      <div className="card-actions">
+      <Toolbar className="card-actions">
         <StatusBadge delivery={last} />
         <Switch checked={w.enabled} onChange={onToggle} label={`${w.enabled ? "Disable" : "Enable"} ${w.name}`} />
         <Menu
@@ -252,7 +233,7 @@ function Row({ w, last, index, enter }: RowProps) {
           <span className="dot" />
           <span className="dot" />
         </Menu>
-      </div>
+      </Toolbar>
     </motion.li>
   );
 }
