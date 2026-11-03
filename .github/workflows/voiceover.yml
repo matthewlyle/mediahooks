@@ -2,9 +2,6 @@ name: VoiceOver
 
 on:
   pull_request:
-    paths:
-      - "public/**"
-      - "test/screen-reader/**"
   workflow_dispatch:
     inputs:
       ref:
@@ -16,7 +13,27 @@ permissions:
   contents: read
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      ui: ${{ steps.changes.outputs.ui }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+          fetch-depth: 2
+      # voiceover is a required check: skip the job here, never filter the trigger with paths:
+      - id: changes
+        run: |
+          if [ "$GITHUB_EVENT_NAME" != pull_request ] ||
+            git diff --name-only HEAD^1 HEAD | grep -v '\.test\.ts$' |
+              grep -qE '^(public/|src/|test/screen-reader/|package\.json$|bun\.lock$|\.github/workflows/voiceover\.yml$)'; then
+            echo ui=true >> "$GITHUB_OUTPUT"
+          fi
+
   voiceover:
+    needs: changes
+    if: needs.changes.outputs.ui
     runs-on: macos-latest
     timeout-minutes: 30
     steps:
