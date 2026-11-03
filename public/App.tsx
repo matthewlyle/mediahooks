@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import type { AuthUser, Webhook } from "../src/types.ts";
 import { LinkButton } from "./ui/Button.tsx";
 import { NavLink } from "./ui/NavLink.tsx";
-import { Menu } from "./ui/Menu.tsx";
+import { Avatar } from "./ui/Avatar.tsx";
 import { Toolbar } from "./ui/Toolbar.tsx";
 import { Modal } from "./ui/Modal.tsx";
 import { ToastProvider } from "./ui/Toast.tsx";
@@ -220,21 +220,14 @@ function Header({ path, section, signedIn, user, onSignOut, inert }: HeaderProps
 }
 
 function AccountMenu({ user, onSignOut }: { user: AuthUser; onSignOut: () => void }) {
-  const [broken, setBroken] = useState(false);
   return (
     <motion.div className="account" {...FADE}>
-      <Menu
+      <Avatar
         label={`Signed in as ${user.username}`}
-        heading={user.username}
-        triggerSize="avatar"
+        name={user.username}
+        src={user.thumb || undefined}
         items={[{ label: "Sign out", onSelect: onSignOut }]}
-      >
-        {user.thumb && !broken ? (
-          <img src={user.thumb} alt="" width={26} height={26} referrerPolicy="no-referrer" onError={() => setBroken(true)} />
-        ) : (
-          <span aria-hidden="true">{user.username.slice(0, 1).toUpperCase()}</span>
-        )}
-      </Menu>
+      />
     </motion.div>
   );
 }

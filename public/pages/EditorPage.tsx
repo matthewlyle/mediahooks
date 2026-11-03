@@ -569,7 +569,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
                       {meta.templateVars.map((v) => (
                         <Button
                           key={v}
-                          size="chip"
+                          size="small"
                           onMouseDown={(e) => e.preventDefault()}
                           onClick={() => insertVariable(v)}
                         >
