@@ -11,7 +11,7 @@ import { Switch } from "../components/Switch.tsx";
 import { useToast } from "../components/Toast.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING, fadeIn, flash, ids, pageTransition } from "../lib/motion.ts";
-import { useEscape, useNav } from "../lib/nav.ts";
+import { useEscape, useNav, useRouteHeading } from "../lib/nav.ts";
 import { useRefetchOnReturn } from "../lib/refetch.ts";
 import { eventWords } from "../lib/sentence.ts";
 import { useStore } from "../lib/store.tsx";
@@ -94,6 +94,7 @@ type HeadProps = { w: Webhook; direct: boolean };
 const cleanError = (error: string | null) => (error ?? "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
 function Head({ w, direct }: HeadProps) {
+  const heading = useRouteHeading<HTMLHeadingElement>();
   const store = useStore();
   const toast = useToast();
   const navigate = useNav();
@@ -158,6 +159,8 @@ function Head({ w, direct }: HeadProps) {
       <div className="detail-main">
         <div className="detail-title">
           <motion.h2
+            ref={heading}
+            tabIndex={-1}
             layoutId={ids.name(w.id)}
             layoutCrossfade={false}
             className="detail-name"

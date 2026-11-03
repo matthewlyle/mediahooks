@@ -1,5 +1,5 @@
 import { MotionGlobalConfig, useIsPresent } from "motion/react";
-import { useCallback, useEffect, useRef, type MouseEvent } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, type MouseEvent, type RefObject } from "react";
 import { useLocation } from "wouter";
 
 export type NavigateOptions = {
@@ -59,4 +59,18 @@ export function useEscape(onEscape: () => void): void {
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [present]);
+}
+
+export const PendingHeadingFocus = createContext<RefObject<boolean>>({ current: false });
+
+export function useRouteHeading<T extends HTMLElement>(enabled = true) {
+  const pending = useContext(PendingHeadingFocus);
+  return useCallback(
+    (el: T | null) => {
+      if (!el || !enabled || !pending.current) return;
+      pending.current = false;
+      el.focus({ preventScroll: true });
+    },
+    [pending, enabled],
+  );
 }
