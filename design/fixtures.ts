@@ -1,7 +1,17 @@
-import type { ComponentType } from "react";
+import { createElement, type ComponentType, type ReactNode } from "react";
 import { Button, LinkButton } from "../public/ui/Button.tsx";
 import { Segmented } from "../public/ui/Segmented.tsx";
 import { Switch } from "../public/ui/Switch.tsx";
+import { ToastProvider, useToast } from "../public/ui/Toast.tsx";
+
+function ToastDemo({ children }: { children?: ReactNode }) {
+  const toast = useToast();
+  return createElement(Button, { onClick: () => toast.show(String(children ?? "")) }, "Show toast");
+}
+
+function ToastPreview({ children }: { children?: ReactNode }) {
+  return createElement(ToastProvider, null, createElement(ToastDemo, null, children));
+}
 
 export type Fixture = {
   component: ComponentType<any>;
@@ -14,6 +24,7 @@ export const fixtures: Record<string, Fixture> = {
   Button: { component: Button, props: { children: "Save" } },
   LinkButton: { component: LinkButton, props: { to: "/", children: "Back" } },
   Switch: { component: Switch, props: { checked: false, label: "Enabled" }, bind: { onChange: "checked" } },
+  ToastProvider: { component: ToastPreview, props: { children: "Saved" } },
   Segmented: {
     component: Segmented,
     props: {

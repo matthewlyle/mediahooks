@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/Button.tsx";
 import { CopyButton } from "../components/CopyButton.tsx";
 import { PlexConnection } from "../components/PlexStatus.tsx";
-import { useToast } from "../components/Toast.tsx";
+import { useToast } from "../ui/Toast.tsx";
 import { api } from "../lib/api.ts";
 import { fadeIn, flash, pageTransition } from "../lib/motion.ts";
 import { useRouteHeading } from "../lib/nav.ts";

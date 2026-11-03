@@ -128,16 +128,12 @@ textarea:focus-visible {
 @media (pointer: coarse) {
   .ingest-btn,
   .test-btn,
-  .more-btn,
-  .toast-undo,
-  .toast-dismiss {
+  .more-btn {
     position: relative;
   }
   .ingest-btn::before,
   .test-btn::before,
-  .more-btn::before,
-  .toast-undo::before,
-  .toast-dismiss::before {
+  .more-btn::before {
     content: "";
     position: absolute;
     inset: -9px;
@@ -754,48 +750,6 @@ form.editor {
   transform-origin: 50% 0%;
   transform: rotateX(70deg);
 }
-.toast-region {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: calc(20px + env(safe-area-inset-bottom));
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-8);
-  pointer-events: none;
-  z-index: 30;
-}
-.toast-stack {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-8);
-}
-.toast-stack:empty {
-  display: none;
-}
-.toast-region[inert] {
-  z-index: 14;
-}
-.toast {
-  display: flex;
-  align-items: center;
-  gap: var(--space-12);
-  padding: var(--space-8) var(--space-8) var(--space-8) var(--space-14);
-  font-size: var(--text-13);
-  color: var(--fg);
-  background: var(--surface);
-  border-radius: var(--radius-2);
-  box-shadow: 0 8px 24px var(--black-45);
-  max-width: calc(100vw - 24px);
-  pointer-events: auto;
-}
-.toast-text {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
 .confetti {
   position: fixed;
   width: 6px;

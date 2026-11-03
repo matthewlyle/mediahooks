@@ -8,7 +8,7 @@ import { PausedBadge } from "../components/PausedBadge.tsx";
 import { SentenceSummary } from "../components/SentenceSummary.tsx";
 import { StatusBadge } from "../components/StatusBadge.tsx";
 import { Switch } from "../ui/Switch.tsx";
-import { useToast } from "../components/Toast.tsx";
+import { useToast } from "../ui/Toast.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING, flash, ids, pageTransition } from "../lib/motion.ts";
 import { useLinkProps, useNav, useRouteHeading } from "../lib/nav.ts";

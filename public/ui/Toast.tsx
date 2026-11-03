@@ -1,12 +1,15 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { EASE } from "../lib/motion.ts";
-import { Button } from "../ui/Button.tsx";
+import { Button } from "./Button.tsx";
+import "./Toast.css";
 
+/** Options for a single toast. */
 export type ToastOptions = { onCommit?: () => void; sticky?: boolean } & (
   | { undo?: undefined; subject?: undefined }
   | { undo: () => void; subject: string }
 );
+/** Handle returned by `useToast` for showing toasts. */
 export type Toaster = { show(text: string, opts?: ToastOptions): void };
 
 const TOAST_MS = 4000;
@@ -15,7 +18,13 @@ const FOCUS_SETTLE_MS = 500;
 const ToastContext = createContext<Toaster | null>(null);
 const ToastInertContext = createContext<(inert: boolean) => void>(() => { });
 
-export function ToastProvider({ children }: { children: ReactNode }) {
+export type ToastProviderProps = {
+  /** The app content; toasts render in a region fixed to the bottom of the viewport. */
+  children: ReactNode;
+};
+
+/** Hosts the toast region and supplies `useToast` to its descendants. */
+export function ToastProvider({ children }: ToastProviderProps) {
   const reduce = useReducedMotion();
   const [toasts, setToasts] = useState<{ id: number; text: string; undo: boolean; sticky: boolean; subject?: string }[]>([]);
   const [inert, setInert] = useState(false);
@@ -101,12 +110,14 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   );
 }
 
+/** Returns the toaster of the nearest `ToastProvider`. */
 export function useToast(): Toaster {
   const toaster = useContext(ToastContext);
   if (!toaster) throw new Error("useToast outside <ToastProvider>");
   return toaster;
 }
 
+/** Makes the toast region inert while the calling component is mounted, so toasts sit behind modal dialogs. */
 export function useInertToasts() {
   const setInert = useContext(ToastInertContext);
   useEffect(() => {
