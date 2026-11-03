@@ -1,6 +1,7 @@
 import { Fragment, createElement, useState, type ComponentType } from "react";
 import { Button, LinkButton } from "../public/ui/Button.tsx";
 import { Check } from "../public/ui/Check.tsx";
+import { FieldError } from "../public/ui/FieldError.tsx";
 import { Popover, type PopoverProps } from "../public/ui/Popover.tsx";
 import { Segmented } from "../public/ui/Segmented.tsx";
 import { Switch } from "../public/ui/Switch.tsx";
@@ -16,6 +17,7 @@ export const fixtures: Record<string, Fixture> = {
   Button: { component: Button, props: { children: "Save" } },
   LinkButton: { component: LinkButton, props: { to: "/", children: "Back" } },
   Check: { component: Check, props: { checked: true, children: "Option" } },
+  FieldError: { component: FieldError, props: { id: "field-error", error: "Enter a name" } },
   Switch: { component: Switch, props: { checked: false, label: "Enabled" }, bind: { onChange: "checked" } },
   Segmented: {
     component: Segmented,
