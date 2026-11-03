@@ -6,10 +6,11 @@ import type { IncomingEvent, PlexPayload, Webhook } from "../../src/types.ts";
 import { SAMPLE_MOVIE_PAYLOAD, SAMPLE_PAYLOAD, SAMPLE_TRACK_PAYLOAD } from "../../src/sample.ts";
 import { isJsonContentType, renderBody, renderHeaders, templateVars } from "../../src/template.ts";
 import { Button, LinkButton } from "../ui/Button.tsx";
+import { FieldError } from "../ui/FieldError.tsx";
 import { Segmented } from "../ui/Segmented.tsx";
 import { burst } from "../components/burst.ts";
 import { Spinner } from "../ui/Spinner.tsx";
-import { Switch } from "../components/Switch.tsx";
+import { Switch } from "../ui/Switch.tsx";
 import { api, type Meta } from "../lib/api.ts";
 import { EASE, SPRING, fadeIn, flash, ids, pageTransition } from "../lib/motion.ts";
 import { useEscape, useNav, useRouteHeading } from "../lib/nav.ts";
@@ -169,22 +170,6 @@ function resultLine(r: SendResult): { text: string; full: string } {
   const detail = r.ok ? `${r.durationMs}ms` : r.error?.replace(/\s+/g, " ").trim() || `${r.durationMs}ms`;
   const status = r.status ?? "ERR";
   return { text: `${r.ok ? "✓" : "✗"} ${status} · ${detail}`, full: `${status} · ${detail}` };
-}
-
-function FieldError({ id, error }: { id: string; error: string | undefined }) {
-  return (
-    <div className="reveal-region" role="status">
-      <AnimatePresence initial={false}>
-        {error && (
-          <Reveal key="error">
-            <p id={id} className="field-error">
-              {error}
-            </p>
-          </Reveal>
-        )}
-      </AnimatePresence>
-    </div>
-  );
 }
 
 function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFormProps) {
