@@ -1,5 +1,3 @@
-export type StageWidth = 375 | 768 | "fill";
-
 export type ToStage = { type: "set"; name: string; value: unknown };
 
 export type FromStage = { type: "values"; values: Record<string, unknown> } | { type: "call"; text: string };

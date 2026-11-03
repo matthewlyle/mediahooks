@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { Component, Extracted } from "./extract.ts";
 import { componentGroups, OverviewPage } from "./OverviewPage.tsx";
-import type { StageWidth } from "./protocol.ts";
 import { ComponentPage } from "./ComponentPage.tsx";
 import { TokensPage } from "./TokensPage.tsx";
 
@@ -90,7 +89,7 @@ export function Playground() {
   const [data, setData] = useState<Extracted | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(pathOf);
-  const [stageWidth, setStageWidth] = useState<StageWidth>("fill");
+  const [mobile, setMobile] = useState(false);
   const [reduced, setReduced] = useState(false);
 
   useEffect(() => {
@@ -117,7 +116,7 @@ export function Playground() {
         {data && page === "overview" && <OverviewPage data={data} />}
         {data && page === "tokens" && <TokensPage data={data} />}
         {data && component && (
-          <ComponentPage key={component.name} component={component} width={stageWidth} setWidth={setStageWidth} reduced={reduced} setReduced={setReduced} />
+          <ComponentPage key={component.name} component={component} mobile={mobile} setMobile={setMobile} reduced={reduced} setReduced={setReduced} />
         )}
         {data && page !== "overview" && page !== "tokens" && !component && <p>No page named {page}.</p>}
       </main>

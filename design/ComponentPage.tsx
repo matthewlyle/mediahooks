@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { Component, Prop } from "./extract.ts";
-import { stageUrl, type FromStage, type StageWidth, type ToStage } from "./protocol.ts";
+import { stageUrl, type FromStage, type ToStage } from "./protocol.ts";
 
 type Kind = "boolean" | "select" | "string" | "number" | "callback" | "json";
 
@@ -12,12 +12,6 @@ export function kindOf(p: Prop): Kind {
   if (p.type === "number") return "number";
   return "json";
 }
-
-const WIDTHS: [StageWidth, string][] = [
-  [375, "375"],
-  [768, "768"],
-  ["fill", "Fill"],
-];
 
 function JsonControl({ id, value, onChange }: { id: string; value: unknown; onChange: (v: unknown) => void }) {
   const [text, setText] = useState(() => JSON.stringify(value, null, 2) ?? "");
@@ -140,13 +134,13 @@ function Control({ prop, value, set }: { prop: Prop; value: unknown; set: (v: un
 
 type Props = {
   component: Component;
-  width: StageWidth;
-  setWidth: (w: StageWidth) => void;
+  mobile: boolean;
+  setMobile: (m: boolean) => void;
   reduced: boolean;
   setReduced: (r: boolean) => void;
 };
 
-export function ComponentPage({ component, width, setWidth, reduced, setReduced }: Props) {
+export function ComponentPage({ component, mobile, setMobile, reduced, setReduced }: Props) {
   const callbackNames = component.props.filter((p) => kindOf(p) === "callback").map((p) => p.name);
   const frame = useRef<HTMLIFrameElement>(null);
   const logEnd = useRef<HTMLDivElement>(null);
@@ -185,13 +179,10 @@ export function ComponentPage({ component, width, setWidth, reduced, setReduced 
         {component.doc && <p className="pg-doc">{component.doc}</p>}
 
         <div className="pg-toolbar">
-          <Segments
-            legend="Width"
-            name="stage-width"
-            options={WIDTHS.map(([w, text]) => [String(w), text])}
-            value={String(width)}
-            set={(v) => setWidth(v === "fill" ? "fill" : (Number(v) as StageWidth))}
-          />
+          <label className="pg-toggle">
+            <input type="checkbox" role="switch" className="pg-switch" checked={mobile} onChange={(e) => setMobile(e.target.checked)} />
+            Mobile
+          </label>
           <label className="pg-toggle">
             <input type="checkbox" role="switch" className="pg-switch" checked={reduced} onChange={(e) => setReduced(e.target.checked)} />
             Reduced motion
@@ -204,7 +195,7 @@ export function ComponentPage({ component, width, setWidth, reduced, setReduced 
               ref={frame}
               title={`${component.name} preview`}
               src={stageUrl(component.name, callbackNames, reduced)}
-              style={{ width: width === "fill" ? "100%" : `${width}px`, height: 560 }}
+              style={{ width: mobile ? 375 : "100%", minWidth: mobile ? undefined : 680, height: 560 }}
             />
           ) : (
             <p>No fixture yet. Add design/fixtures/{component.name}.tsx.</p>
