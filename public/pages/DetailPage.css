@@ -15,38 +15,6 @@
 .detail-main {
   min-width: 0;
 }
-.detail-title {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-10);
-  min-width: 0;
-}
-.detail-head h2.detail-name {
-  margin: 0;
-  font-size: var(--text-18);
-  font-weight: 600;
-  overflow-wrap: anywhere;
-}
-.detail-url {
-  font-family: var(--mono);
-  font-size: var(--text-12);
-  opacity: 0.85;
-  margin-top: var(--space-2);
-  word-break: break-all;
-}
-.detail-head.disabled h2.detail-name,
-.detail-head.disabled .detail-url {
-  color: var(--muted);
-}
-.detail-head.disabled .detail-url {
-  opacity: 1;
-}
-.detail-sentence {
-  margin: var(--space-12) 0 0;
-  font-size: var(--text-14);
-  line-height: 1.5;
-  color: var(--muted);
-}
 .detail-error {
   margin: var(--space-8) 0 0;
   font-family: var(--mono);

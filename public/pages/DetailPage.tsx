@@ -3,11 +3,10 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObje
 import type { Delivery, DeliveryDetail, Webhook } from "../../src/types.ts";
 import { EmptyState } from "../ui/EmptyState.tsx";
 import { Button, LinkButton } from "../ui/Button.tsx";
-import { PausedBadge } from "../ui/PausedBadge.tsx";
+import { WebhookIdentity } from "../ui/WebhookIdentity.tsx";
 import { Panel } from "../ui/Panel.tsx";
 import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
 import { RelativeTime } from "../ui/RelativeTime.tsx";
-import { Sentence } from "../ui/Sentence.tsx";
 import { StatusBadge } from "../components/StatusBadge.tsx";
 import { Switch } from "../ui/Switch.tsx";
 import { Toolbar } from "../ui/Toolbar.tsx";
@@ -153,37 +152,14 @@ function Head({ w, direct }: HeadProps) {
       ref={panel}
       layoutId={ids.card(w.id)}
       layoutCrossfade={false}
-      className={w.enabled ? "detail-head" : "detail-head disabled"}
+      className="detail-head"
       style={{ borderRadius: 2 }}
       initial={direct ? { opacity: 0 } : undefined}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.25, ease: EASE.css, layout: SPRING.morph }}
     >
       <div className="detail-main">
-        <div className="detail-title">
-          <motion.h2
-            ref={heading}
-            tabIndex={-1}
-            layoutId={ids.name(w.id)}
-            layoutCrossfade={false}
-            className="detail-name"
-            transition={{ layout: SPRING.morph }}
-          >
-            {w.name}
-          </motion.h2>
-          <PausedBadge paused={!w.enabled} />
-        </div>
-        <motion.div
-          layoutId={ids.url(w.id)}
-          layoutCrossfade={false}
-          className="detail-url"
-          transition={{ layout: SPRING.morph }}
-        >
-          {w.url}
-        </motion.div>
-        <motion.div {...fadeIn}>
-          <Sentence parts={webhookParts(w)} className="detail-sentence" highlight />
-        </motion.div>
+        <WebhookIdentity id={w.id} name={w.name} url={w.url} paused={!w.enabled} parts={webhookParts(w)} variant="detail" nameRef={heading} />
         {failure && (
           <motion.p className="detail-error" {...fadeIn}>
             <span className="sr-only">Last delivery error: </span>
