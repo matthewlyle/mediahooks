@@ -47,9 +47,9 @@ export function DetailPage({ id }: { id: number }) {
         </>
       ) : (
         loaded && (
-          <Panel as="p" className="muted detail-missing" {...fadeIn}>
+          <EmptyState {...fadeIn}>
             No such webhook
-          </Panel>
+          </EmptyState>
         )
       )}
     </motion.div>
@@ -156,7 +156,7 @@ function Head({ w, direct }: HeadProps) {
       layoutId={ids.card(w.id)}
       layoutCrossfade={false}
       className="detail-head"
-      style={{ borderRadius: 2 }}
+      style={{ borderRadius: "var(--radius-2)" }}
       initial={direct ? { opacity: 0 } : undefined}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.25, ease: EASE.css, layout: SPRING.morph }}
@@ -221,7 +221,7 @@ function Deliveries({ log, failed, updatedAt, refresh }: DeliveriesState) {
               </AnimatePresence>
             </Table>
           ) : (
-            failed && <p className="muted">Could not load deliveries</p>
+            failed && <EmptyState size="medium">Could not load deliveries</EmptyState>
           )}
         </div>
       </motion.div>
@@ -278,9 +278,9 @@ function DeliveryExchange({ d }: { d: Delivery }) {
   }, [d.id]);
 
   return failed !== null ? (
-    <p className="muted">Couldn't load this delivery: {failed}</p>
+    <EmptyState size="small">Couldn't load this delivery: {failed}</EmptyState>
   ) : detail === null ? null : detail.request === null ? (
-    <p className="muted">{detail.error ?? "Not recorded"}</p>
+    <EmptyState size="small">{detail.error ?? "Not recorded"}</EmptyState>
   ) : (
     <>
       <CodeBlock label="Request" head={`POST ${detail.request.url}\n${headerLines(detail.request.headers)}\n\n`}>
@@ -290,7 +290,7 @@ function DeliveryExchange({ d }: { d: Delivery }) {
       {detail.response === null ? (
         <>
           <CodeLabel>Response</CodeLabel>
-          <p className="muted">No response: {detail.error}</p>
+          <EmptyState size="small">No response: {detail.error}</EmptyState>
         </>
       ) : (
         <CodeBlock label="Response" head={`HTTP ${detail.status}\n${headerLines(detail.response.headers)}\n\n`}>
