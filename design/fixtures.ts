@@ -5,8 +5,8 @@ import { Check } from "../public/ui/Check.tsx";
 import { CopyButton } from "../public/ui/CopyButton.tsx";
 import { FieldError } from "../public/ui/FieldError.tsx";
 import { Menu } from "../public/ui/Menu.tsx";
-import { RefreshButton } from "../public/ui/RefreshButton.tsx";
 import { Popover, type PopoverProps } from "../public/ui/Popover.tsx";
+import { RefreshButton, type RefreshButtonProps } from "../public/ui/RefreshButton.tsx";
 import { Segmented } from "../public/ui/Segmented.tsx";
 import { Spinner } from "../public/ui/Spinner.tsx";
 import { Switch } from "../public/ui/Switch.tsx";
@@ -19,6 +19,16 @@ function ToastDemo({ children }: { children?: ReactNode }) {
 
 function ToastPreview({ children }: { children?: ReactNode }) {
   return createElement(ToastProvider, null, createElement(ToastDemo, null, children));
+}
+
+function RefreshPreview({ onRefresh, ...props }: RefreshButtonProps) {
+  return createElement(RefreshButton, {
+    ...props,
+    onRefresh: async () => {
+      void onRefresh();
+      return { ok: true as const, added: 2 };
+    },
+  });
 }
 
 export type Fixture = {
@@ -49,8 +59,8 @@ export const fixtures: Record<string, Fixture> = {
   Check: { component: Check, props: { checked: true, children: "Option" } },
   FieldError: { component: FieldError, props: { id: "field-error", error: "Enter a name" } },
   RefreshButton: {
-    component: RefreshButton,
-    props: { onRefresh: async () => ({ ok: true, added: 2 }), updatedAt: Date.now() - 60_000, noun: ["event", "events"] },
+    component: RefreshPreview,
+    props: { updatedAt: Date.now() - 60_000, noun: ["event", "events"] },
   },
   Switch: { component: Switch, props: { checked: false, label: "Enabled" }, bind: { onChange: "checked" } },
   ToastProvider: { component: ToastPreview, props: { children: "Saved" } },
