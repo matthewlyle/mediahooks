@@ -91,6 +91,7 @@ export function ComponentPage({ component }: { component: Component }) {
         const bind = fixture?.bind?.[p.name];
         if (typeof bind === "string") setValues((v) => ({ ...v, [bind]: args[0] }));
         else if (bind) setValues((v) => ({ ...v, ...bind(...args) }));
+        return fixture?.returns?.[p.name]?.(...args);
       };
     }
     return out;
