@@ -128,19 +128,8 @@ form.editor {
 .vars-hint code {
   color: var(--fg);
 }
-.editor label.poster-option {
+.poster-option {
   margin-top: var(--space-4);
-  flex-wrap: wrap;
-  column-gap: var(--space-8);
-  row-gap: var(--space-2);
-}
-.poster-hint {
-  font-size: var(--text-11);
-  font-weight: 400;
-  color: var(--muted);
-}
-.poster-label {
-  white-space: nowrap;
 }
 
 .send-test {
@@ -171,12 +160,5 @@ form.editor {
   }
   .bar-enabled {
     margin-right: auto;
-  }
-  .editor label.poster-option {
-    display: grid;
-    grid-template-columns: auto 1fr;
-  }
-  .poster-hint {
-    grid-column: 2;
   }
 }

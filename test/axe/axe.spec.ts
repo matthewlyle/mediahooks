@@ -117,6 +117,16 @@ test("editor after a failed save", async ({ page }) => {
   await scan(page, "editor after a failed save");
 });
 
+test("editor with the poster checkbox", async ({ page, request }) => {
+  const created = await request.post("/api/webhooks", {
+    data: { name: "Poster hook", url: "http://127.0.0.1:9/hook", events: ["media.play"], attachPoster: true },
+  });
+  const { id } = (await created.json()) as { id: number };
+  await page.goto(`/webhooks/${id}/edit`);
+  await expect(page.getByRole("checkbox", { name: "Attach poster" })).toBeVisible();
+  await scan(page, "editor with the poster checkbox");
+});
+
 test("detail page after opening a row", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: /Living room alerts/ }).press("Enter");
