@@ -882,6 +882,9 @@ form.editor {
   pointer-events: none;
   z-index: 30;
 }
+.toast-region[inert] {
+  z-index: 14;
+}
 .toast {
   display: flex;
   align-items: center;
