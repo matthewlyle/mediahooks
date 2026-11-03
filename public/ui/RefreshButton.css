@@ -32,9 +32,8 @@
   align-items: center;
   gap: var(--space-6);
 }
-.refresh-btn[aria-busy="true"] {
+.refresh-btn[data-busy] {
   opacity: 1;
-  cursor: progress;
 }
 .refresh-icon {
   width: 12px;

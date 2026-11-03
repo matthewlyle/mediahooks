@@ -150,21 +150,6 @@ form.editor {
   white-space: nowrap;
 }
 
-.send-test {
-  display: inline-grid;
-  place-items: center;
-}
-.send-test > span {
-  grid-area: 1 / 1;
-}
-.send-test[data-busy] {
-  opacity: 0.6;
-  pointer-events: none;
-}
-.send-test[data-busy] .send-test-label {
-  opacity: 0;
-}
-
 @media (max-width: 640px) {
   .editor .row-destination {
     grid-template-columns: 1fr;
