@@ -16,11 +16,7 @@
   min-width: 0;
 }
 .detail-error {
-  margin: var(--space-8) 0 0;
-  font-family: var(--mono);
-  font-size: var(--text-12);
-  color: var(--error);
-  overflow-wrap: anywhere;
+  margin-top: var(--space-8);
 }
 
 .deliveries-head {
