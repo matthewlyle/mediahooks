@@ -37,6 +37,7 @@ for (const state of new Set([...Object.keys(before), ...Object.keys(after)])) {
     const x = expand(a, path);
     const y = expand(b, path);
     for (const prop of new Set([...Object.keys(x), ...Object.keys(y)])) {
+      if (prop.startsWith("--")) continue;
       if (x[prop] !== y[prop]) lines.push(`${id}  ${prop}  ${x[prop] ?? "(unset)"} → ${y[prop] ?? "(unset)"}`);
     }
   }
