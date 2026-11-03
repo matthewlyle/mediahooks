@@ -4,6 +4,8 @@ Check, and re-run what you can rather than trusting the PR body:
 - Every success criterion in the issue is met. For an app change, run the branch (`AUTH=off PORT={PORT} bun --hot src/server.ts`) and check each criterion in a browser. For a CI or workflow change, check real Actions runs (`gh run list`, `gh run view --log`), including any closed probe PRs the worker opened.
 - A criterion that needs a repository setting (rulesets, required checks) can't be met by the PR. Don't change settings; put it under **Your call**.
 - A criterion phrased "VoiceOver announces…" counts as checked when the `voiceover` job on the PR passed with the expected phrase in its `spoken-phrase-log` artifact (`gh run download <run> -n spoken-phrase-log`). A fix with a VoiceOver criterion should add a scenario for it in `test/screen-reader/`; if there's no scenario, or the run was flaky (Playwright reports it as flaky, or it passed only on a rerun), that criterion goes to a person.
+- In the browser, read the page's text and accessibility tree; screenshot only criteria about how something looks.
+- Wait for CI with `gh pr checks {PR} -R matthewlyle/mediahooks --watch`, not a `sleep` step per check.
 - The diff stays within the issue, follows AGENTS.md, and has no dead code, comments that aren't needed, or unrelated changes.
 - `bun test` and `bun run typecheck` pass.
 - The `axe` job on the PR passed. That's one check, not proof of accessibility: axe finds only scanner-detectable problems (labels, contrast, ARIA), so still check each criterion by hand.
