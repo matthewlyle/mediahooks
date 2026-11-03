@@ -1,7 +1,7 @@
 import { writeFile } from "node:fs/promises";
 import { voiceOver as guidepupVoiceOver } from "@guidepup/guidepup";
-import { applicationIdMap } from "@guidepup/playwright/lib/applicationIdMap";
-import { navigateVoiceOverToWebContent } from "@guidepup/playwright/lib/navigateVoiceOverToWebContent";
+import { applicationIdMap } from "@guidepup/playwright/lib/applicationIdMap.js";
+import { navigateVoiceOverToWebContent } from "@guidepup/playwright/lib/navigateVoiceOverToWebContent.js";
 import { voiceOverTest, type VoiceOverPlaywright } from "@guidepup/playwright";
 import { expect, type Page } from "@playwright/test";
 import type { VoiceOver } from "@guidepup/guidepup";
