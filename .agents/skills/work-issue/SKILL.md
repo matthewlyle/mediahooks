@@ -107,50 +107,77 @@ The owner reads these on a phone between other work. Be terse: fragments are fin
 of how you worked, no restating the issue, no hedging. One line per paragraph or list item (GitHub
 turns newlines into line breaks). Numbers and names over adjectives.
 
-PR body, at most about 100 words plus screenshots:
+Use GitHub callouts (`> [!TIP]`, `> [!IMPORTANT]`, `> [!WARNING]`) for what the owner must see,
+and fold the evidence into `<details>`. Keep a blank line before and after every callout, list
+and `<details>` block, or GitHub merges them.
+
+PR body, at most about 100 words outside the screenshots and the folded checks:
 
 ```markdown
 Fixes #N
 
-<One or two sentences: what changed, in user terms.>
+> [!TIP]
+> **What changed:** <one or two sentences, in user terms>
+>
+> **Try it:** <one line>
 
-**Review:** <what to look at or decide, one line; "nothing visible changed" if so>
+<before/after screenshot table, if anything visible changed or must look unchanged>
 
-**Try it:** <one line>
+<details>
+<summary>Checked: <count> passed</summary>
 
-<before/after screenshot table, if visible>
+- <criterion 1>
+- <criterion 2>
+- Tests, typecheck, axe
 
-**Checked:** <criterion 1> ✓ · <criterion 2> ✓ · tests ✓ · typecheck ✓
-
-**Not checked:** <one line, or omit>
+</details>
 ```
 
-Review comments: one bold label per paragraph, a blank line between paragraphs, and a blank
-line before and after any list (otherwise GitHub folds the next line into the last bullet).
+If something wasn't checked, add a `> [!WARNING]` with **Not checked:** before `<details>`.
 
-Merge:
+Review comment, merge:
 
 ```markdown
-**Agent review: merge**
+> [!TIP]
+> **Merging** once checks pass. Nothing needs you.
 
-**Checked:** <criteria> ✓ · diff in scope ✓ · tests ✓ · CI ✓
+<details>
+<summary>Checked: <count> passed</summary>
+
+- <criterion>
+- Diff in scope; tests, typecheck, CI
+
+</details>
+
+<sub>Agent review of <short sha></sub>
 ```
 
-Needs a person (at most about 60 words):
+Review comment, needs a person (at most about 60 words outside `<details>`):
 
 ```markdown
-**Agent review: needs a person**
+> [!IMPORTANT]
+> **Your call:** <the one question>
+>
+> <one or two lines of context, with numbers>
 
-**Decide:** <the one question for the owner>
+> [!WARNING]
+> **Fix before merge**
+> - <bug, with file and numbers>
 
-**Fix first:**
+<details>
+<summary>Checked: <count> passed</summary>
 
-- <bug, with numbers>
+- <criterion>
+- Tests, typecheck, CI
 
-**Checked:** <criteria> ✓ · tests ✓ · CI ✓
+</details>
+
+<sub>Agent review of <short sha></sub>
 ```
 
-Omit **Fix first** when there's nothing to fix. More than one question: make **Decide** a list.
+Omit the WARNING when there's nothing to fix. If a person is needed only for something you
+couldn't check, say that under **Your call**. Several questions: one bullet each inside the
+IMPORTANT box.
 
 Releases stay manual: merging to `main` only adds a line to the release-please PR, and the user
 merges that. After a PR merges, end its agents (`hc kill <n>-<slug> <n>-review`) and remove its
