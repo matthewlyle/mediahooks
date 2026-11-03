@@ -54,18 +54,20 @@ test.beforeAll(async ({ request }) => {
   await expect.poll(async () => (await (await request.get("/api/events")).json()).length).toBeGreaterThan(0);
 });
 
-for (const [name, path] of [
-  ["/", () => "/"],
-  ["/events", () => "/events"],
-  ["/help", () => "/help"],
-  ["/new", () => "/new"],
-  ["/webhooks/<id>", () => `/webhooks/${active}`],
-  ["/webhooks/<id>/edit", () => `/webhooks/${active}/edit`],
-  ["a paused webhook", () => `/webhooks/${paused}`],
+for (const [name, path, heading] of [
+  ["/", () => "/", "Webhooks"],
+  ["/events", () => "/events", "Events"],
+  ["/help", () => "/help", "Help"],
+  ["/new", () => "/new", "New webhook"],
+  ["/webhooks/<id>", () => `/webhooks/${active}`, "Living room alerts"],
+  ["/webhooks/<id>/edit", () => `/webhooks/${active}/edit`, "Edit Living room alerts"],
+  ["a paused webhook", () => `/webhooks/${paused}`, "Paused webhook"],
 ] as const) {
   test(name, async ({ page }) => {
     await page.goto(path());
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(page.getByRole("banner")).toContainText("mediahooks");
+    await expect(page.getByRole("main").getByRole("heading", { level: 2, name: heading })).toBeAttached();
     await scan(page, name);
   });
 }
@@ -73,6 +75,8 @@ for (const [name, path] of [
 test("signed-out sign-in", async ({ page }) => {
   await page.goto(SIGNED_OUT_URL);
   await expect(page.getByRole("button", { name: /sign in/i })).toBeVisible();
+  await expect(page.getByRole("banner")).toContainText("mediahooks");
+  await expect(page.getByRole("main").getByRole("heading", { level: 2, name: "Sign in" })).toBeAttached();
   await scan(page, "signed-out sign-in");
 });
 

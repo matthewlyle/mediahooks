@@ -34,7 +34,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-main {
+.shell {
   max-width: 960px;
   margin: 0 auto;
   padding: calc(32px + env(safe-area-inset-top)) calc(20px + env(safe-area-inset-right)) calc(64px + env(safe-area-inset-bottom))
@@ -893,7 +893,7 @@ form.editor {
 }
 
 @media (max-width: 640px) {
-  main {
+  .shell {
     padding: calc(20px + env(safe-area-inset-top)) calc(12px + env(safe-area-inset-right))
       calc(48px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-left));
   }
