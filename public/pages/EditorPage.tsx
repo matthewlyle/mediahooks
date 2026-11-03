@@ -31,7 +31,7 @@ import {
   type FieldErrors,
   type FormState,
 } from "./editor/form.ts";
-import { CodeEditor, type CodeEditorHandle } from "./editor/CodeEditor.tsx";
+import { CodeEditor, type CodeEditorHandle } from "../ui/CodeEditor.tsx";
 import { DiscordPreview, isDiscordMessage } from "./editor/DiscordPreview.tsx";
 import { SlackPreview, isSlackMessage } from "./editor/SlackPreview.tsx";
 import { EventSentence } from "./editor/EventSentence.tsx";
@@ -550,7 +550,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
                       <CodeEditor
                         ref={headersEditor}
                         id={`${uid}-headers`}
-                        className="headers-editor"
+                        compact
                         ariaLabelledBy={`${uid}-headers-toggle`}
                         ariaDescribedBy={shown("headers") ? errId("headers") : undefined}
                         invalid={Boolean(shown("headers"))}

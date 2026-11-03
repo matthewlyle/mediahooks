@@ -47,9 +47,6 @@
   line-height: 1.5;
   color: var(--muted);
 }
-.detail-sentence .summary-value {
-  color: var(--fg);
-}
 .detail-error {
   margin: var(--space-8) 0 0;
   font-family: var(--mono);
