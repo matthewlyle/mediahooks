@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { Button } from "../ui/Button.tsx";
+import { Button } from "./Button.tsx";
+import "./CopyButton.css";
 
 // Plain-http LAN addresses have no Clipboard API; the execCommand fallback is needed.
+/** Writes text to the clipboard, falling back to execCommand where the Clipboard API is unavailable. Resolves false if both fail. */
 export async function copyText(text: string): Promise<boolean> {
   if (window.isSecureContext && navigator.clipboard) {
     try {
@@ -24,11 +26,15 @@ export async function copyText(text: string): Promise<boolean> {
 const COPIED_MS = 1500;
 
 export type CopyButtonProps = {
+  /** Text written to the clipboard when the button is pressed. */
   text: string;
+  /** Extra class names added to the button, for layout by the caller. */
   className?: string;
+  /** Called when the copy fails, so the caller can select the text for manual copying. */
   onFail?: () => void;
 };
 
+/** A button that copies `text` and briefly shows a check mark and "Copied"; a failed copy is announced to screen readers. */
 export function CopyButton({ text, className, onFail }: CopyButtonProps) {
   // A counter, not a boolean: each copy remounts the check so it redraws.
   const [copied, setCopied] = useState(0);
