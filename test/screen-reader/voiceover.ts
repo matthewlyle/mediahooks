@@ -1,11 +1,42 @@
 import { writeFile } from "node:fs/promises";
-import type { VoiceOver } from "@guidepup/guidepup";
-import { voiceOverTest } from "@guidepup/playwright";
+import { voiceOver as guidepupVoiceOver } from "@guidepup/guidepup";
+import { applicationIdMap } from "@guidepup/playwright/lib/applicationIdMap";
+import { navigateVoiceOverToWebContent } from "@guidepup/playwright/lib/navigateVoiceOverToWebContent";
+import { voiceOverTest, type VoiceOverPlaywright } from "@guidepup/playwright";
 import { expect, type Page } from "@playwright/test";
+import type { VoiceOver } from "@guidepup/guidepup";
 
 export { expect };
 
+const START_ATTEMPTS = 4;
+
+async function startVoiceOver(voiceOver: VoiceOver, options: Parameters<VoiceOver["start"]>[0]) {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      await voiceOver.start(options);
+      return;
+    } catch (error) {
+      if (attempt === START_ATTEMPTS) throw error;
+      await voiceOver.stop().catch(() => {});
+      await new Promise((resolve) => setTimeout(resolve, 5_000 * attempt));
+    }
+  }
+}
+
 export const test = voiceOverTest.extend<{ spokenPhraseLog: void }>({
+  voiceOver: async ({ browserName, page, voiceOverStartOptions }, use) => {
+    const voiceOver = guidepupVoiceOver as VoiceOverPlaywright;
+    const applicationId = applicationIdMap[browserName];
+    if (!applicationId) throw new Error(`Browser ${browserName} is not recognised.`);
+    voiceOver.navigateToWebContent = ({ capture } = {}) =>
+      navigateVoiceOverToWebContent({ voiceOver, page, applicationId, capture });
+    try {
+      await startVoiceOver(voiceOver, voiceOverStartOptions);
+      await use(voiceOver);
+    } finally {
+      await voiceOver.stop().catch(() => {});
+    }
+  },
   spokenPhraseLog: [
     async ({ voiceOver }, use, testInfo) => {
       await use();

@@ -14,7 +14,7 @@ async function expectHeadingAnnounced(page: Page, voiceOver: VoiceOverPlaywright
   await expect(page.getByRole("heading", { level: 2, name })).toBeFocused();
   await expect
     .poll(async () => (await voiceOver.spokenPhraseLog()).some((p) => p.includes(name) && /heading/i.test(p)), {
-      timeout: 15_000,
+      timeout: 30_000,
     })
     .toBe(true);
 }
