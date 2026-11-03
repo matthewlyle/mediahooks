@@ -12,4 +12,4 @@ function ToastPreview({ children }: { children?: ReactNode }) {
   return createElement(ToastProvider, null, createElement(ToastDemo, null, children));
 }
 
-export default { component: ToastPreview, props: { children: "Saved" } } satisfies Fixture;
+export default { component: ToastPreview, group: "Overlays", props: { children: "Saved" } } satisfies Fixture;

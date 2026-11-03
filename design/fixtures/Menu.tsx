@@ -3,6 +3,7 @@ import type { Fixture } from "../fixture.ts";
 
 export default {
   component: Menu,
+  group: "Actions",
   props: {
     label: "Actions",
     children: "Actions",

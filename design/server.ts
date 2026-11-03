@@ -1,4 +1,5 @@
 import index from "./index.html";
+import stage from "./stage.html";
 import { extract } from "./extract.ts";
 
 const server = Bun.serve({
@@ -6,6 +7,7 @@ const server = Bun.serve({
   development: true,
   routes: {
     "/api/extracted": () => Response.json(extract()),
+    "/stage": stage,
     "/*": index,
   },
 });

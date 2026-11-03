@@ -1,6 +1,6 @@
 import ts from "typescript";
 import { readdirSync, readFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { basename, join, resolve } from "node:path";
 
 export type Prop = {
   name: string;
@@ -17,6 +17,8 @@ export type Component = {
   doc?: string;
   props: Prop[];
   inherits: string[];
+  fixture: boolean;
+  group?: string;
 };
 
 export type Token = { name: string; value: string; doc?: string };
@@ -27,12 +29,13 @@ export type Extracted = {
   motionTokens: Token[];
 };
 
-export type Sources = { uiDir: string; tokensCss: string; motionTs: string };
+export type Sources = { uiDir: string; tokensCss: string; motionTs: string; fixturesDir: string };
 
 export const defaultSources: Sources = {
   uiDir: resolve(import.meta.dir, "../public/ui"),
   tokensCss: resolve(import.meta.dir, "../public/ui/tokens.css"),
   motionTs: resolve(import.meta.dir, "../public/lib/motion.ts"),
+  fixturesDir: resolve(import.meta.dir, "fixtures"),
 };
 
 function listTsx(dir: string): string[] {
@@ -92,7 +95,25 @@ function inheritedLabel(sym: ts.Symbol, propsTypeText: string): string {
   return "DOM";
 }
 
-function collectComponents(uiDir: string): Component[] {
+function fixtureGroups(dir: string): Map<string, string | undefined> {
+  const groups = new Map<string, string | undefined>();
+  for (const file of listTsx(dir)) {
+    const sf = ts.createSourceFile(file, readFileSync(file, "utf8"), ts.ScriptTarget.ESNext, true, ts.ScriptKind.TSX);
+    let group: string | undefined;
+    const exp = sf.statements.find((s): s is ts.ExportAssignment => ts.isExportAssignment(s) && !s.isExportEquals);
+    let node: ts.Expression | undefined = exp?.expression;
+    while (node && (ts.isSatisfiesExpression(node) || ts.isAsExpression(node) || ts.isParenthesizedExpression(node))) node = node.expression;
+    if (node && ts.isObjectLiteralExpression(node)) {
+      for (const p of node.properties) {
+        if (ts.isPropertyAssignment(p) && p.name.getText(sf) === "group" && ts.isStringLiteral(p.initializer)) group = p.initializer.text;
+      }
+    }
+    groups.set(basename(file, ".tsx"), group);
+  }
+  return groups;
+}
+
+function collectComponents(uiDir: string, groups: Map<string, string | undefined>): Component[] {
   const files = listTsx(uiDir);
   if (!files.length) return [];
   const configPath = ts.findConfigFile(uiDir, ts.sys.fileExists, "tsconfig.json");
@@ -145,7 +166,15 @@ function collectComponents(uiDir: string): Component[] {
         if (d) prop.doc = d;
         props.push(prop);
       }
-      const c: Component = { name: exp.name, file: file.slice(file.indexOf("public/")), props, inherits: [...inherits].filter((l) => l !== "DOM" || inherits.size === 1).sort() };
+      const c: Component = {
+        name: exp.name,
+        file: file.slice(file.indexOf("public/")),
+        props,
+        inherits: [...inherits].filter((l) => l !== "DOM" || inherits.size === 1).sort(),
+        fixture: groups.has(exp.name),
+      };
+      const group = groups.get(exp.name);
+      if (group) c.group = group;
       const d = doc(target, checker);
       if (d) c.doc = d;
       out.push(c);
@@ -158,7 +187,7 @@ export function parseTokensCss(css: string): Token[] {
   const tokens: Token[] = [];
   const re = /(?:\/\*([\s\S]*?)\*\/\s*)?(--[\w-]+)\s*:\s*([^;]+);(?:[ \t]*\/\*([\s\S]*?)\*\/)?/g;
   for (const m of css.matchAll(re)) {
-    const comment = (m[4] ?? m[1])?.replace(/\s*\n\s*\*?\s*/g, " ").trim();
+    const comment = (m[4] ?? m[1])?.replace(/^\*+/, "").replace(/\s*\n\s*\*?\s*/g, " ").trim();
     const t: Token = { name: m[2]!, value: m[3]!.trim() };
     if (comment) t.doc = comment;
     tokens.push(t);
@@ -199,7 +228,7 @@ export function extract(sources: Sources = defaultSources): Extracted {
     }
   };
   return {
-    components: collectComponents(sources.uiDir),
+    components: collectComponents(sources.uiDir, fixtureGroups(sources.fixturesDir)),
     cssTokens: parseTokensCss(read(sources.tokensCss)),
     motionTokens: parseMotionExports(sources.motionTs),
   };

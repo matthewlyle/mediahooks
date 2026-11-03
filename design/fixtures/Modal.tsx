@@ -18,4 +18,4 @@ function ModalDemo(props: ModalProps) {
   );
 }
 
-export default { component: ModalDemo, props: { label: "Example dialog" } } satisfies Fixture;
+export default { component: ModalDemo, group: "Overlays", props: { label: "Example dialog" } } satisfies Fixture;

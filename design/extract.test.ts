@@ -39,6 +39,8 @@ export const helper = 1;
   --bg: #111;
   --gap: 8px; /* Base spacing */
   --plain: 1px;
+  /** Accent. */
+  --accent: #0ff;
 }
 `,
   );
@@ -50,18 +52,23 @@ const hidden = 1;
 export const TAP = { scale: 0.97 };
 `,
   );
-  return { dir, sources: { uiDir: ui, tokensCss: join(ui, "tokens.css"), motionTs: join(dir, "motion.ts") } };
+  const fixturesDir = join(dir, "fixtures");
+  mkdirSync(fixturesDir);
+  writeFileSync(join(fixturesDir, "Button.tsx"), `export default { component: Button, group: "Actions" } satisfies Fixture;\n`);
+  return { dir, sources: { uiDir: ui, tokensCss: join(ui, "tokens.css"), motionTs: join(dir, "motion.ts"), fixturesDir } };
+}
+
+function run() {
+  const { dir, sources } = fixture();
+  try {
+    return extract(sources);
+  } finally {
+    rmSync(dir, { recursive: true });
+  }
 }
 
 test("extracts components, tokens and motion exports from source", () => {
-  const { dir, sources } = fixture();
-  const out = (() => {
-    try {
-      return extract(sources);
-    } finally {
-      rmSync(dir, { recursive: true });
-    }
-  })();
+  const out = run();
   expect(out.components.map((c) => c.name)).toEqual(["Button", "Chip"]);
   const [button, chip] = out.components;
   expect(button!.doc).toBe("A pressable button.");
@@ -76,9 +83,17 @@ test("extracts components, tokens and motion exports from source", () => {
     { name: "--bg", value: "#111", doc: "Page background" },
     { name: "--gap", value: "8px", doc: "Base spacing" },
     { name: "--plain", value: "1px" },
+    { name: "--accent", value: "#0ff", doc: "Accent." },
   ]);
   expect(out.motionTokens).toEqual([
     { name: "EASE", value: "{ out: [0, 0, 1, 1] }", doc: "Easing curves." },
     { name: "TAP", value: "{ scale: 0.97 }" },
   ]);
+});
+
+test("reads each component's sidebar group from its fixture file", () => {
+  const [button, chip] = run().components;
+  expect(button).toMatchObject({ name: "Button", fixture: true, group: "Actions" });
+  expect(chip).toMatchObject({ name: "Chip", fixture: false });
+  expect(chip).not.toHaveProperty("group");
 });

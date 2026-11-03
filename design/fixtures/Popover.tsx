@@ -14,6 +14,7 @@ function PopoverDemo({ anchor: _anchor, ...props }: PopoverProps) {
 
 export default {
   component: PopoverDemo,
+  group: "Overlays",
   props: { id: "demo-popover", open: true, label: "Pick one" },
   bind: { onClose: () => ({ open: false }) },
 } satisfies Fixture;

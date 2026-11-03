@@ -3,6 +3,7 @@ import type { Fixture } from "../fixture.ts";
 
 export default {
   component: RefreshButton,
+  group: "Actions",
   props: { updatedAt: Date.now() - 60_000, noun: ["event", "events"] },
   returns: { onRefresh: async () => ({ ok: true as const, added: 2 }) },
 } satisfies Fixture;
