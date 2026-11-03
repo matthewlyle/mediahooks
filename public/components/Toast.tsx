@@ -62,6 +62,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             <motion.div
               key={t.id}
               className="toast"
+              role={t.sticky ? "alert" : undefined}
               initial={reduce ? { opacity: 0 } : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0, transition: { duration: 0.2, ease: EASE.outQuint } }}
               exit={reduce ? { opacity: 0, transition: { duration: 0.15, ease: EASE.css } } : { opacity: 0, y: 8, transition: { duration: 0.15, ease: EASE.outQuint } }}

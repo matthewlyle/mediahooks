@@ -3,12 +3,19 @@ import { expect, expectAnnounced, test } from "./voiceover.ts";
 
 const unique = (name: string) => `${name} ${randomUUID().slice(0, 8)}`;
 
+const created: number[] = [];
+
+test.afterEach(async ({ request }) => {
+  for (const id of created.splice(0)) await request.delete(`/api/webhooks/${id}`);
+});
+
 test("A failed toggle announces what failed and why", async ({ page, request, voiceOver }) => {
   const name = unique("Flaky hook");
-  const created = await request.post("/api/webhooks", {
+  const res = await request.post("/api/webhooks", {
     data: { name, url: "http://127.0.0.1:9/hook", events: ["media.play"] },
   });
-  expect(created.ok()).toBe(true);
+  expect(res.ok()).toBe(true);
+  created.push(((await res.json()) as { id: number }).id);
 
   await page.route("**/api/webhooks/*", (route) =>
     route.request().method() === "PUT"
@@ -25,10 +32,11 @@ test("A failed toggle announces what failed and why", async ({ page, request, vo
 
 test("A failed duplicate announces what failed and why", async ({ page, request, voiceOver }) => {
   const name = unique("Copy hook");
-  const created = await request.post("/api/webhooks", {
+  const res = await request.post("/api/webhooks", {
     data: { name, url: "http://127.0.0.1:9/hook", events: ["media.play"] },
   });
-  expect(created.ok()).toBe(true);
+  expect(res.ok()).toBe(true);
+  created.push(((await res.json()) as { id: number }).id);
 
   await page.route("**/api/webhooks", (route) =>
     route.request().method() === "POST"
