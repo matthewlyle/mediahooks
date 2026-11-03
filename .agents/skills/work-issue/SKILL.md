@@ -159,3 +159,4 @@ worktree (`git -C ~/src/mediahooks worktree remove <path>`, then delete the loca
   Agents have reported pushes that never happened. Start a reviewer only on the pushed head.
 - After a merge, merge `main` into open PRs that touch the same files before their review.
 - When something needs the owner, say so in your reply; the app already shows each agent's status.
+- When a milestone has no open issues left, close it (`gh api -X PATCH repos/matthewlyle/mediahooks/milestones/<n> -f state=closed`) and tell the owner its release is ready.
