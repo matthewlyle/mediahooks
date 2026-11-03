@@ -85,6 +85,7 @@ export function HelpPage() {
           <li>Add a webhook here: pick a template or write your own body.</li>
           <li>Choose when it sends, then press Send test.</li>
         </ol>
+        {meta && <p className="muted help-version">mediahooks {meta.version}</p>}
       </motion.section>
     </motion.div>
   );
