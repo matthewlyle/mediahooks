@@ -101,6 +101,7 @@ function Row({ w, last, index, enter }: RowProps) {
       return;
     }
     store.upsert(w);
+    toast.show(`Couldn't ${enabled ? "resume" : "pause"} ${w.name}: ${res.error}`);
     flash(row.current, "error");
   }
 
@@ -110,6 +111,7 @@ function Row({ w, last, index, enter }: RowProps) {
       body: JSON.stringify({ ...w, name: `${w.name} copy` }),
     });
     if (!res.ok) {
+      toast.show(`Couldn't duplicate ${w.name}: ${res.error}`);
       flash(row.current, "error");
       return;
     }

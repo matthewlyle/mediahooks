@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { Button } from "../components/Button.tsx";
 import { CopyButton } from "../components/CopyButton.tsx";
 import { PlexConnection } from "../components/PlexStatus.tsx";
+import { useToast } from "../components/Toast.tsx";
 import { api } from "../lib/api.ts";
 import { fadeIn, flash, pageTransition } from "../lib/motion.ts";
 import { useStore } from "../lib/store.tsx";
@@ -10,6 +11,7 @@ import "./HelpPage.css";
 
 export function HelpPage() {
   const { meta, refresh } = useStore();
+  const toast = useToast();
   const code = useRef<HTMLElement>(null);
   const row = useRef<HTMLDivElement>(null);
   const [confirming, setConfirming] = useState(false);
@@ -22,6 +24,10 @@ export function HelpPage() {
     if (res.ok) await refresh();
     setReplacing(false);
     setConfirming(false);
+    if (!res.ok) {
+      const state = res.status === 0 ? "check the URL before relying on it" : "the old one still works";
+      toast.show(`Couldn't replace the token, ${state}: ${res.error}`);
+    }
     flash(row.current, res.ok ? "accent" : "error");
   }
 
