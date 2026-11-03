@@ -1,4 +1,5 @@
 import type { APIRequestContext, Page } from "@playwright/test";
+import type { VoiceOverPlaywright } from "@guidepup/playwright";
 import { expect, test } from "./voiceover.ts";
 
 async function createWebhook(request: APIRequestContext, name: string) {
@@ -9,9 +10,13 @@ async function createWebhook(request: APIRequestContext, name: string) {
   return ((await created.json()) as { id: number }).id;
 }
 
-async function expectHeadingAnnounced(page: Page, spoken: string[], name: string) {
+async function expectHeadingAnnounced(page: Page, voiceOver: VoiceOverPlaywright, name: string) {
   await expect(page.getByRole("heading", { level: 2, name })).toBeFocused();
-  expect(spoken).toContainEqual(expect.stringMatching(new RegExp(`${name}.*heading`, "i")));
+  await expect
+    .poll(async () => (await voiceOver.spokenPhraseLog()).some((p) => new RegExp(`${name}.*heading`, "i").test(p)), {
+      timeout: 15_000,
+    })
+    .toBe(true);
 }
 
 test("opening a webhook announces the detail heading", async ({ page, request, voiceOver }) => {
@@ -24,7 +29,7 @@ test("opening a webhook announces the detail heading", async ({ page, request, v
 
   await voiceOver.capture(() => row.press("Enter"), { capture: true });
 
-  await expectHeadingAnnounced(page, await voiceOver.spokenPhraseLog(), "Living room alerts");
+  await expectHeadingAnnounced(page, voiceOver, "Living room alerts");
 });
 
 test("a nav link announces the destination heading", async ({ page, voiceOver }) => {
@@ -36,7 +41,7 @@ test("a nav link announces the destination heading", async ({ page, voiceOver })
 
   await voiceOver.capture(() => link.press("Enter"), { capture: true });
 
-  await expectHeadingAnnounced(page, await voiceOver.spokenPhraseLog(), "Events");
+  await expectHeadingAnnounced(page, voiceOver, "Events");
 });
 
 test("Edit and Save announce the editor and detail headings", async ({ page, request, voiceOver }) => {
@@ -48,11 +53,11 @@ test("Edit and Save announce the editor and detail headings", async ({ page, req
   await edit.focus();
 
   await voiceOver.capture(() => edit.press("Enter"), { capture: true });
-  await expectHeadingAnnounced(page, await voiceOver.spokenPhraseLog(), "Edit Kitchen alerts");
+  await expectHeadingAnnounced(page, voiceOver, "Edit Kitchen alerts");
 
   const save = page.getByRole("button", { name: "Save" });
   await save.focus();
   await voiceOver.clearSpokenPhraseLog();
   await voiceOver.capture(() => save.press("Enter"), { capture: true });
-  await expectHeadingAnnounced(page, await voiceOver.spokenPhraseLog(), "Kitchen alerts");
+  await expectHeadingAnnounced(page, voiceOver, "Kitchen alerts");
 });

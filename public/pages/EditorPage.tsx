@@ -463,8 +463,6 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
           <Button
             ref={sendButton}
             className="test-btn send-test"
-            aria-disabled={sending || undefined}
-            aria-busy={sending || undefined}
             onClick={onSendTest}
           >
             <span className="send-test-label">Send test</span>

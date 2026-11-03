@@ -20,7 +20,7 @@ test.afterAll(async () => {
   await once(receiver, "close");
 });
 
-test("Send test announces that it is sending or busy", async ({ page, request, voiceOver }) => {
+test("Send test announces that it is sending", async ({ page, request, voiceOver }) => {
   const { port } = receiver.address() as AddressInfo;
   const created = await request.post("/api/webhooks", {
     data: { name: "Slow receiver", url: `http://127.0.0.1:${port}/hook`, events: ["media.play"] },
@@ -35,5 +35,5 @@ test("Send test announces that it is sending or busy", async ({ page, request, v
 
   await voiceOver.capture(() => send.press("Enter"), { capture: true });
 
-  expect(await voiceOver.spokenPhraseLog()).toContainEqual(expect.stringMatching(/Sending test…|button busy/));
+  expect(await voiceOver.spokenPhraseLog()).toContainEqual(expect.stringContaining("Sending test…"));
 });
