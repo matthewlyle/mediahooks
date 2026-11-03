@@ -1,7 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { EASE } from "../lib/motion.ts";
-import { Button } from "./Button.tsx";
+import { Button } from "../ui/Button.tsx";
 
 export type ToastOptions = { onCommit?: () => void; sticky?: boolean } & (
   | { undo?: undefined; subject?: undefined }

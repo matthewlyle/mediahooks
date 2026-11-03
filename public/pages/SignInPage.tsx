@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import type { AuthUser } from "../../src/types.ts";
-import { Button } from "../components/Button.tsx";
+import { Button } from "../ui/Button.tsx";
 import { Spinner } from "../components/Spinner.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING } from "../lib/motion.ts";

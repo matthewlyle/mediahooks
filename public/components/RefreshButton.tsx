@@ -1,7 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { EASE } from "../lib/motion.ts";
-import { Button } from "./Button.tsx";
+import { Button } from "../ui/Button.tsx";
 import { RelativeTime } from "./RelativeTime.tsx";
 
 export type RefreshOutcome = { ok: true; added: number } | { ok: false; error: string };

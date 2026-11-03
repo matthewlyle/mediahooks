@@ -1,0 +1,77 @@
+button,
+a.button {
+  font: inherit;
+  font-family: var(--mono);
+  font-size: var(--text-12);
+  color: var(--fg);
+  background: var(--raised);
+  border: 1px solid transparent;
+  border-radius: var(--radius-2);
+  padding: var(--space-4) var(--space-10);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    box-shadow 150ms ease,
+    scale 150ms ease;
+}
+a.button {
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+  line-height: inherit;
+}
+button.primary,
+a.button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+  box-shadow: 0 0 16px var(--accent-30);
+}
+button.danger {
+  color: var(--error);
+}
+button:disabled,
+button[aria-disabled="true"] {
+  opacity: 0.6;
+  cursor: default;
+}
+@media (hover: hover) and (pointer: fine) {
+  button:not(:disabled, [aria-disabled="true"]):hover,
+  a.button:hover {
+    color: var(--accent-hover);
+    box-shadow: var(--glow);
+  }
+  button.danger:not(:disabled, [aria-disabled="true"]):hover {
+    color: var(--error);
+    box-shadow:
+      inset 0 0 0 1px var(--error-60),
+      0 0 12px var(--error-30);
+  }
+  button.primary:not(:disabled, [aria-disabled="true"]):hover,
+  a.button.primary:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+    color: var(--on-accent);
+    box-shadow: 0 0 22px var(--accent-45);
+  }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  button:not(:disabled, [aria-disabled="true"]):hover,
+  a.button:hover {
+    scale: 1.02;
+  }
+}
+@media (pointer: coarse) {
+  button:not(.switch),
+  a.button {
+    min-height: 40px;
+  }
+  a.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

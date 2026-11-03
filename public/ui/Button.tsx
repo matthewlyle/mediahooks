@@ -1,11 +1,19 @@
 import { motion, useReducedMotion, type HTMLMotionProps } from "motion/react";
+import type { ReactNode } from "react";
 import { useLinkProps, type NavigateOptions } from "../lib/nav.ts";
 import { SPRING, TAP } from "../lib/motion.ts";
+import "./Button.css";
 
 type Variant = "primary" | "danger";
 
-export type ButtonProps = HTMLMotionProps<"button"> & { variant?: Variant };
+export type ButtonProps = HTMLMotionProps<"button"> & {
+  /** Emphasis: primary fills with the accent color, danger tints the label red. Omit for the default raised button. */
+  variant?: Variant;
+  /** Label or content shown inside the button. */
+  children?: ReactNode;
+};
 
+/** A pressable button that scales down while pressed and defaults to `type="button"`. */
 export function Button({ variant, className, type = "button", whileTap, transition, ...rest }: ButtonProps) {
   const reduce = useReducedMotion();
   return (
@@ -20,11 +28,17 @@ export function Button({ variant, className, type = "button", whileTap, transiti
 }
 
 export type LinkButtonProps = Omit<HTMLMotionProps<"a">, "href"> & {
+  /** In-app path the link navigates to. */
   to: string;
+  /** Navigation options passed through when the link is followed. */
   nav?: NavigateOptions;
+  /** Emphasis: primary fills with the accent color. Omit for the default raised button. */
   variant?: Variant;
+  /** Label or content shown inside the link. */
+  children?: ReactNode;
 };
 
+/** An in-app link that looks like a Button. */
 export function LinkButton({ to, nav, variant, className, whileTap, transition, onClick, ...rest }: LinkButtonProps) {
   const reduce = useReducedMotion();
   const link = useLinkProps(to, nav);

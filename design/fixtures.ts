@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import { Button, LinkButton } from "../public/ui/Button.tsx";
 
 export type Fixture = {
   component: ComponentType<any>;
@@ -7,4 +8,7 @@ export type Fixture = {
   bind?: Record<string, string | ((...args: any[]) => Record<string, unknown>)>;
 };
 
-export const fixtures: Record<string, Fixture> = {};
+export const fixtures: Record<string, Fixture> = {
+  Button: { component: Button, props: { children: "Save" } },
+  LinkButton: { component: LinkButton, props: { to: "/", children: "Back" } },
+};

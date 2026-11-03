@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Button } from "./Button.tsx";
+import { Button } from "../ui/Button.tsx";
 
 // Plain-http LAN addresses have no Clipboard API; the execCommand fallback is needed.
 export async function copyText(text: string): Promise<boolean> {

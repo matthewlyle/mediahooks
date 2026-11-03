@@ -5,7 +5,7 @@ import type { SendResult } from "../../src/send.ts";
 import type { IncomingEvent, PlexPayload, Webhook } from "../../src/types.ts";
 import { SAMPLE_MOVIE_PAYLOAD, SAMPLE_PAYLOAD, SAMPLE_TRACK_PAYLOAD } from "../../src/sample.ts";
 import { isJsonContentType, renderBody, renderHeaders, templateVars } from "../../src/template.ts";
-import { Button, LinkButton } from "../components/Button.tsx";
+import { Button, LinkButton } from "../ui/Button.tsx";
 import { burst } from "../components/burst.ts";
 import { Spinner } from "../components/Spinner.tsx";
 import { Switch } from "../components/Switch.tsx";
