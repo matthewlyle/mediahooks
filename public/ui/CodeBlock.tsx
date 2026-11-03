@@ -22,7 +22,7 @@ export function CodeBlock({ label, note, head, inset = true, className, children
   return (
     <>
       {label && <span className="code-label">{label}</span>}
-      {note !== undefined ? (
+      {note ? (
         <EmptyState size="plain">{note}</EmptyState>
       ) : (
         <pre className={["code-block", inset ? "code-block-inset" : "code-block-plain", "mono", className].filter(Boolean).join(" ")}>
