@@ -3,10 +3,10 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { EASE } from "../lib/motion.ts";
 import { Button } from "./Button.tsx";
 
-export type ToastOptions = {
-  undo?: () => void;
-  onCommit?: () => void;
-};
+export type ToastOptions = { onCommit?: () => void } & (
+  | { undo?: undefined; subject?: undefined }
+  | { undo: () => void; subject: string }
+);
 export type Toaster = { show(text: string, opts?: ToastOptions): void };
 
 const TOAST_MS = 4000;
@@ -15,7 +15,7 @@ const ToastContext = createContext<Toaster | null>(null);
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const reduce = useReducedMotion();
-  const [toasts, setToasts] = useState<{ id: number; text: string; undo: boolean }[]>([]);
+  const [toasts, setToasts] = useState<{ id: number; text: string; undo: boolean; subject?: string }[]>([]);
   const pending = useRef(new Map<number, ToastOptions>());
   const nextId = useRef(0);
 
@@ -24,7 +24,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const show = useCallback(
     (text: string, opts: ToastOptions = {}) => {
       const id = nextId.current++;
-      setToasts((list) => [...list, { id, text, undo: Boolean(opts.undo) }]);
+      setToasts((list) => [...list, { id, text, undo: Boolean(opts.undo), subject: opts.subject }]);
       if (opts.undo) pending.current.set(id, opts);
       else setTimeout(() => close(id), TOAST_MS);
     },
@@ -67,10 +67,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               <span className="toast-text">{t.text}</span>
               {t.undo && (
                 <>
-                  <Button className="toast-undo" onClick={() => settle(t.id, (p) => p.undo?.())}>
+                  <Button className="toast-undo" aria-label={`Undo deleting ${t.subject}`} onClick={() => settle(t.id, (p) => p.undo?.())}>
                     Undo
                   </Button>
-                  <Button className="toast-dismiss" onClick={() => settle(t.id, (p) => p.onCommit?.())}>
+                  <Button className="toast-dismiss" aria-label={`Dismiss: delete ${t.subject}`} onClick={() => settle(t.id, (p) => p.onCommit?.())}>
                     Dismiss
                   </Button>
                 </>
