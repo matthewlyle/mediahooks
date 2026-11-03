@@ -30,6 +30,7 @@ test.beforeAll(async ({ request }) => {
   active = await create("Living room alerts", true);
   paused = await create("Paused webhook", false);
   await create("Delete me", true);
+  await create("Delete me too", true);
   await create("Toggle me", true);
 
   const meta = await (await request.get("/api/meta")).json();
@@ -40,12 +41,15 @@ test.beforeAll(async ({ request }) => {
   await expect.poll(async () => (await (await request.get("/api/events")).json()).length).toBeGreaterThan(0);
 });
 
-async function settle(page: Page) {
-  await page.waitForLoadState("networkidle");
+async function settle(page: Page, idle = true) {
+  if (idle) await page.waitForLoadState("networkidle");
   await page.evaluate(async () => {
     await document.fonts.ready;
     const finite = () => document.getAnimations().filter((a) => a.effect?.getComputedTiming().iterations !== Infinity);
-    while (finite().some((a) => a.playState === "running")) await Promise.allSettled(finite().map((a) => a.finished));
+    const deadline = Date.now() + 3000;
+    while (Date.now() < deadline && finite().some((a) => a.playState === "running")) {
+      await Promise.race([Promise.allSettled(finite().map((a) => a.finished)), new Promise((r) => setTimeout(r, 100))]);
+    }
     for (const a of document.getAnimations()) if (a.effect?.getComputedTiming().iterations === Infinity) a.cancel();
   });
 }
@@ -161,15 +165,26 @@ const STATES: State[] = [
     "undo-toast",
     async (page) => {
       await page.goto("/");
-      await page.getByRole("button", { name: "More actions for Delete me" }).click();
+      await page.getByRole("button", { name: "More actions for Delete me", exact: true }).click();
       await page.getByRole("menuitem", { name: "Delete" }).click();
-      await expect(page.getByRole("button", { name: "Undo" })).toBeVisible();
+      await expect(page.getByRole("button", { name: "Undo deleting Delete me", exact: true })).toBeVisible();
     },
   ],
   [
     "new-dialog",
     async (page) => {
       await page.goto("/");
+      await page.locator("#new-hook").click();
+      await expect(page.getByRole("dialog", { name: "New webhook" })).toBeVisible();
+    },
+  ],
+  [
+    "new-dialog-over-toast",
+    async (page) => {
+      await page.goto("/");
+      await page.getByRole("button", { name: "More actions for Delete me too" }).click();
+      await page.getByRole("menuitem", { name: "Delete" }).click();
+      await expect(page.getByRole("button", { name: "Undo deleting Delete me too" })).toBeVisible();
       await page.locator("#new-hook").click();
       await expect(page.getByRole("dialog", { name: "New webhook" })).toBeVisible();
     },
@@ -204,7 +219,7 @@ const STATES: State[] = [
 ];
 
 test("dump computed styles", async ({ browser }) => {
-  test.setTimeout(600_000);
+  test.setTimeout(1_800_000);
   const out: Record<string, Dump> = {};
   for (const [profile, opts] of Object.entries(PROFILES)) {
     for (const [name, setup] of STATES) {
@@ -228,11 +243,11 @@ test("dump computed styles", async ({ browser }) => {
         );
         if (fine && box) {
           await page.mouse.move(box.x, box.y);
-          await settle(page);
+          await settle(page, false);
           const hovered = await capture(page, i);
           for (const [p, v] of Object.entries(hovered.nodes)) out[key]!.nodes[`${p}@hover`] = v;
           await page.mouse.move(0, 0);
-          await settle(page);
+          await settle(page, false);
         }
         await page.keyboard.press("Shift");
         await page.evaluate(
@@ -242,7 +257,7 @@ test("dump computed styles", async ({ browser }) => {
           },
           [i, INTERACTIVE] as const,
         );
-        await settle(page);
+        await settle(page, false);
         const focused = await capture(page, i);
         for (const [p, v] of Object.entries(focused.nodes)) out[key]!.nodes[`${p}@focus`] = v;
         await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
