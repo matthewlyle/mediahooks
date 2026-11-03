@@ -1,0 +1,15 @@
+.status-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: var(--space-8);
+  vertical-align: 1px;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  opacity: 0.6;
+}
+.status-dot.on {
+  background: var(--success);
+  opacity: 1;
+  box-shadow: 0 0 6px var(--success-60);
+}
