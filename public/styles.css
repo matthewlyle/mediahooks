@@ -334,12 +334,6 @@ button.avatar-btn {
   transition: translate 150ms ease;
 }
 
-.empty {
-  color: var(--muted);
-  text-align: center;
-  padding: var(--space-40) var(--space-16);
-}
-
 .editor {
   position: relative;
   background: var(--surface);

@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useIsPresent, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import type { Delivery, DeliveryDetail, Webhook } from "../../src/types.ts";
+import { EmptyState } from "../ui/EmptyState.tsx";
 import { Button, LinkButton } from "../ui/Button.tsx";
 import { PausedBadge } from "../ui/PausedBadge.tsx";
 import { Panel } from "../ui/Panel.tsx";
@@ -229,7 +230,7 @@ function Deliveries({ log, failed, updatedAt, refresh }: DeliveriesState) {
           {log ? (
             <ul className="deliveries-list">
               {/* Outside AnimatePresence: it must leave in the same render the first row arrives. */}
-              {log.items.length === 0 && <li className="deliveries-empty">No deliveries yet</li>}
+              {log.items.length === 0 && <EmptyState as="li" size="small" className="deliveries-empty">No deliveries yet</EmptyState>}
               <AnimatePresence initial={false}>
                 {log.items.map((d) => (
                   <DeliveryRow key={d.id} d={d} fresh={log.fresh.has(d.id)} />

@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject } from "react";
 import type { IncomingEvent, RouteStatus } from "../../src/types.ts";
+import { EmptyState } from "../ui/EmptyState.tsx";
 import { templateVars } from "../../src/template.ts";
 import { Panel } from "../ui/Panel.tsx";
 import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
@@ -61,9 +62,9 @@ export function EventsPage() {
           {(events || error) && (
             <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={FADE_IN}>
               {!events ? (
-                <p className="ev-empty">Couldn't load events: {error}</p>
+                <EmptyState size="medium">Couldn't load events: {error}</EmptyState>
               ) : events.length === 0 ? (
-                <p className="ev-empty">No Plex events yet</p>
+                <EmptyState size="medium">No Plex events yet</EmptyState>
               ) : (
                 <div className="ev-cols" aria-hidden="true">
                   <span>Time</span>
