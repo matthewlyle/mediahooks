@@ -9,6 +9,16 @@ One issue, one worktree, one omp agent, one PR. Follows AGENTS.md: branch `issue
 title is a Conventional Commit, body says `Fixes #<n>`. Workers never merge; only the review step
 below may queue a merge.
 
+`origin` is Gitea, so `gh` can't infer the repo: every `gh` command takes
+`-R matthewlyle/mediahooks`.
+
+## Check for existing work
+
+Before launching, look for an earlier attempt: `git -C ~/src/mediahooks worktree list` and
+`gh pr list -R matthewlyle/mediahooks --state all --search "<n> in:body"`. A branch, worktree or
+PR may already exist, possibly outside `~/.herdr/worktrees`. An open PR whose head matches the
+worktree's HEAD goes straight to review; an unpushed worktree gets a worker in that worktree.
+
 ## Launch a worker
 
 Workers run in the Herdr desktop app through `hc` (herdr-core), so they show in its Agents list.
@@ -25,8 +35,8 @@ TAB=tb$(openssl rand -hex 16)   # keep it for the reviewer
 ```sh
 git -C ~/src/mediahooks fetch git@github.com:matthewlyle/mediahooks.git +main:refs/remotes/github/main
 git -C ~/src/mediahooks worktree add ~/.herdr/worktrees/mediahooks/issue-<n>-<slug> -b issue-<n>-<slug> refs/remotes/github/main
-hc run --bg --keep --name <n>-<slug> --label herdr.space=$SPACE --label herdr.tab=$TAB --label issue=<n> \
-  --cwd ~/.herdr/worktrees/mediahooks/issue-<n>-<slug> omp --model <model> "<prompt below>"
+hc run --bg --keep --parent "$HC_TERMINAL_ID" --name <n>-<slug> --label herdr.space=$SPACE --label herdr.tab=$TAB \
+  --label issue=<n> --cwd ~/.herdr/worktrees/mediahooks/issue-<n>-<slug> omp --model <model> "<prompt below>"
 ```
 
 The name is what the Agents list shows: `<n>-<what it fixes>`, up to 32 of `a-z 0-9 - _`
@@ -34,8 +44,17 @@ The name is what the Agents list shows: `<n>-<what it fixes>`, up to 32 of `a-z 
 someone renames it, and renaming happens in the app (`herdr-app do tab.rename`), not from `hc`:
 tell the owner the tab to name `#<n> <short title>`.
 
-Check `first_message.sent` in the launch output; if false, `hc read <name>` before sending
-anything. Collect results with `hc wait --children any`; reports arrive as `<hc from=…>` messages.
+The Agents list shows an hc terminal only when it has a `herdr.space` label; without the labels a
+worker runs but stays hidden. One launched without them can be shown later with
+`hc label <name> herdr.space=$SPACE herdr.tab=$TAB`.
+
+Pass `--parent "$HC_TERMINAL_ID"` so the worker is your child even when the launch runs from a
+subprocess that can't tell which terminal started it; otherwise `hc wait --children` doesn't see
+it.
+
+The launch output doesn't say whether the prompt landed: once the agent has booted, `hc read
+<name>` and confirm it's working on the task before sending anything. Collect results with
+`hc wait --children any`; reports arrive as `<hc from=…>` messages.
 Answer an agent's question with `hc read` then `hc keys` / `hc send`.
 
 Port: `88` + the issue number zero-padded to two digits (issue 4 → 8804). Never 8788 (dev) or 8787
@@ -60,8 +79,10 @@ Fill `{N}`, `{BRANCH}`, `{PORT}`, and `{LEAD}` (the coordinator's `$HC_TERMINAL_
 Fix GitHub issue #{N} in matthewlyle/mediahooks: `gh issue view {N} -R matthewlyle/mediahooks`. The issue body is the spec; its success criteria are your acceptance test. Follow AGENTS.md.
 
 - You're in your own worktree on branch `{BRANCH}`. Run `bun install` first.
+- Every `gh` command needs `-R matthewlyle/mediahooks` (`origin` is Gitea).
 - Run the dev server only as `AUTH=off PORT={PORT} bun --hot src/server.ts` (never `bun run dev`; port 8788 belongs to someone else).
-- Reproduce the problem in a browser first, then fix it, then re-check every success-criteria item in the browser.
+- Reproduce the problem in a browser first, then fix it, then re-check every success-criteria item in the browser. For a CI or workflow issue, reproduce and verify with real Actions runs instead: a throwaway probe PR from an `issue-{N}-probe` branch shows what runs or skips; close it and delete the branch when done.
+- Don't change repository settings (rulesets, required checks, secrets). If a criterion needs one, say so in a `> [!WARNING]` **Not checked:** callout in the PR body.
 - Run `bun test` and `bun run typecheck`; both must pass.
 - If you changed anything under `public/`, run `bun x playwright test -c test/axe` (needs `bun x playwright install chromium` once) and fix what it reports before opening the PR. A new route or state gets a scan in `test/axe/axe.spec.ts`.
 - Stay within this issue. Don't touch other issues' code or `CHANGELOG.md`.
@@ -76,17 +97,18 @@ When a worker reports its PR, start a reviewer (a different agent from the worke
 worktree:
 
 ```sh
-hc run --bg --keep --name <n>-review --label herdr.space=$SPACE --label herdr.tab=$TAB --label issue=<n> \
-  --cwd <worktree> omp --model claude-opus-5-5 --thinking low "<reviewer prompt below>"
+hc run --bg --keep --parent "$HC_TERMINAL_ID" --name <n>-review --label herdr.space=$SPACE --label herdr.tab=$TAB \
+  --label issue=<n> --cwd <worktree> omp --model claude-opus-5-5 --thinking low "<reviewer prompt below>"
 ```
 
 Reviewer prompt, fill `{N}` (issue), `{PR}` and `{LEAD}`:
 
 ```
-Review pull request #{PR} in matthewlyle/mediahooks, which claims to fix issue #{N}. Read `gh issue view {N}`, `gh pr view {PR}` and `gh pr diff {PR}`. Follow AGENTS.md. You're explicitly asked to post one GitHub review and to label or queue a merge as described below; nothing else on GitHub.
+Review pull request #{PR} in matthewlyle/mediahooks, which claims to fix issue #{N}. Read `gh issue view {N}`, `gh pr view {PR}` and `gh pr diff {PR}`; every `gh` command needs `-R matthewlyle/mediahooks` (`origin` is Gitea). Follow AGENTS.md. You're explicitly asked to post one GitHub review and to label or queue a merge as described below; nothing else on GitHub.
 
 Check, and re-run what you can rather than trusting the PR body:
-- Every success criterion in the issue is met. Run the branch (`AUTH=off PORT={PORT} bun --hot src/server.ts`, port 89 + the issue number zero-padded) and check each criterion in a browser.
+- Every success criterion in the issue is met. For an app change, run the branch (`AUTH=off PORT={PORT} bun --hot src/server.ts`, port 89 + the issue number zero-padded) and check each criterion in a browser. For a CI or workflow change, check real Actions runs (`gh run list`, `gh run view --log`), including any closed probe PRs the worker opened.
+- A criterion that needs a repository setting (rulesets, required checks) can't be met by the PR. Don't change settings; put it under **Your call**.
 - A criterion phrased "VoiceOver announces…" counts as checked when the `voiceover` job on the PR passed with the expected phrase in its `spoken-phrase-log` artifact (`gh run download <run> -n spoken-phrase-log`). A fix with a VoiceOver criterion should add a scenario for it in `test/screen-reader/`; if there's no scenario, or the run was flaky (Playwright reports it as flaky, or it passed only on a rerun), that criterion goes to a person.
 - The diff stays within the issue, follows AGENTS.md, and has no dead code, comments that aren't needed, or unrelated changes.
 - `bun test` and `bun run typecheck` pass.
@@ -190,7 +212,7 @@ worktree (`git -C ~/src/mediahooks worktree remove <path>`, then delete the loca
 - Wait on each agent separately and relay each result as it lands, not when a batch finishes.
 - When an agent stops at a question, read which option is selected before confirming; don't
   press Enter blind. An agent that ends its turn asking in plain text is also waiting.
-- When a worker reports done, check `gh pr view <pr> --json headRefOid` against its local HEAD.
+- When a worker reports done, check `gh pr view <pr> -R matthewlyle/mediahooks --json headRefOid` against its local HEAD.
   Agents have reported pushes that never happened. Start a reviewer only on the pushed head.
 - After a merge, merge `main` into open PRs that touch the same files before their review.
 - When something needs the owner, say so in your reply; the app already shows each agent's status.
