@@ -40,6 +40,7 @@ import { Panel } from "../ui/Panel.tsx";
 import { DiscordPreview, isDiscordMessage } from "./editor/DiscordPreview.tsx";
 import { SlackPreview, isSlackMessage } from "./editor/SlackPreview.tsx";
 import { EventSentence } from "./editor/EventSentence.tsx";
+import { Disclosure } from "../ui/Disclosure.tsx";
 import { Toolbar } from "../ui/Toolbar.tsx";
 import { Reveal } from "../ui/Reveal.tsx";
 
@@ -525,45 +526,33 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
         </div>
 
         <div className="editor-section">
-          <div className="options">
-            <button
-              type="button"
-              id={`${uid}-headers-toggle`}
-              className="disclosure"
-              aria-expanded={optionsOpen}
-              aria-controls={`${uid}-options`}
-              onClick={() => setOptionsOpen((open) => !open)}
+          <Disclosure
+            id={`${uid}-headers-toggle`}
+            label="Headers"
+            summary={headersSummary}
+            open={optionsOpen}
+            onOpenChange={setOptionsOpen}
+          >
+            <FormField
+              id={`${uid}-headers`}
+              className="options-body"
+              error={shown("headers")}
+              errorId={errId("headers")}
             >
-              Headers <span className="disclosure-summary">{headersSummary}</span>
-            </button>
-            <div id={`${uid}-options`}>
-              <AnimatePresence initial={false}>
-                {optionsOpen && (
-                  <Reveal key="options">
-                    <FormField
-                      id={`${uid}-headers`}
-                      className="options-body"
-                      error={shown("headers")}
-                      errorId={errId("headers")}
-                    >
-                      <FieldCodeEditor
-                        ref={headersEditor}
-                        id={`${uid}-headers`}
-                        compact
-                        ariaLabelledBy={`${uid}-headers-toggle`}
-                        language="plain"
-                        completions={completionData}
-                        placeholder={"Authorization: Bearer …\nTitle: {{display_title}}"}
-                        value={form.headers}
-                        onChange={(v) => set("headers", v)}
-                        onBlur={touch("headers")}
-                      />
-                    </FormField>
-                  </Reveal>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
+              <FieldCodeEditor
+                ref={headersEditor}
+                id={`${uid}-headers`}
+                compact
+                ariaLabelledBy={`${uid}-headers-toggle`}
+                language="plain"
+                completions={completionData}
+                placeholder={"Authorization: Bearer …\nTitle: {{display_title}}"}
+                value={form.headers}
+                onChange={(v) => set("headers", v)}
+                onBlur={touch("headers")}
+              />
+            </FormField>
+          </Disclosure>
           <div className="message-grid">
             <FormField
               id={`${uid}-body`}
@@ -575,40 +564,23 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
               errorId={errId("bodyTemplate")}
               footer={
                 <>
-                  <div className="vars">
-                    <button
-                      type="button"
-                      className="disclosure"
-                      aria-expanded={varsOpen}
-                      aria-controls={`${uid}-vars`}
-                      onClick={() => setVarsOpen((open) => !open)}
-                    >
-                      Template variables
-                    </button>
-                    <div id={`${uid}-vars`}>
-                      <AnimatePresence initial={false}>
-                        {varsOpen && (
-                          <Reveal key="vars">
-                            <div className="var-chips" role="group" aria-label="Insert a variable">
-                              {meta.templateVars.map((v) => (
-                                <Button
-                                  key={v}
-                                  className="var-chip"
-                                  onMouseDown={(e) => e.preventDefault()}
-                                  onClick={() => insertVariable(v)}
-                                >
-                                  {`{{${v}}}`}
-                                </Button>
-                              ))}
-                            </div>
-                            <p className="vars-hint">
-                              Payload paths work too, like <code>{"{{Metadata.summary}}"}</code>.
-                            </p>
-                          </Reveal>
-                        )}
-                      </AnimatePresence>
+                  <Disclosure label="Template variables" open={varsOpen} onOpenChange={setVarsOpen}>
+                    <div className="var-chips" role="group" aria-label="Insert a variable">
+                      {meta.templateVars.map((v) => (
+                        <Button
+                          key={v}
+                          className="var-chip"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => insertVariable(v)}
+                        >
+                          {`{{${v}}}`}
+                        </Button>
+                      ))}
                     </div>
-                  </div>
+                    <p className="vars-hint">
+                      Payload paths work too, like <code>{"{{Metadata.summary}}"}</code>.
+                    </p>
+                  </Disclosure>
                   <AnimatePresence initial={false}>
                     {(discord !== null || form.attachPoster) && (
                       <Reveal key="poster">
