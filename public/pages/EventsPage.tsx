@@ -5,6 +5,7 @@ import { EmptyState } from "../ui/EmptyState.tsx";
 import { templateVars } from "../../src/template.ts";
 import { Panel } from "../ui/Panel.tsx";
 import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
+import { SectionHeader } from "../ui/SectionHeader.tsx";
 import { RelativeTime } from "../ui/RelativeTime.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING, flash, pageTransition } from "../lib/motion.ts";
@@ -55,9 +56,10 @@ export function EventsPage() {
     <motion.div className="page page-events" {...pageTransition}>
       <h2 ref={heading} tabIndex={-1} className="sr-only">Events</h2>
       <Panel className="events-panel" aria-label="Recent events">
-        <div className="ev-head">
-          <RefreshButton onRefresh={load} updatedAt={updatedAt} noun={["event", "events"]} disabled={!events && !error} />
-        </div>
+        <SectionHeader
+          className="ev-head"
+          actions={<RefreshButton onRefresh={load} updatedAt={updatedAt} noun={["event", "events"]} disabled={!events && !error} />}
+        />
         <AnimatePresence initial={false}>
           {(events || error) && (
             <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={FADE_IN}>

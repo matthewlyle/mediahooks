@@ -1,8 +1,4 @@
 .ev-head {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--space-8);
   margin-bottom: var(--space-12);
 }
 

@@ -6,6 +6,7 @@ import { Button, LinkButton } from "../ui/Button.tsx";
 import { PausedBadge } from "../ui/PausedBadge.tsx";
 import { Panel } from "../ui/Panel.tsx";
 import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
+import { SectionHeader } from "../ui/SectionHeader.tsx";
 import { RelativeTime } from "../ui/RelativeTime.tsx";
 import { Sentence } from "../ui/Sentence.tsx";
 import { StatusBadge } from "../components/StatusBadge.tsx";
@@ -223,10 +224,13 @@ function Deliveries({ log, failed, updatedAt, refresh }: DeliveriesState) {
         transition={settled && !reduce ? SPRING.morph : { duration: 0 }}
       >
         <div ref={inner} className="deliveries-inner">
-          <div className="deliveries-head">
-            <h3 id="deliveries-heading">Deliveries</h3>
-            <RefreshButton onRefresh={refresh} updatedAt={updatedAt} noun={["delivery", "deliveries"]} disabled={!log} />
-          </div>
+          <SectionHeader
+            className="deliveries-head"
+            level={3}
+            headingId="deliveries-heading"
+            title="Deliveries"
+            actions={<RefreshButton onRefresh={refresh} updatedAt={updatedAt} noun={["delivery", "deliveries"]} disabled={!log} />}
+          />
           {log ? (
             <ul className="deliveries-list">
               {/* Outside AnimatePresence: it must leave in the same render the first row arrives. */}

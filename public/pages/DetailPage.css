@@ -65,16 +65,7 @@
 }
 
 .deliveries-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-8);
   margin-bottom: var(--space-10);
-}
-.deliveries-head h3 {
-  margin: 0;
-  font-size: var(--text-15);
-  font-weight: 600;
 }
 .deliveries-list {
   list-style: none;

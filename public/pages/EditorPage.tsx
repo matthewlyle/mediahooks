@@ -8,6 +8,7 @@ import { SAMPLE_MOVIE_PAYLOAD, SAMPLE_PAYLOAD, SAMPLE_TRACK_PAYLOAD } from "../.
 import { isJsonContentType, renderBody, renderHeaders, templateVars } from "../../src/template.ts";
 import { Button, LinkButton } from "../ui/Button.tsx";
 import { FieldError } from "../ui/FieldError.tsx";
+import { SectionHeader } from "../ui/SectionHeader.tsx";
 import { Segmented } from "../ui/Segmented.tsx";
 import { burst } from "../components/burst.ts";
 import { Spinner } from "../ui/Spinner.tsx";
@@ -641,7 +642,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
               </AnimatePresence>
             </div>
             <div className="preview">
-              <div className="preview-head">
+              <SectionHeader className="preview-head">
                 <Segmented
                   label="Preview with"
                   options={[
@@ -677,7 +678,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
                     </motion.span>
                   )}
                 </AnimatePresence>
-              </div>
+              </SectionHeader>
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                   key={richShown ?? "request"}
