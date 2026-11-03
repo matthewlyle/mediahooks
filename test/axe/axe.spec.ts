@@ -93,3 +93,10 @@ test("editor after a failed save", async ({ page }) => {
   await expect(page.locator(".field-error").first()).toBeVisible();
   await scan(page, "editor after a failed save");
 });
+
+test("detail page after opening a row", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("link", { name: /Living room alerts/ }).press("Enter");
+  await expect(page.getByRole("heading", { level: 2, name: "Living room alerts" })).toBeFocused();
+  await scan(page, "detail page after opening a row");
+});

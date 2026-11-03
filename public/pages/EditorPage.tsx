@@ -11,7 +11,7 @@ import { Spinner } from "../components/Spinner.tsx";
 import { Switch } from "../components/Switch.tsx";
 import { api, type Meta } from "../lib/api.ts";
 import { EASE, SPRING, fadeIn, flash, ids, pageTransition } from "../lib/motion.ts";
-import { useEscape, useNav } from "../lib/nav.ts";
+import { useEscape, useNav, useRouteHeading } from "../lib/nav.ts";
 import { useStore } from "../lib/store.tsx";
 import { PRESETS, type Preset } from "../presets.ts";
 import "./EditorPage.css";
@@ -65,6 +65,7 @@ export function EditorPage({ id, back: closeTo }: { id: number | null; back?: st
       closeTo ?? (id !== null && new URLSearchParams(location.search).get("from") === "detail" ? `/webhooks/${id}` : "/"),
   );
   const modal = closeTo !== undefined;
+  const headingRef = useRouteHeading<HTMLHeadingElement>(!modal);
   useEscape(() => navigate(back, { instant: true }));
 
   const [saved, setSaved] = useState<Webhook | null>(null);
@@ -86,7 +87,7 @@ export function EditorPage({ id, back: closeTo }: { id: number | null; back?: st
 
   // The heading sits outside the panel: a shared element must not have a fading ancestor.
   const heading = (
-    <h2 className="editor-title">
+    <h2 ref={headingRef} tabIndex={-1} className="editor-title">
       {id === null ? (
         <motion.span {...fadeIn}>New webhook</motion.span>
       ) : (
@@ -116,7 +117,7 @@ export function EditorPage({ id, back: closeTo }: { id: number | null; back?: st
 
   const body =
     ready && meta ? (
-      <EditorForm id={id} w={w} meta={meta} back={back} onSaved={onSaved} heading={heading} />
+      <EditorForm id={id} w={w} meta={meta} back={back} onSaved={onSaved} heading={heading} focusName={modal} />
     ) : (
       <>
         {heading}
@@ -151,6 +152,7 @@ type EditorFormProps = {
   back: string;
   onSaved: (w: Webhook) => void;
   heading: ReactNode;
+  focusName: boolean;
 };
 
 const FIELD_OF: Partial<Record<keyof FormState, Field>> = {
@@ -221,7 +223,7 @@ function Segmented<T extends string>({
   );
 }
 
-function EditorForm({ id, w, meta, back, onSaved, heading }: EditorFormProps) {
+function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFormProps) {
   const navigate = useNav();
   const reduce = useReducedMotion();
   const uid = useId();
@@ -258,7 +260,9 @@ function EditorForm({ id, w, meta, back, onSaved, heading }: EditorFormProps) {
   const errorBox = useRef<HTMLDivElement>(null);
   const sendButton = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => nameField.current?.focus({ preventScroll: true }), []);
+  useEffect(() => {
+    if (focusName) nameField.current?.focus({ preventScroll: true });
+  }, [focusName]);
 
   useEffect(() => {
     void api<IncomingEvent[]>("/api/events").then((res) => res.ok && setRecent(res.data));
@@ -459,7 +463,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading }: EditorFormProps) {
           <Button
             ref={sendButton}
             className="test-btn send-test"
-            disabled={sending}
+            aria-disabled={sending || undefined}
             aria-busy={sending || undefined}
             onClick={onSendTest}
           >

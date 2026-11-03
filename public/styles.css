@@ -120,9 +120,13 @@ a.button.primary {
 button.danger {
   color: var(--error);
 }
-button:disabled {
+button:disabled,
+button[aria-disabled="true"] {
   opacity: 0.6;
   cursor: default;
+}
+h2[tabindex="-1"]:focus {
+  outline: none;
 }
 button:focus-visible,
 a:focus-visible,
@@ -133,18 +137,18 @@ textarea:focus-visible {
   outline-offset: 2px;
 }
 @media (hover: hover) and (pointer: fine) {
-  button:not(:disabled):hover,
+  button:not(:disabled, [aria-disabled="true"]):hover,
   a.button:hover {
     color: var(--accent-hover);
     box-shadow: var(--glow);
   }
-  button.danger:not(:disabled):hover {
+  button.danger:not(:disabled, [aria-disabled="true"]):hover {
     color: var(--error);
     box-shadow:
       inset 0 0 0 1px rgba(255, 92, 92, 0.6),
       0 0 12px rgba(255, 92, 92, 0.3);
   }
-  button.primary:not(:disabled):hover,
+  button.primary:not(:disabled, [aria-disabled="true"]):hover,
   a.button.primary:hover {
     background: var(--accent-hover);
     border-color: var(--accent-hover);
@@ -185,7 +189,7 @@ textarea:focus-visible {
   }
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  button:not(:disabled):hover,
+  button:not(:disabled, [aria-disabled="true"]):hover,
   a.button:hover {
     scale: 1.02;
   }

@@ -5,10 +5,12 @@ import { CopyButton } from "../components/CopyButton.tsx";
 import { PlexConnection } from "../components/PlexStatus.tsx";
 import { api } from "../lib/api.ts";
 import { fadeIn, flash, pageTransition } from "../lib/motion.ts";
+import { useRouteHeading } from "../lib/nav.ts";
 import { useStore } from "../lib/store.tsx";
 import "./HelpPage.css";
 
 export function HelpPage() {
+  const heading = useRouteHeading<HTMLHeadingElement>();
   const { meta, refresh } = useStore();
   const code = useRef<HTMLElement>(null);
   const row = useRef<HTMLDivElement>(null);
@@ -28,7 +30,7 @@ export function HelpPage() {
   return (
     <motion.div className="page page-help" {...pageTransition}>
       <motion.section className="panel help" {...fadeIn}>
-        <h2>Help</h2>
+        <h2 ref={heading} tabIndex={-1}>Help</h2>
         <ol className="help-steps">
           <li>
             In Plex Web, add this under Account → Webhooks (needs Plex Pass):

@@ -45,6 +45,7 @@ export function SignInPage({ onSignedIn }: { onSignedIn: (user: AuthUser) => voi
   }
 
   async function signIn() {
+    if (waiting && !link) return;
     const id = ++attempt.current;
     popup.current?.close();
     popup.current = openPopup();
@@ -94,7 +95,7 @@ export function SignInPage({ onSignedIn }: { onSignedIn: (user: AuthUser) => voi
           variant="primary"
           className="signin-btn"
           onClick={signIn}
-          disabled={waiting && !link}
+          aria-disabled={(waiting && !link) || undefined}
           aria-busy={waiting || undefined}
         >
           {waiting && !link && <Spinner />}
