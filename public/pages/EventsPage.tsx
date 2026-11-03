@@ -50,6 +50,7 @@ export function EventsPage() {
 
   return (
     <motion.div className="page page-events" {...pageTransition}>
+      <h2 className="sr-only">Events</h2>
       <section className="panel events-panel" aria-label="Recent events">
         <div className="ev-head">
           <RefreshButton onRefresh={load} updatedAt={updatedAt} noun={["event", "events"]} disabled={!events && !error} />

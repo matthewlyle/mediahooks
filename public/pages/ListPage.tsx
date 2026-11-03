@@ -26,6 +26,7 @@ export function ListPage() {
 
   return (
     <motion.div className="page page-list" {...pageTransition}>
+      <h2 className="sr-only">Webhooks</h2>
       {error && !loaded ? (
         <p className="empty">Could not reach the mediahooks API.</p>
       ) : (
