@@ -47,9 +47,9 @@ export function DetailPage({ id }: { id: number }) {
         </>
       ) : (
         loaded && (
-          <EmptyState {...fadeIn}>
-            No such webhook
-          </EmptyState>
+          <Panel {...fadeIn}>
+            <EmptyState size="plain">No such webhook</EmptyState>
+          </Panel>
         )
       )}
     </motion.div>
@@ -221,7 +221,7 @@ function Deliveries({ log, failed, updatedAt, refresh }: DeliveriesState) {
               </AnimatePresence>
             </Table>
           ) : (
-            failed && <EmptyState size="medium">Could not load deliveries</EmptyState>
+            failed && <EmptyState size="plain">Could not load deliveries</EmptyState>
           )}
         </div>
       </motion.div>
@@ -278,9 +278,9 @@ function DeliveryExchange({ d }: { d: Delivery }) {
   }, [d.id]);
 
   return failed !== null ? (
-    <EmptyState size="small">Couldn't load this delivery: {failed}</EmptyState>
+    <EmptyState size="plain">Couldn't load this delivery: {failed}</EmptyState>
   ) : detail === null ? null : detail.request === null ? (
-    <EmptyState size="small">{detail.error ?? "Not recorded"}</EmptyState>
+    <EmptyState size="plain">{detail.error ?? "Not recorded"}</EmptyState>
   ) : (
     <>
       <CodeBlock label="Request" head={`POST ${detail.request.url}\n${headerLines(detail.request.headers)}\n\n`}>
@@ -290,7 +290,7 @@ function DeliveryExchange({ d }: { d: Delivery }) {
       {detail.response === null ? (
         <>
           <CodeLabel>Response</CodeLabel>
-          <EmptyState size="small">No response: {detail.error}</EmptyState>
+          <EmptyState size="plain">No response: {detail.error}</EmptyState>
         </>
       ) : (
         <CodeBlock label="Response" head={`HTTP ${detail.status}\n${headerLines(detail.response.headers)}\n\n`}>

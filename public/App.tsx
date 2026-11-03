@@ -226,7 +226,7 @@ function AccountMenu({ user, onSignOut }: { user: AuthUser; onSignOut: () => voi
       <Menu
         label={`Signed in as ${user.username}`}
         heading={user.username}
-        triggerClassName="avatar-btn"
+        triggerSize="avatar"
         items={[{ label: "Sign out", onSelect: onSignOut }]}
       >
         {user.thumb && !broken ? (

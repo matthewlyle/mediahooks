@@ -163,7 +163,7 @@ function EventDetail({ e }: { e: IncomingEvent }) {
           ))}
         </ul>
       ) : (
-        <EmptyState size="small">No webhooks existed when this arrived.</EmptyState>
+        <EmptyState size="plain">No webhooks existed when this arrived.</EmptyState>
       )}
       <CodeBlock label="Payload">{JSON.stringify(e.payload, null, 2)}</CodeBlock>
     </>
