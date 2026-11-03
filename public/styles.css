@@ -532,22 +532,6 @@ button.avatar-btn {
     color: var(--error);
   }
 }
-.spinner {
-  display: inline-block;
-  width: 11px;
-  height: 11px;
-  border: 2px solid var(--accent);
-  border-top-color: transparent;
-  border-radius: var(--radius-full);
-  vertical-align: -1px;
-  animation: spin 600ms linear infinite;
-}
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .refresh {
   display: inline-flex;
   align-items: center;

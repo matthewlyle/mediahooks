@@ -1,6 +1,7 @@
 import type { ComponentType } from "react";
 import { Button, LinkButton } from "../public/ui/Button.tsx";
 import { Segmented } from "../public/ui/Segmented.tsx";
+import { Spinner } from "../public/ui/Spinner.tsx";
 
 export type Fixture = {
   component: ComponentType<any>;
@@ -25,4 +26,5 @@ export const fixtures: Record<string, Fixture> = {
     },
     bind: { onChange: "value" },
   },
+  Spinner: { component: Spinner, props: { inverse: false } },
 };

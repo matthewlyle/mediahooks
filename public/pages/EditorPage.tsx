@@ -8,7 +8,7 @@ import { isJsonContentType, renderBody, renderHeaders, templateVars } from "../.
 import { Button, LinkButton } from "../ui/Button.tsx";
 import { Segmented } from "../ui/Segmented.tsx";
 import { burst } from "../components/burst.ts";
-import { Spinner } from "../components/Spinner.tsx";
+import { Spinner } from "../ui/Spinner.tsx";
 import { Switch } from "../components/Switch.tsx";
 import { api, type Meta } from "../lib/api.ts";
 import { EASE, SPRING, fadeIn, flash, ids, pageTransition } from "../lib/motion.ts";
