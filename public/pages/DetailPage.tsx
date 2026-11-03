@@ -116,6 +116,7 @@ function Head({ w, direct }: HeadProps) {
       return;
     }
     store.upsert(w);
+    toast.show(`Couldn't ${enabled ? "resume" : "pause"} ${w.name}: ${res.error}`, { sticky: true });
     flash(panel.current, "error");
   }
 

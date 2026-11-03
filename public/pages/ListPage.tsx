@@ -120,6 +120,7 @@ function Row({ w, last, index, enter }: RowProps) {
       return;
     }
     store.upsert(w);
+    toast.show(`Couldn't ${enabled ? "resume" : "pause"} ${w.name}: ${res.error}`, { sticky: true });
     flash(row.current, "error");
   }
 
@@ -129,6 +130,7 @@ function Row({ w, last, index, enter }: RowProps) {
       body: JSON.stringify({ ...w, name: `${w.name} copy` }),
     });
     if (!res.ok) {
+      toast.show(`Couldn't duplicate ${w.name}: ${res.error}`, { sticky: true });
       flash(row.current, "error");
       return;
     }
@@ -140,12 +142,12 @@ function Row({ w, last, index, enter }: RowProps) {
   async function onSendTest() {
     const res = await api<SendResult>("/api/send-test", { method: "POST", body: JSON.stringify(w) });
     if (!res.ok) {
-      toast.show(`Couldn't send a test to ${w.name}: ${res.error}`);
+      toast.show(`Couldn't send a test to ${w.name}: ${res.error}`, { sticky: true });
       flash(row.current, "error");
       return;
     }
     const { ok, status, durationMs, error } = res.data;
-    toast.show(ok ? `Test to ${w.name}: ${status} · ${durationMs}ms` : `Test to ${w.name} failed: ${status ?? error ?? "error"}`);
+    toast.show(ok ? `Test to ${w.name}: ${status} · ${durationMs}ms` : `Test to ${w.name} failed: ${status ?? error ?? "error"}`, { sticky: !ok });
     if (ok) burst(row.current?.querySelector<HTMLElement>(".more-btn"));
     else flash(row.current, "error");
   }
