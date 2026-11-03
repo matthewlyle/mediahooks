@@ -16,7 +16,10 @@ export type SegmentedProps<T extends string> = {
   className?: string;
 };
 
-/** A row of mutually exclusive choices where the selected one is marked by a pill that slides between options. */
+/**
+ * A navigation control that switches the view of the content beside it between a few named options. The selected option is marked by a pill that slides between options.
+ * @group Navigation
+ */
 export function Segmented<T extends string>({ label, options, value, onChange, className }: SegmentedProps<T>) {
   const pill = useId();
   return (
