@@ -45,9 +45,6 @@
     box-shadow: var(--glow);
   }
 }
-.preview-headers {
-  color: var(--muted);
-}
 .editor-title {
   margin: 0;
   font-size: var(--text-15);
@@ -79,16 +76,6 @@
 }
 .send-result.fail {
   color: var(--error);
-}
-
-.editor-missing {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-8);
-}
-.editor-missing p {
-  margin: 0;
 }
 
 form.editor {
