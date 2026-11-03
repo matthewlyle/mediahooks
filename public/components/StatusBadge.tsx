@@ -2,7 +2,7 @@ import { AnimatePresence, useReducedMotion } from "motion/react";
 import type { Delivery } from "../../src/types.ts";
 import { EASE, SPRING } from "../lib/motion.ts";
 import { Badge } from "../ui/Badge.tsx";
-import { RelativeTime } from "./RelativeTime.tsx";
+import { RelativeTime } from "../ui/RelativeTime.tsx";
 
 export function StatusBadge({ delivery }: { delivery: Delivery | null }) {
   const reduce = useReducedMotion();

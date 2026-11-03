@@ -36,7 +36,13 @@ function subscribe(listener: () => void): () => void {
   };
 }
 
-export function RelativeTime({ ms }: { ms: number }) {
+export type RelativeTimeProps = {
+  /** Moment in time to show, as milliseconds since the epoch. */
+  ms: number;
+};
+
+/** A `<time>` element showing how long ago a moment was, refreshed every 30 seconds. Its title shows the full local date and time. */
+export function RelativeTime({ ms }: RelativeTimeProps) {
   useSyncExternalStore(subscribe, () => now);
   const date = new Date(ms);
   return (

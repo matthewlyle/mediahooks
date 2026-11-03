@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import { fadeIn } from "../lib/motion.ts";
 import { usePlexStatus } from "../lib/store.tsx";
-import { RelativeTime } from "./RelativeTime.tsx";
+import { RelativeTime } from "../ui/RelativeTime.tsx";
 
 export function PlexConnection() {
   const status = usePlexStatus();
