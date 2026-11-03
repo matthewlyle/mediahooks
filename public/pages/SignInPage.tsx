@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import type { AuthUser } from "../../src/types.ts";
 import { Button } from "../ui/Button.tsx";
+import { LiveRegion } from "../ui/LiveRegion.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING } from "../lib/motion.ts";
 import "./SignInPage.css";
@@ -99,7 +100,7 @@ export function SignInPage({ onSignedIn }: { onSignedIn: (user: AuthUser) => voi
         >
           Sign in with Plex
         </Button>
-        <div role="status">
+        <LiveRegion visible>
           {waiting && !link && <span className="sr-only">Waiting for Plex…</span>}
           <AnimatePresence initial={false} mode="wait">
             {(link || note) && (
@@ -120,7 +121,7 @@ export function SignInPage({ onSignedIn }: { onSignedIn: (user: AuthUser) => voi
               </motion.p>
             )}
           </AnimatePresence>
-        </div>
+        </LiveRegion>
       </div>
     </motion.div>
   );
