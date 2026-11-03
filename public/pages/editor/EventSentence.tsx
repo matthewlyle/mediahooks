@@ -4,6 +4,7 @@ import type { IncomingEvent, PlexLibrary, PlexUser } from "../../../src/types.ts
 import { api } from "../../lib/api.ts";
 import { EASE } from "../../lib/motion.ts";
 import { eventGroups, sentenceParts, type Slot } from "../../lib/sentence.ts";
+import { Check } from "../../ui/Check.tsx";
 import { Popover } from "../../ui/Popover.tsx";
 import "./EventSentence.css";
 
@@ -75,29 +76,6 @@ function Token({ text, full, label, suffix, tokenRef, invalid, describedBy, popI
         </Fragment>
       ))}
     </span>
-  );
-}
-
-function Check({ checked, disabled, onToggle, title, children }: {
-  checked: boolean;
-  disabled?: boolean;
-  onToggle: () => void;
-  title?: string;
-  children: ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      role="checkbox"
-      aria-checked={checked}
-      aria-disabled={disabled || undefined}
-      className="pop-option"
-      title={title}
-      onClick={() => !disabled && onToggle()}
-    >
-      <span className="pop-check" aria-hidden="true" />
-      {children}
-    </button>
   );
 }
 
