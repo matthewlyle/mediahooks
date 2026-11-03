@@ -3,85 +3,47 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { EASE } from "../lib/motion.ts";
 import { Button } from "./Button.tsx";
 
-export type ToastOptions = {
-  undo?: () => void;
-  onCommit?: () => void;
-};
+export type ToastOptions = { onCommit?: () => void } & (
+  | { undo?: undefined; subject?: undefined }
+  | { undo: () => void; subject: string }
+);
 export type Toaster = { show(text: string, opts?: ToastOptions): void };
 
-const UNDO_MS = 5000;
 const TOAST_MS = 4000;
-
-type Pending = ToastOptions & { remaining: number; startedAt: number; timer: ReturnType<typeof setTimeout> | undefined };
 
 const ToastContext = createContext<Toaster | null>(null);
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const reduce = useReducedMotion();
-  const [toast, setToast] = useState<{ text: string; undo: boolean } | null>(null);
-  const pending = useRef<Pending | null>(null);
-  const hideTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const node = useRef<HTMLDivElement>(null);
+  const [toasts, setToasts] = useState<{ id: number; text: string; undo: boolean; subject?: string }[]>([]);
+  const pending = useRef(new Map<number, ToastOptions>());
+  const nextId = useRef(0);
 
-  const commit = useCallback((p: Pending) => {
-    clearTimeout(p.timer);
-    if (pending.current === p) {
-      pending.current = null;
-      setToast(null);
-    }
-    p.onCommit?.();
-  }, []);
-
-  const resume = useCallback(() => {
-    const p = pending.current;
-    if (!p || p.timer !== undefined) return;
-    const el = node.current;
-    if (el && (el.matches(":hover") || el.contains(document.activeElement))) return;
-    p.startedAt = Date.now();
-    p.timer = setTimeout(() => commit(p), p.remaining);
-  }, [commit]);
-
-  const pause = useCallback(() => {
-    const p = pending.current;
-    if (!p || p.timer === undefined) return;
-    clearTimeout(p.timer);
-    p.timer = undefined;
-    p.remaining -= Date.now() - p.startedAt;
-  }, []);
+  const close = useCallback((id: number) => setToasts((list) => list.filter((t) => t.id !== id)), []);
 
   const show = useCallback(
     (text: string, opts: ToastOptions = {}) => {
-      clearTimeout(hideTimer.current);
-      const previous = pending.current;
-      pending.current = null;
-      if (previous) commit(previous);
-      setToast({ text, undo: Boolean(opts.undo) });
-      if (opts.undo) {
-        pending.current = { ...opts, remaining: UNDO_MS, startedAt: 0, timer: undefined };
-        resume();
-      } else {
-        hideTimer.current = setTimeout(() => setToast(null), TOAST_MS);
-      }
+      const id = nextId.current++;
+      setToasts((list) => [...list, { id, text, undo: Boolean(opts.undo), subject: opts.subject }]);
+      if (opts.undo) pending.current.set(id, opts);
+      else setTimeout(() => close(id), TOAST_MS);
     },
-    [commit, resume],
+    [close],
   );
 
-  function onUndo() {
-    const p = pending.current;
-    if (!p) return;
-    clearTimeout(p.timer);
-    pending.current = null;
-    setToast(null);
-    p.undo?.();
+  function settle(id: number, run: (opts: ToastOptions) => void) {
+    const opts = pending.current.get(id);
+    if (!opts) return;
+    pending.current.delete(id);
+    close(id);
+    run(opts);
   }
 
   useEffect(() => {
     const onPageHide = () => {
-      const p = pending.current;
-      if (!p) return;
-      clearTimeout(p.timer);
-      pending.current = null;
-      p.onCommit?.();
+      const all = [...pending.current.values()];
+      pending.current.clear();
+      for (const p of all) p.onCommit?.();
     };
     addEventListener("pagehide", onPageHide);
     return () => removeEventListener("pagehide", onPageHide);
@@ -94,27 +56,27 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
       <div role="status" className="toast-region">
         <AnimatePresence>
-          {toast && (
+          {toasts.map((t) => (
             <motion.div
-              key="toast"
-              ref={node}
+              key={t.id}
               className="toast"
               initial={reduce ? { opacity: 0 } : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0, transition: { duration: 0.2, ease: EASE.outQuint } }}
               exit={reduce ? { opacity: 0, transition: { duration: 0.15, ease: EASE.css } } : { opacity: 0, y: 8, transition: { duration: 0.15, ease: EASE.outQuint } }}
-              onPointerEnter={pause}
-              onFocus={pause}
-              onPointerLeave={resume}
-              onBlur={() => requestAnimationFrame(resume)} // after focus settles
             >
-              <span className="toast-text">{toast.text}</span>
-              {toast.undo && (
-                <Button className="toast-undo" onClick={onUndo}>
-                  Undo
-                </Button>
+              <span className="toast-text">{t.text}</span>
+              {t.undo && (
+                <>
+                  <Button className="toast-undo" aria-label={`Undo deleting ${t.subject}`} onClick={() => settle(t.id, (p) => p.undo?.())}>
+                    Undo
+                  </Button>
+                  <Button className="toast-dismiss" aria-label={`Dismiss: delete ${t.subject}`} onClick={() => settle(t.id, (p) => p.onCommit?.())}>
+                    Dismiss
+                  </Button>
+                </>
               )}
             </motion.div>
-          )}
+          ))}
         </AnimatePresence>
       </div>
     </ToastContext.Provider>

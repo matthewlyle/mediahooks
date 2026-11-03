@@ -139,6 +139,7 @@ function Row({ w, last, index, enter }: RowProps) {
       (next ?? document.getElementById("new-hook"))?.focus({ preventScroll: true });
     });
     toast.show(`Deleted ${w.name}`, {
+      subject: w.name,
       undo: () => {
         store.restore(w, index);
         store.setHighlight({ id: w.id, tone: "accent", focus: true });

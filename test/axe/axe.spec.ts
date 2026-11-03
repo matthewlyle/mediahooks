@@ -76,6 +76,18 @@ test("open row menu", async ({ page }) => {
   await scan(page, "open row menu");
 });
 
+test("undo toast after a delete", async ({ page, request }) => {
+  const res = await request.post("/api/webhooks", {
+    data: { name: "Delete me", url: "http://127.0.0.1:9/hook", events: ["media.play"], enabled: true },
+  });
+  expect(res.ok()).toBe(true);
+  await page.goto("/");
+  await page.getByRole("button", { name: "More actions for Delete me" }).click();
+  await page.getByRole("menuitem", { name: "Delete" }).click();
+  await expect(page.getByRole("button", { name: "Undo" })).toBeVisible();
+  await scan(page, "undo toast after a delete");
+});
+
 test("editor after a failed save", async ({ page }) => {
   await page.goto("/new");
   await page.getByRole("button", { name: "Save" }).click();
