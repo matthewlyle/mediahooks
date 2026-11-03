@@ -1,11 +1,21 @@
+import type { APIRequestContext, Page } from "@playwright/test";
 import { expect, test } from "./voiceover.ts";
 
-test("opening a webhook announces the detail heading", async ({ page, request, voiceOver }) => {
+async function createWebhook(request: APIRequestContext, name: string) {
   const created = await request.post("/api/webhooks", {
-    data: { name: "Living room alerts", url: "http://127.0.0.1:9/hook", events: ["media.play"] },
+    data: { name, url: "http://127.0.0.1:9/hook", events: ["media.play"] },
   });
   expect(created.ok()).toBe(true);
+  return ((await created.json()) as { id: number }).id;
+}
 
+async function expectHeadingAnnounced(page: Page, spoken: string[], name: string) {
+  await expect(page.getByRole("heading", { level: 2, name })).toBeFocused();
+  expect(spoken).toContainEqual(expect.stringMatching(new RegExp(`${name}.*heading`, "i")));
+}
+
+test("opening a webhook announces the detail heading", async ({ page, request, voiceOver }) => {
+  await createWebhook(request, "Living room alerts");
   await page.goto("/");
   const row = page.locator(".card-main").first();
   await expect(row).toBeVisible();
@@ -14,6 +24,35 @@ test("opening a webhook announces the detail heading", async ({ page, request, v
 
   await voiceOver.capture(() => row.press("Enter"), { capture: true });
 
-  await expect(page.getByRole("heading", { level: 2, name: "Living room alerts" })).toBeFocused();
-  expect(await voiceOver.spokenPhraseLog()).toContainEqual(expect.stringMatching(/Living room alerts.*heading/i));
+  await expectHeadingAnnounced(page, await voiceOver.spokenPhraseLog(), "Living room alerts");
+});
+
+test("a nav link announces the destination heading", async ({ page, voiceOver }) => {
+  await page.goto("/");
+  const link = page.getByRole("banner").getByRole("link", { name: "Events" });
+  await expect(link).toBeVisible();
+  await voiceOver.navigateToWebContent();
+  await link.focus();
+
+  await voiceOver.capture(() => link.press("Enter"), { capture: true });
+
+  await expectHeadingAnnounced(page, await voiceOver.spokenPhraseLog(), "Events");
+});
+
+test("Edit and Save announce the editor and detail headings", async ({ page, request, voiceOver }) => {
+  const id = await createWebhook(request, "Kitchen alerts");
+  await page.goto(`/webhooks/${id}`);
+  const edit = page.getByRole("link", { name: "Edit" });
+  await expect(edit).toBeVisible();
+  await voiceOver.navigateToWebContent();
+  await edit.focus();
+
+  await voiceOver.capture(() => edit.press("Enter"), { capture: true });
+  await expectHeadingAnnounced(page, await voiceOver.spokenPhraseLog(), "Edit Kitchen alerts");
+
+  const save = page.getByRole("button", { name: "Save" });
+  await save.focus();
+  await voiceOver.clearSpokenPhraseLog();
+  await voiceOver.capture(() => save.press("Enter"), { capture: true });
+  await expectHeadingAnnounced(page, await voiceOver.spokenPhraseLog(), "Kitchen alerts");
 });
