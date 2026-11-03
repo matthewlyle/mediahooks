@@ -26,6 +26,10 @@
   margin: 8px 0 0;
   font-size: 12px;
 }
+.help .help-version {
+  margin: 16px 0 0;
+  font-size: 12px;
+}
 @media (max-width: 640px) {
   .help-url {
     flex-wrap: wrap;

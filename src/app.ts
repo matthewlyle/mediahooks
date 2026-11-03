@@ -1,4 +1,5 @@
 import type { HTMLBundle, Server } from "bun";
+import { version } from "../package.json";
 import { clientId, createAuth } from "./auth.ts";
 import type { Db } from "./db.ts";
 import { createDispatcher, type Dispatcher } from "./dispatch.ts";
@@ -104,6 +105,7 @@ export function createApp(config: AppConfig): App {
       "/api/meta": {
         GET: () =>
           Response.json({
+            version,
             events: PLEX_EVENTS,
             templateVars: TEMPLATE_VARS_HELP,
             ingestToken: ingest.token(),

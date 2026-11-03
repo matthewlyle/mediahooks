@@ -1,6 +1,7 @@
 import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import index from "../public/index.html";
+import { version } from "../package.json";
 import { createApp } from "./app.ts";
 import { openDb } from "./db.ts";
 
@@ -22,8 +23,8 @@ const { server, dispatcher } = createApp({
   plexTvUrl: process.env.PLEX_TV_URL || "https://plex.tv",
 });
 
-console.log(`mediahooks listening on ${server.url}`);
-console.log(`Plex webhook URL: ${new URL("/plex", server.url)}?token=… (the full URL is on the Help page)`);
+console.log(`mediahooks ${version} listening on port ${server.port}`);
+console.log("Plex webhook URL: copy it from the Help page in the web UI");
 if (!AUTH) console.log("AUTH=off: the UI and API are open to anyone who can reach this port");
 
 async function shutdown(): Promise<void> {
