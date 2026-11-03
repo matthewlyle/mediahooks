@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import type { SendResult } from "../../src/send.ts";
 import type { Delivery, Webhook } from "../../src/types.ts";
+import { EmptyState } from "../ui/EmptyState.tsx";
 import { burst } from "../components/burst.ts";
 import { Menu } from "../ui/Menu.tsx";
 import { WebhookIdentity } from "../ui/WebhookIdentity.tsx";
@@ -30,7 +31,7 @@ export function ListPage() {
     <motion.div className="page page-list" {...pageTransition}>
       <h2 ref={heading} tabIndex={-1} className="sr-only">Webhooks</h2>
       {error && !loaded ? (
-        <p className="empty">Could not reach the mediahooks API.</p>
+        <EmptyState>Could not reach the mediahooks API.</EmptyState>
       ) : (
         <>
           <ul className="hooks">
@@ -39,9 +40,9 @@ export function ListPage() {
                 <Row key={w.id} w={w} last={lastDelivery[w.id] ?? null} index={index} enter={enter} />
               ))}
               {loaded && webhooks.length === 0 && (
-                <motion.li
+                <EmptyState
+                  as="li"
                   key="empty"
-                  className="empty"
                   layout
                   initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -49,7 +50,7 @@ export function ListPage() {
                   transition={{ ...SPRING.pop, layout: SPRING.morph }}
                 >
                   No webhooks
-                </motion.li>
+                </EmptyState>
               )}
             </AnimatePresence>
           </ul>

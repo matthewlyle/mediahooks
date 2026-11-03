@@ -1,5 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useId, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { EmptyState } from "../ui/EmptyState.tsx";
 import { matches, type Filters } from "../../src/filters.ts";
 import type { SendResult } from "../../src/send.ts";
 import type { IncomingEvent, PlexPayload, Webhook } from "../../src/types.ts";
@@ -32,10 +33,11 @@ import {
   type FormState,
 } from "./editor/form.ts";
 import { CodeEditor, type CodeEditorHandle } from "../ui/CodeEditor.tsx";
+import { Panel } from "../ui/Panel.tsx";
 import { DiscordPreview, isDiscordMessage } from "./editor/DiscordPreview.tsx";
 import { SlackPreview, isSlackMessage } from "./editor/SlackPreview.tsx";
 import { EventSentence } from "./editor/EventSentence.tsx";
-import { Reveal } from "./editor/Reveal.tsx";
+import { Reveal } from "../ui/Reveal.tsx";
 
 const PANEL_MOTION = {
   initial: { opacity: 0, y: 16 },
@@ -124,9 +126,9 @@ export function EditorPage({ id, back: closeTo }: { id: number | null; back?: st
       <>
         {heading}
         {missing && (
-          <motion.section className="panel editor" {...PANEL_MOTION}>
+          <Panel className="editor" {...PANEL_MOTION}>
             <Missing text={missing} />
-          </motion.section>
+          </Panel>
         )}
       </>
     );
@@ -140,10 +142,9 @@ export function EditorPage({ id, back: closeTo }: { id: number | null; back?: st
 
 function Missing({ text }: { text: string }) {
   return (
-    <div className="editor-missing">
-      <p className="muted">{text}</p>
-      <LinkButton to="/">Back to webhooks</LinkButton>
-    </div>
+    <EmptyState as="div" action={<LinkButton to="/">Back to webhooks</LinkButton>}>
+      {text}
+    </EmptyState>
   );
 }
 
@@ -438,7 +439,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
         </p>
         <AnimatePresence initial={false}>
           {result && line && (
-            <Reveal key="result">
+            <Reveal key="result" className="bar-reveal">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.p
                   key={result.n}
@@ -456,7 +457,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
         </AnimatePresence>
         <AnimatePresence initial={false}>
           {formError !== null && (
-            <Reveal key="error">
+            <Reveal key="error" className="bar-reveal">
               <div ref={errorBox} className="form-error" role="alert">
                 {formError}
               </div>
@@ -465,7 +466,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
         </AnimatePresence>
       </div>
 
-      <motion.form id={formId} className="panel editor" onSubmit={onSave} noValidate {...PANEL_MOTION}>
+      <Panel as="form" id={formId} className="editor" onSubmit={onSave} noValidate {...PANEL_MOTION}>
         <div className="editor-section">
           <div className="row row-destination">
             <div className="field">
@@ -699,7 +700,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
             </div>
           </div>
         </div>
-      </motion.form>
+      </Panel>
     </>
   );
 }

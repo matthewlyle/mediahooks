@@ -127,8 +127,7 @@
   font-size: var(--text-13);
 }
 .d-retries,
-.d-time,
-.deliveries-empty {
+.d-time {
   font-family: var(--mono);
   font-size: var(--text-11);
   color: var(--muted);
@@ -138,8 +137,6 @@
 }
 .deliveries-empty {
   grid-column: 1 / -1;
-  padding: var(--space-16) var(--space-8);
-  text-align: center;
 }
 
 @media (max-width: 640px) {

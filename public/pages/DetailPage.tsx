@@ -1,8 +1,10 @@
 import { AnimatePresence, motion, useIsPresent, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import type { Delivery, DeliveryDetail, Webhook } from "../../src/types.ts";
+import { EmptyState } from "../ui/EmptyState.tsx";
 import { Button, LinkButton } from "../ui/Button.tsx";
 import { WebhookIdentity } from "../ui/WebhookIdentity.tsx";
+import { Panel } from "../ui/Panel.tsx";
 import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
 import { RelativeTime } from "../ui/RelativeTime.tsx";
 import { StatusBadge } from "../components/StatusBadge.tsx";
@@ -41,9 +43,9 @@ export function DetailPage({ id }: { id: number }) {
         </>
       ) : (
         loaded && (
-          <motion.p className="panel muted detail-missing" {...fadeIn}>
+          <Panel as="p" className="muted detail-missing" {...fadeIn}>
             No such webhook
-          </motion.p>
+          </Panel>
         )
       )}
     </motion.div>
@@ -145,11 +147,11 @@ function Head({ w, direct }: HeadProps) {
   }
 
   return (
-    <motion.section
+    <Panel
       ref={panel}
       layoutId={ids.card(w.id)}
       layoutCrossfade={false}
-      className="panel detail-head"
+      className="detail-head"
       style={{ borderRadius: 2 }}
       initial={direct ? { opacity: 0 } : undefined}
       animate={{ opacity: 1 }}
@@ -172,7 +174,7 @@ function Head({ w, direct }: HeadProps) {
           Delete
         </Button>
       </motion.div>
-    </motion.section>
+    </Panel>
   );
 }
 
@@ -189,7 +191,7 @@ function Deliveries({ log, failed, updatedAt, refresh }: DeliveriesState) {
   }, [log, settled]);
 
   return (
-    <motion.section ref={panel} className="panel deliveries" aria-labelledby="deliveries-heading" {...fadeIn}>
+    <Panel ref={panel} className="deliveries" aria-labelledby="deliveries-heading" {...fadeIn}>
       <motion.div
         className="deliveries-size"
         initial={false}
@@ -204,7 +206,7 @@ function Deliveries({ log, failed, updatedAt, refresh }: DeliveriesState) {
           {log ? (
             <ul className="deliveries-list">
               {/* Outside AnimatePresence: it must leave in the same render the first row arrives. */}
-              {log.items.length === 0 && <li className="deliveries-empty">No deliveries yet</li>}
+              {log.items.length === 0 && <EmptyState as="li" size="small" className="deliveries-empty">No deliveries yet</EmptyState>}
               <AnimatePresence initial={false}>
                 {log.items.map((d) => (
                   <DeliveryRow key={d.id} d={d} fresh={log.fresh.has(d.id)} />
@@ -216,7 +218,7 @@ function Deliveries({ log, failed, updatedAt, refresh }: DeliveriesState) {
           )}
         </div>
       </motion.div>
-    </motion.section>
+    </Panel>
   );
 }
 
