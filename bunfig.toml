@@ -1,3 +1,6 @@
 [test]
 root = "."
 pathIgnorePatterns = ["test/**", "node_modules/**"]
+
+[serve.static]
+plugins = ["./design/fixtures-plugin.ts"]
