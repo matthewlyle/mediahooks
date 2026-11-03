@@ -58,10 +58,10 @@ export function HelpPage() {
               <code ref={code}>{ingestUrl}</code>
               {confirming ? (
                 <>
-                  <Button variant="danger" className="ingest-btn" disabled={replacing} onClick={() => void onReplace()}>
+                  <Button variant="danger" size="small" className="ingest-btn" disabled={replacing} onClick={() => void onReplace()}>
                     Replace token
                   </Button>
-                  <Button className="ingest-btn" disabled={replacing} onClick={leaveConfirm}>
+                  <Button size="small" className="ingest-btn" disabled={replacing} onClick={leaveConfirm}>
                     Cancel
                   </Button>
                 </>
@@ -69,10 +69,11 @@ export function HelpPage() {
                 <>
                   <CopyButton
                     text={ingestUrl}
+                    size="small"
                     className="ingest-btn"
                     onFail={() => code.current && getSelection()?.selectAllChildren(code.current)}
                   />
-                  <Button ref={newToken} className="ingest-btn" onClick={() => setConfirming(true)}>
+                  <Button ref={newToken} size="small" className="ingest-btn" onClick={() => setConfirming(true)}>
                     New token
                   </Button>
                 </>
