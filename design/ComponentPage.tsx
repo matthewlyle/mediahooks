@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Component, Prop } from "./extract.ts";
 import { stageUrl, type FromStage, type ToStage } from "./protocol.ts";
+import { Prose } from "./Prose.tsx";
 
 type Kind = "boolean" | "select" | "string" | "number" | "callback" | "json";
 
@@ -176,7 +177,11 @@ export function ComponentPage({ component, mobile, setMobile, reduced, setReduce
       <article className="pg-bench-main">
         <h1>{component.name}</h1>
         <p className="pg-mono pg-muted">{component.file}</p>
-        {component.doc && <p className="pg-doc">{component.doc}</p>}
+        {component.doc && (
+          <p className="pg-doc">
+            <Prose text={component.doc} />
+          </p>
+        )}
 
         <div className="pg-toolbar">
           <label className="pg-toggle">
@@ -203,30 +208,43 @@ export function ComponentPage({ component, mobile, setMobile, reduced, setReduce
         </div>
 
         <h2>Props</h2>
-        <table className="pg-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Type</th>
-              <th>Default</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
+        {component.props.length ? (
+          <ul className="pg-props">
             {component.props.map((p) => (
-              <tr key={p.name}>
-                <td className="pg-mono">
-                  {p.name}
-                  {p.required && <span className="pg-tag">required</span>}
-                </td>
-                <td className="pg-mono">{p.type}</td>
-                <td className="pg-mono">{p.default ?? ""}</td>
-                <td>{p.doc ?? ""}</td>
-              </tr>
+              <li key={p.name}>
+                <div className="pg-prop-head">
+                  <code className="pg-prop-name">{p.name}</code>
+                  <code className="pg-prop-type">{p.options && !p.type.includes('"') ? p.options.map((o) => JSON.stringify(o)).join(" | ") : p.type}</code>
+                  {p.required && <span className="pg-prop-req">Required</span>}
+                </div>
+                {p.doc && (
+                  <p>
+                    <Prose text={p.doc} />
+                  </p>
+                )}
+                {p.default && (
+                  <p className="pg-prop-default">
+                    Default <code className="pg-code">{p.default}</code>
+                  </p>
+                )}
+              </li>
             ))}
-          </tbody>
-        </table>
-        {component.inherits.length > 0 && <p className="pg-muted">Also accepts {component.inherits.join(", ")}.</p>}
+          </ul>
+        ) : (
+          <p className="pg-muted">No props.</p>
+        )}
+        {component.inherits.length > 0 && (
+          <p className="pg-inherits">
+            Also accepts{" "}
+            {component.inherits.map((l, i) => (
+              <span key={l}>
+                {i > 0 && (i === component.inherits.length - 1 ? " and " : ", ")}
+                <code className="pg-code">{l}</code>
+              </span>
+            ))}{" "}
+            props.
+          </p>
+        )}
       </article>
 
       <aside aria-label="Inspector" className="pg-inspector">

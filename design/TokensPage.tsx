@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { animate } from "motion/react";
 import type { Extracted, Token } from "./extract.ts";
 import * as motionModule from "../public/lib/motion.ts";
+import { Prose } from "./Prose.tsx";
 
 const COLOR = /^(#[0-9a-f]{3,8}|rgba?\(|hsla?\(|oklch\(|color-mix\()/i;
 
@@ -104,7 +105,7 @@ export function TokensPage({ data }: { data: Extracted }) {
     <div key={t.name} className="pg-row">
       {name(t.name)}
       <span className="pg-mono pg-muted">{t.value}</span>
-      {preview ?? <span className="pg-muted pg-small">{t.doc}</span>}
+      {preview ?? (t.doc && <span className="pg-muted pg-small"><Prose text={t.doc} /></span>)}
     </div>
   );
 
@@ -115,7 +116,7 @@ export function TokensPage({ data }: { data: Extracted }) {
           <Chip name={t.name} size="lg" />
           {name(t.name)}
           <span className="pg-mono pg-muted">{t.value}</span>
-          {t.doc && <span className="pg-muted pg-small">{t.doc}</span>}
+          {t.doc && <span className="pg-muted pg-small"><Prose text={t.doc} /></span>}
         </div>
       ))}
     </div>
@@ -167,7 +168,7 @@ export function TokensPage({ data }: { data: Extracted }) {
           t,
           <span className="pg-effect-cell">
             {effect(t)}
-            {t.doc && <span className="pg-muted pg-small">{t.doc}</span>}
+            {t.doc && <span className="pg-muted pg-small"><Prose text={t.doc} /></span>}
           </span>,
         ),
       ),

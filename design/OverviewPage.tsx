@@ -1,6 +1,7 @@
 import type { Component, Extracted } from "./extract.ts";
 import { GROUPS } from "./fixture.ts";
 import { stageUrl } from "./protocol.ts";
+import { Prose } from "./Prose.tsx";
 
 const PALETTE = ["--bg", "--surface", "--raised", "--fg", "--muted", "--accent", "--success", "--error"];
 const SIZES = ["--text-20", "--text-16", "--text-14", "--text-12"];
@@ -80,7 +81,7 @@ export function OverviewPage({ data }: { data: Extracted }) {
                 <li key={c.name}>
                   <a href={`#${encodeURIComponent(c.name)}`}>
                     <span className="pg-mono">{c.name}</span>
-                    {c.doc && <span className="pg-muted">{c.doc.split(/(?<=\.)\s/)[0]}</span>}
+                    {c.doc && <span className="pg-muted"><Prose text={c.doc.split(/(?<=\.)\s/)[0]!} /></span>}
                   </a>
                 </li>
               )),
