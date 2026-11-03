@@ -209,8 +209,6 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
   const [serverErrors, setServerErrors] = useState<FieldErrors>({});
   const edited = useRef(new Set<Field>());
   const shown = (f: Field) => serverErrors[f] ?? (touched.has(f) ? errors[f] : undefined);
-  const invalidProps = (f: Field) =>
-    shown(f) ? { "aria-invalid": true, "aria-describedby": errId(f) } : { "aria-invalid": false };
   const [focusRequest, setFocusRequest] = useState<{ field: Field } | null>(null);
 
   const sentinel = useRef<HTMLDivElement>(null);
