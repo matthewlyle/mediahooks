@@ -5,7 +5,7 @@ import type { AuthUser, Webhook } from "../src/types.ts";
 import { LinkButton } from "./ui/Button.tsx";
 import { NavLink } from "./ui/NavLink.tsx";
 import { Menu } from "./ui/Menu.tsx";
-import { Modal } from "./components/Modal.tsx";
+import { Modal } from "./ui/Modal.tsx";
 import { ToastProvider } from "./ui/Toast.tsx";
 import { api, setUnauthorizedHandler } from "./lib/api.ts";
 import { EASE, SPRING, routeDirection, useFinePointer } from "./lib/motion.ts";

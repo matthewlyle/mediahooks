@@ -3,6 +3,7 @@ import { Badge } from "../public/ui/Badge.tsx";
 import { Button, LinkButton } from "../public/ui/Button.tsx";
 import { Check } from "../public/ui/Check.tsx";
 import { CopyButton } from "../public/ui/CopyButton.tsx";
+import { Modal, type ModalProps } from "../public/ui/Modal.tsx";
 import { FieldError } from "../public/ui/FieldError.tsx";
 import { Menu } from "../public/ui/Menu.tsx";
 import { NavLink } from "../public/ui/NavLink.tsx";
@@ -99,3 +100,21 @@ fixtures.Popover = {
   props: { id: "demo-popover", open: true, label: "Pick one" },
   bind: { onClose: () => ({ open: false }) },
 };
+
+function ModalDemo(props: ModalProps) {
+  const [open, setOpen] = useState(true);
+  return createElement(
+    Fragment,
+    null,
+    createElement("button", { type: "button", onClick: () => setOpen(true) }, "Open modal"),
+    open &&
+      createElement(
+        Modal,
+        props,
+        createElement("p", null, "Dialog content"),
+        createElement("button", { type: "button", onClick: () => setOpen(false) }, "Close"),
+      ),
+  );
+}
+
+fixtures.Modal = { component: ModalDemo, props: { label: "Example dialog" } };
