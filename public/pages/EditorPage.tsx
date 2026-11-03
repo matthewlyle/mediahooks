@@ -8,6 +8,7 @@ import type { SendResult } from "../../src/send.ts";
 import type { IncomingEvent, PlexPayload, Webhook } from "../../src/types.ts";
 import { SAMPLE_MOVIE_PAYLOAD, SAMPLE_PAYLOAD, SAMPLE_TRACK_PAYLOAD } from "../../src/sample.ts";
 import { isJsonContentType, renderBody, renderHeaders, templateVars } from "../../src/template.ts";
+import { ErrorMessage } from "../ui/ErrorMessage.tsx";
 import { Button, LinkButton } from "../ui/Button.tsx";
 import { Field as FormField, useFieldControl } from "../ui/Field.tsx";
 import { FieldError } from "../ui/FieldError.tsx";
@@ -43,6 +44,7 @@ import { SlackPreview, isSlackMessage } from "./editor/SlackPreview.tsx";
 import { EventSentence } from "./editor/EventSentence.tsx";
 import { Disclosure } from "../ui/Disclosure.tsx";
 import { Toolbar } from "../ui/Toolbar.tsx";
+import { LiveRegion } from "../ui/LiveRegion.tsx";
 import { Reveal } from "../ui/Reveal.tsx";
 import { Select } from "../ui/Select.tsx";
 
@@ -218,7 +220,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
   const headersEditor = useRef<CodeEditorHandle>(null);
   const bodyEditor = useRef<CodeEditorHandle>(null);
   const whatToken = useRef<HTMLSpanElement>(null);
-  const errorBox = useRef<HTMLDivElement>(null);
+  const errorBox = useRef<HTMLParagraphElement>(null);
   const sendButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -418,9 +420,9 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
             Save
           </Button>
         </Toolbar>
-        <p className="sr-only" role="status">
+        <LiveRegion as="p">
           {sending ? (sendingAnnounced ? "Sending test…" : "") : result && line ? `${result.ok ? "Test delivered" : "Test failed"}: ${line.summary}` : ""}
-        </p>
+        </LiveRegion>
         <AnimatePresence initial={false}>
           {result && line && (
             <Reveal key="result" className="bar-reveal">
@@ -442,9 +444,9 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
         <AnimatePresence initial={false}>
           {formError !== null && (
             <Reveal key="error" className="bar-reveal">
-              <div ref={errorBox} className="form-error" role="alert">
+              <ErrorMessage ref={errorBox} role="alert">
                 {formError}
-              </div>
+              </ErrorMessage>
             </Reveal>
           )}
         </AnimatePresence>
@@ -610,7 +612,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
                 )}
                 <AnimatePresence initial={false}>
                   {preview.invalid !== null && (
-                    <motion.span
+                    <ErrorMessage
                       key="invalid"
                       className="preview-error"
                       initial={{ opacity: 0 }}
@@ -618,7 +620,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
                       exit={{ opacity: 0, transition: { duration: 0.12, ease: EASE.css } }}
                     >
                       Not valid JSON
-                    </motion.span>
+                    </ErrorMessage>
                   )}
                 </AnimatePresence>
               </SectionHeader>

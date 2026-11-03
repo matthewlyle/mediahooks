@@ -19,8 +19,9 @@ button.signin-btn {
   color: var(--muted);
   text-align: center;
 }
-.signin-note.error {
-  color: var(--error);
+.signin-error {
+  margin: var(--space-12) 0 0;
+  text-align: center;
 }
 .signin-note a {
   color: var(--accent);

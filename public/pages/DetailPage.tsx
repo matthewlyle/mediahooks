@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Delivery, DeliveryDetail, Webhook } from "../../src/types.ts";
 import { EmptyState } from "../ui/EmptyState.tsx";
 import { CodeBlock } from "../ui/CodeBlock.tsx";
+import { ErrorMessage } from "../ui/ErrorMessage.tsx";
 import { Button, LinkButton } from "../ui/Button.tsx";
 import { ResultLine } from "../ui/ResultLine.tsx";
 import { WebhookIdentity } from "../ui/WebhookIdentity.tsx";
@@ -166,10 +167,10 @@ function Head({ w, direct }: HeadProps) {
       <div className="detail-main">
         <WebhookIdentity id={w.id} name={w.name} url={w.url} paused={!w.enabled} parts={webhookParts(w)} variant="detail" nameRef={heading} />
         {failure && (
-          <motion.p className="detail-error" {...fadeIn}>
+          <ErrorMessage className="detail-error" {...fadeIn}>
             <span className="sr-only">Last delivery error: </span>
             {failure}
-          </motion.p>
+          </ErrorMessage>
         )}
       </div>
       <Toolbar className="detail-actions" {...fadeIn}>
