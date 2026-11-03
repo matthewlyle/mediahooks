@@ -1,4 +1,4 @@
-.menu .pop-option {
+.pop-option {
   display: flex;
   align-items: center;
   gap: var(--space-8);
@@ -6,6 +6,7 @@
   white-space: normal;
 }
 .pop-check {
+  display: inline-block;
   flex: none;
   width: 12px;
   height: 12px;
@@ -19,7 +20,7 @@
   background: var(--accent);
   box-shadow: 0 0 8px var(--accent-45);
 }
-.menu .pop-option[aria-disabled="true"] {
+.pop-option[aria-disabled="true"] {
   color: var(--muted);
   cursor: default;
 }
