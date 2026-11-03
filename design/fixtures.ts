@@ -1,12 +1,37 @@
-import { Fragment, createElement, useState, type ComponentType } from "react";
+import { Fragment, createElement, useState, type ComponentType, type ReactNode } from "react";
 import { Badge } from "../public/ui/Badge.tsx";
 import { Button, LinkButton } from "../public/ui/Button.tsx";
 import { Check } from "../public/ui/Check.tsx";
+import { CopyButton } from "../public/ui/CopyButton.tsx";
 import { Modal, type ModalProps } from "../public/ui/Modal.tsx";
 import { FieldError } from "../public/ui/FieldError.tsx";
+import { Menu } from "../public/ui/Menu.tsx";
 import { Popover, type PopoverProps } from "../public/ui/Popover.tsx";
+import { RefreshButton, type RefreshButtonProps } from "../public/ui/RefreshButton.tsx";
+import { RelativeTime } from "../public/ui/RelativeTime.tsx";
 import { Segmented } from "../public/ui/Segmented.tsx";
+import { Spinner } from "../public/ui/Spinner.tsx";
 import { Switch } from "../public/ui/Switch.tsx";
+import { ToastProvider, useToast } from "../public/ui/Toast.tsx";
+
+function ToastDemo({ children }: { children?: ReactNode }) {
+  const toast = useToast();
+  return createElement(Button, { onClick: () => toast.show(String(children ?? "")) }, "Show toast");
+}
+
+function ToastPreview({ children }: { children?: ReactNode }) {
+  return createElement(ToastProvider, null, createElement(ToastDemo, null, children));
+}
+
+function RefreshPreview({ onRefresh, ...props }: RefreshButtonProps) {
+  return createElement(RefreshButton, {
+    ...props,
+    onRefresh: async () => {
+      void onRefresh();
+      return { ok: true as const, added: 2 };
+    },
+  });
+}
 
 export type Fixture = {
   component: ComponentType<any>;
@@ -19,9 +44,28 @@ export const fixtures: Record<string, Fixture> = {
   Badge: { component: Badge, props: { children: "Paused" } },
   Button: { component: Button, props: { children: "Save" } },
   LinkButton: { component: LinkButton, props: { to: "/", children: "Back" } },
+  Menu: {
+    component: Menu,
+    props: {
+      label: "Actions",
+      children: "Actions",
+      heading: "Webhook",
+      items: [
+        { label: "Edit", onSelect: () => {} },
+        { label: "Duplicate", onSelect: () => {}, disabled: true },
+        { label: "Delete", onSelect: () => {}, danger: true },
+      ],
+    },
+  },
+  CopyButton: { component: CopyButton, props: { text: "Copied text" } },
   Check: { component: Check, props: { checked: true, children: "Option" } },
   FieldError: { component: FieldError, props: { id: "field-error", error: "Enter a name" } },
+  RefreshButton: {
+    component: RefreshPreview,
+    props: { updatedAt: Date.now() - 60_000, noun: ["event", "events"] },
+  },
   Switch: { component: Switch, props: { checked: false, label: "Enabled" }, bind: { onChange: "checked" } },
+  ToastProvider: { component: ToastPreview, props: { children: "Saved" } },
   Segmented: {
     component: Segmented,
     props: {
@@ -35,6 +79,8 @@ export const fixtures: Record<string, Fixture> = {
     },
     bind: { onChange: "value" },
   },
+  Spinner: { component: Spinner, props: { inverse: false } },
+  RelativeTime: { component: RelativeTime, props: { ms: Date.now() - 3 * 60_000 } },
 };
 
 function PopoverDemo({ anchor: _anchor, ...props }: PopoverProps) {

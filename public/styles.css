@@ -114,9 +114,6 @@ textarea:focus-visible {
   }
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .menu button:not(:disabled):hover {
-    scale: none;
-  }
   .more-btn:not(:disabled):hover .dot:first-child {
     translate: -2px 0;
   }
@@ -128,16 +125,12 @@ textarea:focus-visible {
 @media (pointer: coarse) {
   .ingest-btn,
   .test-btn,
-  .more-btn,
-  .toast-undo,
-  .toast-dismiss {
+  .more-btn {
     position: relative;
   }
   .ingest-btn::before,
   .test-btn::before,
-  .more-btn::before,
-  .toast-undo::before,
-  .toast-dismiss::before {
+  .more-btn::before {
     content: "";
     position: absolute;
     inset: -9px;
@@ -239,9 +232,6 @@ button.avatar-btn {
   padding: var(--space-1) var(--space-8);
   min-width: 56px;
 }
-.copy-btn {
-  min-width: 72px;
-}
 
 .routes {
   position: relative;
@@ -283,29 +273,6 @@ button.avatar-btn {
 @keyframes flash-error {
   from {
     background-color: var(--error-tint);
-  }
-}
-.copy-check {
-  width: 10px;
-  height: 10px;
-  margin-right: var(--space-4);
-  vertical-align: -1px;
-  overflow: visible;
-}
-.copy-check path {
-  stroke-dasharray: 1 1.1; /* gap slightly longer than the dash so the round caps stay hidden */
-  stroke-dashoffset: 1;
-  animation: draw 300ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
-}
-@keyframes draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .copy-check path {
-    animation: none;
-    stroke-dashoffset: 0;
   }
 }
 
@@ -432,111 +399,6 @@ button.avatar-btn {
   border-radius: var(--radius-full);
   background: currentColor;
   transition: translate 150ms ease;
-}
-
-.menu {
-  position: fixed;
-  z-index: 20;
-  display: flex;
-  flex-direction: column;
-  padding: var(--space-4);
-  min-width: 176px;
-  color: var(--fg);
-  background: var(--surface);
-  border-radius: var(--radius-2);
-  box-shadow: 0 8px 24px var(--black-45);
-}
-.menu-heading {
-  padding: var(--space-6) var(--space-10) var(--space-4);
-  font-size: var(--text-12);
-  color: var(--muted);
-  overflow-wrap: anywhere;
-}
-.menu button {
-  text-align: left;
-  border: none;
-  border-radius: var(--radius-2);
-  padding: var(--space-6) var(--space-10);
-  background: transparent;
-}
-@media (hover: hover) and (pointer: fine) {
-  .menu button:not(:disabled):hover {
-    background: var(--surface-hover);
-    color: var(--fg);
-    box-shadow: none;
-  }
-  .menu button.danger:not(:disabled):hover {
-    color: var(--error);
-  }
-}
-.spinner {
-  display: inline-block;
-  width: 11px;
-  height: 11px;
-  border: 2px solid var(--accent);
-  border-top-color: transparent;
-  border-radius: var(--radius-full);
-  vertical-align: -1px;
-  animation: spin 600ms linear infinite;
-}
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.refresh {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-10);
-}
-.refresh-status {
-  font-family: var(--mono);
-  font-size: var(--text-11);
-  white-space: nowrap;
-}
-.refresh-label {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-4);
-}
-.refresh-label.muted {
-  color: var(--muted);
-}
-.refresh-label.new {
-  color: var(--accent);
-}
-.refresh-label.fail {
-  color: var(--error);
-}
-.refresh-check {
-  width: 10px;
-  height: 10px;
-  color: var(--success);
-}
-.refresh-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-6);
-}
-.refresh-btn[aria-busy="true"] {
-  opacity: 1;
-  cursor: progress;
-}
-.refresh-icon {
-  width: 12px;
-  height: 12px;
-  /* Rotate around the icon's own center (SVG transforms default to the viewport origin). */
-  transform-box: fill-box;
-  transform-origin: center;
-}
-.refresh-icon.spinning {
-  animation: spin 600ms linear infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-  .refresh-icon.spinning {
-    animation: none;
-  }
 }
 
 .empty {
@@ -693,48 +555,6 @@ form.editor {
   transform-origin: 50% 0%;
   transform: rotateX(70deg);
 }
-.toast-region {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: calc(20px + env(safe-area-inset-bottom));
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-8);
-  pointer-events: none;
-  z-index: 30;
-}
-.toast-stack {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-8);
-}
-.toast-stack:empty {
-  display: none;
-}
-.toast-region[inert] {
-  z-index: 14;
-}
-.toast {
-  display: flex;
-  align-items: center;
-  gap: var(--space-12);
-  padding: var(--space-8) var(--space-8) var(--space-8) var(--space-14);
-  font-size: var(--text-13);
-  color: var(--fg);
-  background: var(--surface);
-  border-radius: var(--radius-2);
-  box-shadow: 0 8px 24px var(--black-45);
-  max-width: calc(100vw - 24px);
-  pointer-events: auto;
-}
-.toast-text {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
 .confetti {
   position: fixed;
   width: 6px;
@@ -805,9 +625,6 @@ form.editor {
   .editor-bar .template-picker,
   .menu .pop-add {
     min-height: 40px;
-  }
-  .menu button {
-    min-height: 44px;
   }
   .nav-link {
     display: inline-flex;

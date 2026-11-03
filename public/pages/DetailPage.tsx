@@ -3,12 +3,12 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObje
 import type { Delivery, DeliveryDetail, Webhook } from "../../src/types.ts";
 import { Button, LinkButton } from "../ui/Button.tsx";
 import { PausedBadge } from "../components/PausedBadge.tsx";
-import { RefreshButton, type RefreshOutcome } from "../components/RefreshButton.tsx";
-import { RelativeTime } from "../components/RelativeTime.tsx";
+import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
+import { RelativeTime } from "../ui/RelativeTime.tsx";
 import { SentenceSummary } from "../components/SentenceSummary.tsx";
 import { StatusBadge } from "../components/StatusBadge.tsx";
 import { Switch } from "../ui/Switch.tsx";
-import { useToast } from "../components/Toast.tsx";
+import { useToast } from "../ui/Toast.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING, fadeIn, flash, ids, pageTransition } from "../lib/motion.ts";
 import { useEscape, useNav, useRouteHeading } from "../lib/nav.ts";

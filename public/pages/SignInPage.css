@@ -19,10 +19,6 @@ button.signin-btn {
   padding: var(--space-8) var(--space-16);
   font-size: var(--text-13);
 }
-.signin-btn .spinner {
-  border-color: var(--on-accent);
-  border-top-color: transparent;
-}
 .signin-note {
   margin: var(--space-12) 0 0;
   font-size: var(--text-13);

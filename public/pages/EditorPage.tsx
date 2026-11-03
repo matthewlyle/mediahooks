@@ -9,7 +9,7 @@ import { Button, LinkButton } from "../ui/Button.tsx";
 import { FieldError } from "../ui/FieldError.tsx";
 import { Segmented } from "../ui/Segmented.tsx";
 import { burst } from "../components/burst.ts";
-import { Spinner } from "../components/Spinner.tsx";
+import { Spinner } from "../ui/Spinner.tsx";
 import { Switch } from "../ui/Switch.tsx";
 import { api, type Meta } from "../lib/api.ts";
 import { EASE, SPRING, fadeIn, flash, ids, pageTransition } from "../lib/motion.ts";

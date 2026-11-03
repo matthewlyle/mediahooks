@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import { useEffect, type ReactNode } from "react";
 import { EASE, SPRING } from "../lib/motion.ts";
-import { useInertToasts } from "../components/Toast.tsx";
+import { useInertToasts } from "./Toast.tsx";
 import "./Modal.css";
 
 export type ModalProps = {
