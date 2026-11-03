@@ -562,13 +562,11 @@ form.editor {
   .editor input:not([type="checkbox"]),
   .editor select,
   .editor-bar .template-picker,
-  .menu .pop-add,
   .code-editor .cm-editor .cm-content {
     font-size: var(--text-16);
   }
   .editor input:not([type="checkbox"]),
-  .editor-bar .template-picker,
-  .menu .pop-add {
+  .editor-bar .template-picker {
     min-height: 40px;
   }
   .more-btn {
