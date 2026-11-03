@@ -129,7 +129,6 @@ textarea:focus-visible {
   .ingest-btn,
   .test-btn,
   .more-btn,
-  .preview-samples button,
   .toast-undo,
   .toast-dismiss {
     position: relative;
@@ -137,7 +136,6 @@ textarea:focus-visible {
   .ingest-btn::before,
   .test-btn::before,
   .more-btn::before,
-  .preview-samples button::before,
   .toast-undo::before,
   .toast-dismiss::before {
     content: "";
@@ -618,10 +616,6 @@ form.editor {
   flex-direction: column;
   gap: var(--space-14);
 }
-.preview-samples button {
-  font-size: var(--text-12);
-  padding: var(--space-2) var(--space-9);
-}
 .optional,
 .required {
   font-size: var(--text-11);
@@ -646,23 +640,11 @@ form.editor {
   padding: var(--space-4) var(--space-10);
   padding-bottom: var(--space-6);
 }
-.preview-samples {
-  display: flex;
-  gap: var(--space-4);
-}
 .preview-view {
   margin-left: auto;
 }
 .preview-view + .preview-error {
   margin-left: var(--space-8);
-}
-.preview-samples button {
-  background: transparent;
-  color: var(--muted);
-}
-.preview-samples button[aria-pressed="true"] {
-  color: var(--accent);
-  background: var(--accent-dim);
 }
 .preview-error {
   margin-left: auto;
