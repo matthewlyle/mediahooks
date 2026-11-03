@@ -2,16 +2,18 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import type { SendResult } from "../../src/send.ts";
 import type { Delivery, Webhook } from "../../src/types.ts";
+import { EmptyState } from "../ui/EmptyState.tsx";
 import { burst } from "../components/burst.ts";
 import { Menu } from "../ui/Menu.tsx";
-import { PausedBadge } from "../ui/PausedBadge.tsx";
-import { SentenceSummary } from "../components/SentenceSummary.tsx";
+import { WebhookIdentity } from "../ui/WebhookIdentity.tsx";
 import { StatusBadge } from "../components/StatusBadge.tsx";
 import { Switch } from "../ui/Switch.tsx";
+import { Toolbar } from "../ui/Toolbar.tsx";
 import { useToast } from "../ui/Toast.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING, flash, ids, pageTransition } from "../lib/motion.ts";
 import { useLinkProps, useNav, useRouteHeading } from "../lib/nav.ts";
+import { webhookParts } from "../lib/sentence.ts";
 import { useStore } from "../lib/store.tsx";
 
 type Enter = "stagger" | "pop";
@@ -30,7 +32,7 @@ export function ListPage() {
     <motion.div className="page page-list" {...pageTransition}>
       <h2 ref={heading} tabIndex={-1} className="sr-only">Webhooks</h2>
       {error && !loaded ? (
-        <p className="empty">Could not reach the mediahooks API.</p>
+        <EmptyState>Could not reach the mediahooks API.</EmptyState>
       ) : (
         <>
           <ul className="hooks">
@@ -39,9 +41,9 @@ export function ListPage() {
                 <Row key={w.id} w={w} last={lastDelivery[w.id] ?? null} index={index} enter={enter} />
               ))}
               {loaded && webhooks.length === 0 && (
-                <motion.li
+                <EmptyState
+                  as="li"
                   key="empty"
-                  className="empty"
                   layout
                   initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -49,7 +51,7 @@ export function ListPage() {
                   transition={{ ...SPRING.pop, layout: SPRING.morph }}
                 >
                   No webhooks
-                </motion.li>
+                </EmptyState>
               )}
             </AnimatePresence>
           </ul>
@@ -181,7 +183,7 @@ function Row({ w, last, index, enter }: RowProps) {
       layoutId={ids.card(w.id)}
       layoutCrossfade={false}
       data-id={w.id}
-      className={w.enabled ? "card" : "card disabled"}
+      className="card"
       style={{ borderRadius: 2 }}
       initial={
         reduce
@@ -211,28 +213,9 @@ function Row({ w, last, index, enter }: RowProps) {
     >
       <div className="card-text">
         <a className="card-main" aria-label={w.name} {...link} />
-        <div className="card-title">
-          <motion.span
-            layoutId={ids.name(w.id)}
-            layoutCrossfade={false}
-            className="card-name"
-            transition={{ layout: SPRING.morph }}
-          >
-            {w.name}
-          </motion.span>
-          <PausedBadge paused={!w.enabled} />
-        </div>
-        <motion.div
-          layoutId={ids.url(w.id)}
-          layoutCrossfade={false}
-          className="card-url"
-          transition={{ layout: SPRING.morph }}
-        >
-          {w.url}
-        </motion.div>
-        <SentenceSummary w={w} className="card-summary" />
+        <WebhookIdentity id={w.id} name={w.name} url={w.url} paused={!w.enabled} parts={webhookParts(w)} variant="card" />
       </div>
-      <div className="card-actions">
+      <Toolbar className="card-actions">
         <StatusBadge delivery={last} />
         <Switch checked={w.enabled} onChange={onToggle} label={`${w.enabled ? "Disable" : "Enable"} ${w.name}`} />
         <Menu
@@ -250,7 +233,7 @@ function Row({ w, last, index, enter }: RowProps) {
           <span className="dot" />
           <span className="dot" />
         </Menu>
-      </div>
+      </Toolbar>
     </motion.li>
   );
 }

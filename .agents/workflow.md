@@ -13,7 +13,8 @@ about this repo. The process lives there; only what's specific to mediahooks liv
 - Each agent gets a port: `88` + the issue number zero-padded to two digits for the worker
   (issue 4 → 8804), `89` + it for the reviewer. From 100 up, `9` + the three-digit number for
   the worker (135 → 9135) and `19` + it for the reviewer (135 → 19135). Never 8787 (production)
-  or 8788 (dev).
+  or 8788 (dev). The playground (`PORT=<port> bun run design`) takes the agent's port + 20000
+  (9135 → 29135, 19135 → 39135); start nothing on any other port.
 - Worker task: `Issue <n>, port <port>.` Reviewer task: `PR <pr>, issue <n>, port <port>.`
 - Worktree setup: `bun install`.
 - Lite fits a one-line CSS or copy fix, not a long browser session.
@@ -34,6 +35,13 @@ about this repo. The process lives there; only what's specific to mediahooks liv
   a missing scenario is a fix. Agents can't check a VoiceOver criterion whose run was flaky
   (Playwright reports it as flaky, or it passed only on a rerun).
 - Checks line: `Tests, typecheck, axe`.
+- A design-system change (a component in `public/ui/`) also passes this checklist:
+  - `bun run style:dump` then `bun run style:diff` prints nothing. When the change touches a state
+    the dump doesn't load, compare before/after screenshots of that state instead.
+  - No page CSS (`public/pages/*.css`, `public/styles.css`) selects the component's classes; a
+    page that needs placement passes its own `className`.
+  - Every control in the component's `design/fixtures/<Name>.tsx` changes the preview.
+  - The PR body has a screenshot of the component's playground page.
 
 ## Commits, PRs, merging
 
@@ -43,6 +51,9 @@ about this repo. The process lives there; only what's specific to mediahooks liv
 - Type: `feat` only for a change app users can see or use. Refactors, the dev-only playground,
   tests, CI and tooling use `refactor`, `chore`, `test` or `ci`.
 - Merge: `gh pr merge <pr> -R matthewlyle/mediahooks --auto --squash`.
+- A PR that conflicts with `main` only because another PR touched the same lines (import lists,
+  moved rules) is the reviewer's to fix: merge `origin/main` into the branch, keep both sides,
+  re-run the verify steps and push. Any other conflict is a Fix.
 - Off limits: `CHANGELOG.md`.
 - Releases: merging only adds a line to the release-please PR, which the owner merges. When a
   milestone has no open issues left, close it
