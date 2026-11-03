@@ -88,3 +88,4 @@ export function validateWebhook(body: unknown): Result {
     },
   };
 }
+
