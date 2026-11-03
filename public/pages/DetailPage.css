@@ -183,6 +183,15 @@
     margin-right: auto;
   }
 
+  .deliveries-head .refresh-status {
+    white-space: normal;
+    text-align: right;
+  }
+  .deliveries-head .refresh-label {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    row-gap: 0;
+  }
   .deliveries-list {
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 4px;
