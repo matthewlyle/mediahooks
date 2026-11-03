@@ -5,6 +5,7 @@ import { Check } from "../public/ui/Check.tsx";
 import { FieldError } from "../public/ui/FieldError.tsx";
 import { Popover, type PopoverProps } from "../public/ui/Popover.tsx";
 import { Segmented } from "../public/ui/Segmented.tsx";
+import { Spinner } from "../public/ui/Spinner.tsx";
 import { Switch } from "../public/ui/Switch.tsx";
 
 export type Fixture = {
@@ -34,6 +35,7 @@ export const fixtures: Record<string, Fixture> = {
     },
     bind: { onChange: "value" },
   },
+  Spinner: { component: Spinner, props: { inverse: false } },
 };
 
 function PopoverDemo({ anchor: _anchor, ...props }: PopoverProps) {

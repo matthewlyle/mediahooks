@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import type { AuthUser } from "../../src/types.ts";
 import { Button } from "../ui/Button.tsx";
-import { Spinner } from "../components/Spinner.tsx";
+import { Spinner } from "../ui/Spinner.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING } from "../lib/motion.ts";
 import "./SignInPage.css";
@@ -98,7 +98,7 @@ export function SignInPage({ onSignedIn }: { onSignedIn: (user: AuthUser) => voi
           aria-disabled={(waiting && !link) || undefined}
           aria-busy={waiting || undefined}
         >
-          {waiting && !link && <Spinner />}
+          {waiting && !link && <Spinner inverse />}
           {waiting && !link ? "Waiting for Plex…" : "Sign in with Plex"}
         </Button>
         <div role="status">
