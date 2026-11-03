@@ -15,21 +15,10 @@ async function settle(page: Page) {
   });
 }
 
-const PAUSED = ".disabled";
-
-async function violations(page: Page, configure: (axe: AxeBuilder) => AxeBuilder) {
-  const { violations } = await configure(new AxeBuilder({ page }).withTags(TAGS)).analyze();
-  return violations;
-}
-
 async function scan(page: Page, name: string) {
   await settle(page);
-  const found = await violations(page, (axe) => axe.exclude(PAUSED));
-  // Paused rows fail color-contrast until #10 is fixed; everything else in them is still scanned.
-  if (await page.locator(PAUSED).count()) {
-    found.push(...(await violations(page, (axe) => axe.include(PAUSED).disableRules(["color-contrast"]))));
-  }
-  const report = found.flatMap((v) =>
+  const { violations } = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+  const report = violations.flatMap((v) =>
     v.nodes.map((n) => `${name}: ${v.id} (${v.impact}) ${n.target.join(" ")}\n    ${v.help}\n    ${v.helpUrl}`),
   );
   expect(report, `axe violations on ${name}`).toEqual([]);

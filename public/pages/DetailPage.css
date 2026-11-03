@@ -14,10 +14,6 @@
 }
 .detail-main {
   min-width: 0;
-  transition: opacity 150ms ease;
-}
-.detail-head.disabled .detail-main {
-  opacity: 0.5;
 }
 .detail-title {
   display: flex;
@@ -37,6 +33,13 @@
   opacity: 0.85;
   margin-top: 2px;
   word-break: break-all;
+}
+.panel.disabled h2.detail-name,
+.panel.disabled .detail-url {
+  color: var(--muted);
+}
+.panel.disabled .detail-url {
+  opacity: 1;
 }
 .detail-sentence {
   margin: 12px 0 0;

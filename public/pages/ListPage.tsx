@@ -4,6 +4,7 @@ import type { SendResult } from "../../src/send.ts";
 import type { Delivery, Webhook } from "../../src/types.ts";
 import { burst } from "../components/burst.ts";
 import { Menu } from "../components/Menu.tsx";
+import { PausedBadge } from "../components/PausedBadge.tsx";
 import { SentenceSummary } from "../components/SentenceSummary.tsx";
 import { StatusBadge } from "../components/StatusBadge.tsx";
 import { Switch } from "../components/Switch.tsx";
@@ -195,6 +196,7 @@ function Row({ w, last, index, enter }: RowProps) {
           >
             {w.name}
           </motion.span>
+          <PausedBadge paused={!w.enabled} />
         </div>
         <motion.div
           layoutId={ids.url(w.id)}
@@ -208,9 +210,7 @@ function Row({ w, last, index, enter }: RowProps) {
         <SentenceSummary w={w} className="card-summary" />
       </a>
       <div className="card-actions">
-        <span className="card-status">
-          <StatusBadge delivery={last} />
-        </span>
+        <StatusBadge delivery={last} />
         <Switch checked={w.enabled} onChange={onToggle} label={`${w.enabled ? "Disable" : "Enable"} ${w.name}`} />
         <Menu
           label={`More actions for ${w.name}`}

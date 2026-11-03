@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useIsPresent, useReducedMotion } from "motion/
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import type { Delivery, DeliveryDetail, Webhook } from "../../src/types.ts";
 import { Button, LinkButton } from "../components/Button.tsx";
+import { PausedBadge } from "../components/PausedBadge.tsx";
 import { RefreshButton, type RefreshOutcome } from "../components/RefreshButton.tsx";
 import { RelativeTime } from "../components/RelativeTime.tsx";
 import { SentenceSummary } from "../components/SentenceSummary.tsx";
@@ -160,6 +161,7 @@ function Head({ w, direct }: HeadProps) {
           >
             {w.name}
           </motion.h2>
+          <PausedBadge paused={!w.enabled} />
         </div>
         <motion.div
           layoutId={ids.url(w.id)}
