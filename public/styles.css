@@ -206,7 +206,8 @@ textarea:focus-visible {
   .test-btn,
   .more-btn,
   .preview-samples button,
-  .toast-undo {
+  .toast-undo,
+  .toast-dismiss {
     position: relative;
   }
   .ingest-btn::before,
@@ -214,6 +215,7 @@ textarea:focus-visible {
   .more-btn::before,
   .preview-samples button::before,
   .toast-undo::before,
+  .toast-dismiss::before,
   .switch::before {
     content: "";
     position: absolute;
@@ -857,13 +859,19 @@ form.editor {
   transform-origin: 50% 0%;
   transform: rotateX(70deg);
 }
-.toast {
+.toast-region {
   position: fixed;
   left: 0;
   right: 0;
   bottom: calc(20px + env(safe-area-inset-bottom));
-  width: fit-content;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+  z-index: 30;
+}
+.toast {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -873,8 +881,8 @@ form.editor {
   background: var(--surface);
   border-radius: 2px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
-  z-index: 30;
   max-width: calc(100vw - 24px);
+  pointer-events: auto;
 }
 .toast-text {
   min-width: 0;
