@@ -1,10 +1,11 @@
 import { AnimatePresence, motion, useIsPresent, useReducedMotion } from "motion/react";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Delivery, DeliveryDetail, Webhook } from "../../src/types.ts";
 import { Button, LinkButton } from "../ui/Button.tsx";
 import { PausedBadge } from "../components/PausedBadge.tsx";
 import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
 import { RelativeTime } from "../ui/RelativeTime.tsx";
+import { Table, TableRow, useHeight } from "../ui/Table.tsx";
 import { SentenceSummary } from "../components/SentenceSummary.tsx";
 import { StatusBadge } from "../components/StatusBadge.tsx";
 import { Switch } from "../ui/Switch.tsx";
@@ -226,7 +227,7 @@ function Deliveries({ log, failed, updatedAt, refresh }: DeliveriesState) {
             <RefreshButton onRefresh={refresh} updatedAt={updatedAt} noun={["delivery", "deliveries"]} disabled={!log} />
           </div>
           {log ? (
-            <ul className="deliveries-list">
+            <Table className="deliveries-list">
               {/* Outside AnimatePresence: it must leave in the same render the first row arrives. */}
               {log.items.length === 0 && <li className="deliveries-empty">No deliveries yet</li>}
               <AnimatePresence initial={false}>
@@ -234,7 +235,7 @@ function Deliveries({ log, failed, updatedAt, refresh }: DeliveriesState) {
                   <DeliveryRow key={d.id} d={d} fresh={log.fresh.has(d.id)} />
                 ))}
               </AnimatePresence>
-            </ul>
+            </Table>
           ) : (
             failed && <p className="muted">Could not load deliveries</p>
           )}
@@ -246,58 +247,45 @@ function Deliveries({ log, failed, updatedAt, refresh }: DeliveriesState) {
 
 function DeliveryRow({ d, fresh }: { d: Delivery; fresh: boolean }) {
   const reduce = useReducedMotion();
-  const row = useRef<HTMLLIElement>(null);
   const [open, setOpen] = useState(false);
-  useEffect(() => {
-    if (fresh) flash(row.current);
-  }, [fresh]);
   const error = cleanError(d.error);
   const detail = d.ok || !error ? `${d.durationMs} ms` : error;
   const retries = d.attempts - 1;
-  const detailId = `delivery-${d.id}-detail`;
 
   return (
-    <motion.li
-      ref={row}
-      layout="position"
-      className={open ? "d-row open" : "d-row"}
+    <TableRow
+      className="d-row"
+      summaryClassName="d-summary"
+      detailClassName="d-detail"
+      open={open}
+      onToggle={() => setOpen((o) => !o)}
+      detailId={`delivery-${d.id}-detail`}
+      fresh={fresh}
       initial={reduce ? { opacity: 0 } : { opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, transition: { duration: 0.1, ease: EASE.css } }}
       transition={{ duration: 0.25, ease: EASE.outQuint, layout: SPRING.morph }}
-    >
-      <button
-        type="button"
-        className="d-summary"
-        aria-expanded={open}
-        aria-controls={open ? detailId : undefined}
-        onClick={() => setOpen((o) => !o)}
-      >
-        <span className={`result ${d.ok ? "ok" : "fail"}`}>
-          <span className="sr-only">{d.ok ? "Delivered" : "Failed"}: </span>
-          {d.status ?? "ERR"} · {detail}
-        </span>
-        <span className="d-what">
-          <span className="d-event">{eventWords(d.event)}</span>
-          {retries > 0 && <span className="d-retries">after {retries === 1 ? "1 retry" : `${retries} retries`}</span>}
-        </span>
-        <span className="d-time">
-          <RelativeTime ms={d.createdAt} />
-        </span>
-      </button>
-      <AnimatePresence>{open && <DeliveryExchange key="detail" id={detailId} d={d} />}</AnimatePresence>
-    </motion.li>
+      summary={
+        <>
+          <span className={`result ${d.ok ? "ok" : "fail"}`}>
+            <span className="sr-only">{d.ok ? "Delivered" : "Failed"}: </span>
+            {d.status ?? "ERR"} · {detail}
+          </span>
+          <span className="d-what">
+            <span className="d-event">{eventWords(d.event)}</span>
+            {retries > 0 && <span className="d-retries">after {retries === 1 ? "1 retry" : `${retries} retries`}</span>}
+          </span>
+          <span className="d-time">
+            <RelativeTime ms={d.createdAt} />
+          </span>
+        </>
+      }
+      detail={<DeliveryExchange d={d} />}
+    />
   );
 }
 
-const HEIGHT_IN = { duration: 0.3, ease: [0.25, 1, 0.5, 1] } as const;
-const HEIGHT_OUT = { duration: 0.2, ease: EASE.outQuint } as const;
-const FADE_IN = { duration: 0.2, ease: EASE.css } as const;
-const FADE_OUT = { duration: 0.12, ease: EASE.css } as const;
-
-function DeliveryExchange({ id, d }: { id: string; d: Delivery }) {
-  const reduce = useReducedMotion();
-  const [inner, height] = useHeight<HTMLDivElement>();
+function DeliveryExchange({ d }: { d: Delivery }) {
   const [detail, setDetail] = useState<DeliveryDetail | null>(null);
   const [failed, setFailed] = useState<string | null>(null);
 
@@ -305,46 +293,29 @@ function DeliveryExchange({ id, d }: { id: string; d: Delivery }) {
     void api<DeliveryDetail>(`/api/deliveries/${d.id}`).then((res) => (res.ok ? setDetail(res.data) : setFailed(res.error)));
   }, [d.id]);
 
-  return (
-    <motion.div
-      id={id}
-      className="d-detail-clip"
-      initial={reduce ? { opacity: 0 } : { opacity: 0, height: 0 }}
-      animate={reduce ? { opacity: 1 } : { opacity: 1, height: height ?? 0 }}
-      exit={
-        reduce
-          ? { opacity: 0, transition: FADE_OUT }
-          : { opacity: 0, height: 0, transition: { height: HEIGHT_OUT, opacity: FADE_OUT } }
-      }
-      transition={{ height: HEIGHT_IN, opacity: FADE_IN }}
-    >
-      <div ref={inner} className="d-detail">
-        {failed !== null ? (
-          <p className="muted">Couldn't load this delivery: {failed}</p>
-        ) : detail === null ? null : detail.request === null ? (
-          <p className="muted">{detail.error ?? "Not recorded"}</p>
-        ) : (
-          <>
-            <span className="label">Request</span>
-            <pre className="d-message mono">
-              <span className="d-message-head">{`POST ${detail.request.url}\n${headerLines(detail.request.headers)}\n\n`}</span>
-              {detail.request.body}
-              {detail.request.truncated && <span className="muted">{"\n… cut at 8 KB"}</span>}
-            </pre>
-            <span className="label">Response</span>
-            {detail.response === null ? (
-              <p className="muted">No response: {detail.error}</p>
-            ) : (
-              <pre className="d-message mono">
-                <span className="d-message-head">{`HTTP ${detail.status}\n${headerLines(detail.response.headers)}\n\n`}</span>
-                {detail.response.body}
-                {detail.response.truncated && <span className="muted">{"\n… cut at 8 KB"}</span>}
-              </pre>
-            )}
-          </>
-        )}
-      </div>
-    </motion.div>
+  return failed !== null ? (
+    <p className="muted">Couldn't load this delivery: {failed}</p>
+  ) : detail === null ? null : detail.request === null ? (
+    <p className="muted">{detail.error ?? "Not recorded"}</p>
+  ) : (
+    <>
+      <span className="label">Request</span>
+      <pre className="d-message mono">
+        <span className="d-message-head">{`POST ${detail.request.url}\n${headerLines(detail.request.headers)}\n\n`}</span>
+        {detail.request.body}
+        {detail.request.truncated && <span className="muted">{"\n… cut at 8 KB"}</span>}
+      </pre>
+      <span className="label">Response</span>
+      {detail.response === null ? (
+        <p className="muted">No response: {detail.error}</p>
+      ) : (
+        <pre className="d-message mono">
+          <span className="d-message-head">{`HTTP ${detail.status}\n${headerLines(detail.response.headers)}\n\n`}</span>
+          {detail.response.body}
+          {detail.response.truncated && <span className="muted">{"\n… cut at 8 KB"}</span>}
+        </pre>
+      )}
+    </>
   );
 }
 
@@ -352,19 +323,3 @@ const headerLines = (headers: Record<string, string>) =>
   Object.entries(headers)
     .map(([k, v]) => `${k}: ${v}`)
     .join("\n");
-
-function useHeight<T extends HTMLElement>(): [RefObject<T | null>, number | null] {
-  const ref = useRef<T>(null);
-  const [height, setHeight] = useState<number | null>(null);
-  useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new ResizeObserver(([entry]) => {
-      const box = entry?.borderBoxSize[0];
-      if (box) setHeight(box.blockSize);
-    });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-  return [ref, height];
-}

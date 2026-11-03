@@ -93,9 +93,6 @@
   grid-template-columns: subgrid;
   border-radius: var(--radius-2);
 }
-.d-row.open {
-  background: var(--inset);
-}
 .d-summary {
   grid-column: 1 / -1;
   display: grid;
@@ -103,24 +100,7 @@
   align-items: baseline;
   column-gap: var(--space-12);
   padding: var(--space-4) var(--space-8);
-  font-family: var(--sans);
   font-size: inherit;
-  text-align: left;
-  white-space: normal;
-  background: transparent;
-}
-@media (hover: hover) and (pointer: fine) {
-  .d-row .d-summary:not(:disabled):hover {
-    color: var(--fg);
-    background: var(--surface-hover);
-    box-shadow: none;
-    scale: none;
-  }
-}
-.d-detail-clip {
-  grid-column: 1 / -1;
-  min-width: 0;
-  overflow: hidden;
 }
 .d-detail {
   padding: var(--space-4) var(--space-8) var(--space-12);
