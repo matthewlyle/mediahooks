@@ -24,8 +24,8 @@ jobs:
       - id: changes
         run: |
           if [ "$GITHUB_EVENT_NAME" != pull_request ] ||
-            git diff --name-only HEAD^1 HEAD |
-              grep -qE '^(public/|src/app\.ts$|test/axe/|package\.json$|bun\.lock$|\.github/workflows/axe\.yml$)'; then
+            git diff --name-only HEAD^1 HEAD | grep -v '\.test\.ts$' |
+              grep -qE '^(public/|src/|test/axe/|package\.json$|bun\.lock$|\.github/workflows/axe\.yml$)'; then
             echo ui=true >> "$GITHUB_OUTPUT"
           fi
       - if: steps.changes.outputs.ui
