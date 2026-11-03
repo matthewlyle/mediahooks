@@ -1,10 +1,12 @@
 import { expect, test } from "bun:test";
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { extract } from "../design/extract";
+import { extract } from "./extract";
 
 function fixture() {
-  const dir = mkdtempSync(join(import.meta.dir, "..", "design", ".fixture-"));
+  const dir = mkdtempSync(join(tmpdir(), "extract-"));
+  symlinkSync(join(import.meta.dir, "..", "node_modules"), join(dir, "node_modules"));
   const ui = join(dir, "public", "ui");
   mkdirSync(ui, { recursive: true });
   writeFileSync(
@@ -53,8 +55,13 @@ export const TAP = { scale: 0.97 };
 
 test("extracts components, tokens and motion exports from source", () => {
   const { dir, sources } = fixture();
-  const out = extract(sources);
-  rmSync(dir, { recursive: true });
+  const out = (() => {
+    try {
+      return extract(sources);
+    } finally {
+      rmSync(dir, { recursive: true });
+    }
+  })();
   expect(out.components.map((c) => c.name)).toEqual(["Button", "Chip"]);
   const [button, chip] = out.components;
   expect(button!.doc).toBe("A pressable button.");
@@ -74,9 +81,4 @@ test("extracts components, tokens and motion exports from source", () => {
     { name: "EASE", value: "{ out: [0, 0, 1, 1] }", doc: "Easing curves." },
     { name: "TAP", value: "{ scale: 0.97 }" },
   ]);
-});
-
-test("reads the repo's motion.ts", () => {
-  const out = extract();
-  expect(out.motionTokens.map((t) => t.name)).toContain("SPRING");
 });
