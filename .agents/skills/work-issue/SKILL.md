@@ -13,12 +13,23 @@ below may queue a merge.
 
 ```sh
 herdr worktree create --cwd ~/src/mediahooks --branch issue-<n>-<slug> --base main --no-focus
-herdr agent start issue-<n> --kind omp --pane <root pane from the create response>
+herdr agent start issue-<n> --kind omp --pane <root pane from the create response> -- --model <model>
 herdr agent prompt issue-<n> "<prompt below>"
 ```
 
 Port: `88` + the issue number zero-padded to two digits (issue 4 → 8804). Never 8788 (dev) or 8787
 (production).
+
+Pick the cheapest model that fits; the reviewer catches mistakes:
+
+| Job | Model |
+|---|---|
+| Worker, normal fix | `claude-sonnet-5-5` |
+| Worker, one-line CSS or copy fix | `claude-haiku-5-5` (100K context; not for long browser sessions) |
+| Text or mechanical follow-up (trim a PR body, rebase) | `claude-haiku-5-5` |
+| Reviewer | `claude-opus-5-5 --thinking low` |
+
+If a cheaper worker's PRs keep bouncing in review, move that kind of issue up a tier.
 
 ## Worker prompt
 
@@ -44,7 +55,7 @@ agent from the worker):
 
 ```sh
 herdr pane split --pane <worker pane> --direction right --cwd <worktree> --no-focus
-herdr agent start review-<n> --kind omp --pane <new pane>
+herdr agent start review-<n> --kind omp --pane <new pane> -- --model claude-opus-5-5 --thinking low
 herdr agent prompt review-<n> "<reviewer prompt below>"
 ```
 
