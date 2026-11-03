@@ -109,17 +109,6 @@ form.editor {
   --reveal-gap: var(--space-6);
 }
 
-.reveal {
-  overflow: hidden;
-  margin-top: calc(-1 * var(--reveal-gap, var(--space-14)));
-}
-.reveal.settled {
-  overflow: visible;
-}
-.reveal-inner {
-  display: flow-root; /* children's margins count in the measured height */
-  padding-top: var(--reveal-gap, var(--space-14));
-}
 .editor input:not([type="checkbox"])[aria-invalid="true"] {
   border-color: var(--error-80);
 }

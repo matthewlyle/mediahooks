@@ -35,7 +35,7 @@ import { CodeEditor, type CodeEditorHandle } from "./editor/CodeEditor.tsx";
 import { DiscordPreview, isDiscordMessage } from "./editor/DiscordPreview.tsx";
 import { SlackPreview, isSlackMessage } from "./editor/SlackPreview.tsx";
 import { EventSentence } from "./editor/EventSentence.tsx";
-import { Reveal } from "./editor/Reveal.tsx";
+import { Reveal } from "../ui/Reveal.tsx";
 
 const PANEL_MOTION = {
   initial: { opacity: 0, y: 16 },

@@ -1,10 +1,15 @@
 import { motion, useReducedMotion } from "motion/react";
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { EASE } from "../../lib/motion.ts";
+import { EASE } from "../lib/motion.ts";
+import "./Reveal.css";
 
 const HEIGHT_EASE = [0.25, 1, 0.5, 1] as const;
 
-export function Reveal({ children }: { children: ReactNode }) {
+/** Content that grows from zero height and fades in on mount and collapses on exit; render it inside AnimatePresence. */
+export function Reveal({ children }: {
+  /** Content to disclose. Its measured height drives the animation. */
+  children: ReactNode;
+}) {
   const reduce = useReducedMotion();
   const inner = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number | null>(null);
