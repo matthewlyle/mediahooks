@@ -24,6 +24,11 @@ hand with `gh workflow run voiceover.yml -f ref=<branch>`; each run uploads the 
 VoiceOver, so leave them to CI. `bun test` skips them (`bunfig.toml` roots it at `src/`). A fix with
 a "VoiceOver announces…" criterion adds a scenario there.
 
+Axe tests: `test/axe/axe.spec.ts` scans every route and key states with `@axe-core/playwright` in
+Chromium (WCAG 2.2 A/AA tags, reduced motion, after animations finish). They run in the `axe` job of
+`ci.yml` on every PR, or locally with `bun x playwright test -c test/axe`. A new route or state adds
+a scan there.
+
 Commit messages use Conventional Commits (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`,
 `ci:`; `!` for breaking). release-please turns `feat`/`fix` commits into a release PR; merging it
 tags, writes `CHANGELOG.md` and the GitHub Release, and publishes `ghcr.io/matthewlyle/mediahooks`.

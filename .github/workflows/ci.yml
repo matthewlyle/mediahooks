@@ -41,3 +41,14 @@ jobs:
           for a in $assets; do curl -fso /dev/null "localhost:8787$a" || { echo "missing $a"; exit 1; }; done
       - if: failure()
         run: docker logs mediahooks
+
+  axe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.4"
+      - run: bun install --frozen-lockfile
+      - run: bun x playwright install --with-deps chromium
+      - run: bun x playwright test -c test/axe
