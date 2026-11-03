@@ -42,6 +42,7 @@ Fix GitHub issue #{N} in matthewlyle/mediahooks: `gh issue view {N} -R matthewly
 - Run the dev server only as `AUTH=off PORT={PORT} bun --hot src/server.ts` (never `bun run dev`; port 8788 belongs to someone else).
 - Reproduce the problem in a browser first, then fix it, then re-check every success-criteria item in the browser.
 - Run `bun test` and `bun run typecheck`; both must pass.
+- If you changed anything under `public/`, run `bun x playwright test -c test/axe` (needs `bun x playwright install chromium` once) and fix what it reports before opening the PR. A new route or state gets a scan in `test/axe/axe.spec.ts`.
 - Stay within this issue. Don't touch other issues' code or `CHANGELOG.md`.
 - Commit with a Conventional Commit message, with `Fixes #{N}` in the body.
 - You're explicitly asked to push `{BRANCH}` to origin and open a pull request: title is the Conventional Commit. Write the body yourself (never `gh pr create --fill`), using exactly the PR body template in `~/src/mediahooks/.agents/skills/work-issue/SKILL.md` under "Writing for GitHub" (read it from that path, not your worktree). If anything visible changed or must look unchanged, add before/after screenshots: commit PNGs to the `issue-assets` branch under `pr/<issue>-<what>.png` and link `https://raw.githubusercontent.com/matthewlyle/mediahooks/issue-assets/pr/<file>.png`. Never merge it.
@@ -69,6 +70,7 @@ Check, and re-run what you can rather than trusting the PR body:
 - A criterion phrased "VoiceOver announces…" counts as checked when the `voiceover` job on the PR passed with the expected phrase in its `spoken-phrase-log` artifact (`gh run download <run> -n spoken-phrase-log`). A fix with a VoiceOver criterion should add a scenario for it in `test/screen-reader/`; if there's no scenario, or the run was flaky (Playwright reports it as flaky, or it passed only on a rerun), that criterion goes to a person.
 - The diff stays within the issue, follows AGENTS.md, and has no dead code, comments that aren't needed, or unrelated changes.
 - `bun test` and `bun run typecheck` pass.
+- The `axe` job on the PR passed. That's one check, not proof of accessibility: axe finds only scanner-detectable problems (labels, contrast, ARIA), so still check each criterion by hand.
 - The PR body follows the template in "Writing for GitHub" and has screenshots if anything visible changed.
 
 Then decide:
