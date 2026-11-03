@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 
-const SIGNED_OUT_URL = "http://localhost:8838/";
+const SIGNED_OUT_URL = `http://localhost:${process.env.MEDIAHOOKS_AXE_PORTS!.split(",")[1]}/`;
 const TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
 let active: number;
