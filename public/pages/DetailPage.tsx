@@ -9,7 +9,8 @@ import { Panel } from "../ui/Panel.tsx";
 import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
 import { SectionHeader } from "../ui/SectionHeader.tsx";
 import { RelativeTime } from "../ui/RelativeTime.tsx";
-import { Table, TableRow, useHeight } from "../ui/Table.tsx";
+import { HeightReveal } from "../ui/HeightReveal.tsx";
+import { Table, TableRow } from "../ui/Table.tsx";
 import { StatusBadge } from "../components/StatusBadge.tsx";
 import { Switch } from "../ui/Switch.tsx";
 import { Toolbar } from "../ui/Toolbar.tsx";
@@ -183,10 +184,8 @@ function Head({ w, direct }: HeadProps) {
 }
 
 function Deliveries({ log, failed, updatedAt, refresh }: DeliveriesState) {
-  const reduce = useReducedMotion();
   const panel = useRef<HTMLElement>(null);
 
-  const [inner, height] = useHeight<HTMLDivElement>();
   const [settled, setSettled] = useState(false);
   useEffect(() => {
     if (!log || settled) return;
@@ -196,35 +195,28 @@ function Deliveries({ log, failed, updatedAt, refresh }: DeliveriesState) {
 
   return (
     <Panel ref={panel} className="deliveries" aria-labelledby="deliveries-heading" {...fadeIn}>
-      <motion.div
-        className="deliveries-size"
-        initial={false}
-        animate={{ height: height ?? "auto" }}
-        transition={settled && !reduce ? SPRING.morph : { duration: 0 }}
-      >
-        <div ref={inner} className="deliveries-inner">
-          <SectionHeader
-            className="deliveries-head"
-            level={3}
-            headingId="deliveries-heading"
-            title="Deliveries"
-            actions={<RefreshButton onRefresh={refresh} updatedAt={updatedAt} noun={["delivery", "deliveries"]} disabled={!log} />}
-          />
-          {log ? (
-            <Table className="deliveries-list">
-              {/* Outside AnimatePresence: it must leave in the same render the first row arrives. */}
-              {log.items.length === 0 && <EmptyState as="li" size="small" className="deliveries-empty">No deliveries yet</EmptyState>}
-              <AnimatePresence initial={false}>
-                {log.items.map((d) => (
-                  <DeliveryRow key={d.id} d={d} fresh={log.fresh.has(d.id)} />
-                ))}
-              </AnimatePresence>
-            </Table>
-          ) : (
-            failed && <p className="muted">Could not load deliveries</p>
-          )}
-        </div>
-      </motion.div>
+      <HeightReveal animated={settled}>
+        <SectionHeader
+          className="deliveries-head"
+          level={3}
+          headingId="deliveries-heading"
+          title="Deliveries"
+          actions={<RefreshButton onRefresh={refresh} updatedAt={updatedAt} noun={["delivery", "deliveries"]} disabled={!log} />}
+        />
+        {log ? (
+          <Table className="deliveries-list">
+            {/* Outside AnimatePresence: it must leave in the same render the first row arrives. */}
+            {log.items.length === 0 && <EmptyState as="li" size="small" className="deliveries-empty">No deliveries yet</EmptyState>}
+            <AnimatePresence initial={false}>
+              {log.items.map((d) => (
+                <DeliveryRow key={d.id} d={d} fresh={log.fresh.has(d.id)} />
+              ))}
+            </AnimatePresence>
+          </Table>
+        ) : (
+          failed && <p className="muted">Could not load deliveries</p>
+        )}
+      </HeightReveal>
     </Panel>
   );
 }
