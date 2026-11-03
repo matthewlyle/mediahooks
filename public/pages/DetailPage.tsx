@@ -5,7 +5,7 @@ import { EmptyState } from "../ui/EmptyState.tsx";
 import { CodeBlock } from "../ui/CodeBlock.tsx";
 import { ErrorMessage } from "../ui/ErrorMessage.tsx";
 import { Button, LinkButton } from "../ui/Button.tsx";
-import { ResultLine } from "../ui/ResultLine.tsx";
+import { cleanError, ResultLine } from "../ui/ResultLine.tsx";
 import { WebhookIdentity } from "../ui/WebhookIdentity.tsx";
 import { Panel } from "../ui/Panel.tsx";
 import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
@@ -97,8 +97,6 @@ function useDeliveries(id: number): DeliveriesState {
 }
 
 type HeadProps = { w: Webhook; direct: boolean };
-
-const cleanError = (error: string | null) => (error ?? "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
 function Head({ w, direct }: HeadProps) {
   const heading = useRouteHeading<HTMLHeadingElement>();

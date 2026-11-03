@@ -3,9 +3,12 @@ import "./ResultLine.css";
 /** Formats a duration in milliseconds as text like "120ms". */
 export const formatDuration = (ms: number) => `${ms}ms`;
 
+/** Strips HTML tags and collapses whitespace in an error message so it fits on one line. */
+export const cleanError = (error: string | null | undefined) => (error ?? "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+
 /** The single-line text for what a delivery returned: a text with ✓ or ✗, the HTTP status, and the duration or error. */
 export function resultText({ ok, status, durationMs, error }: ResultLineProps) {
-  const detail = ok ? formatDuration(durationMs) : error?.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim() || formatDuration(durationMs);
+  const detail = ok ? formatDuration(durationMs) : cleanError(error) || formatDuration(durationMs);
   return { mark: ok ? "✓" : "✗", summary: `${status ?? "ERR"} · ${detail}` };
 }
 
