@@ -3,21 +3,39 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties
 import { createPortal } from "react-dom";
 import { useLocation } from "wouter";
 import { EASE } from "../lib/motion.ts";
-import { Button } from "../ui/Button.tsx";
+import { Button } from "./Button.tsx";
 
-export type MenuItem = { label: string; onSelect: () => void; danger?: boolean; disabled?: boolean };
+import "./Menu.css";
+
+export type MenuItem = {
+  /** Text shown for the item. */
+  label: string;
+  /** Called when the item is chosen. */
+  onSelect: () => void;
+  /** Tints the item red to mark a destructive action. */
+  danger?: boolean;
+  /** Greys the item out and skips it in keyboard navigation. */
+  disabled?: boolean;
+};
 
 export type MenuProps = {
+  /** Accessible name of the trigger button and the menu. */
   label: string;
+  /** Actions listed in the menu, in order. */
   items: MenuItem[];
+  /** Content of the trigger button. */
   children: ReactNode;
+  /** Extra class name for the trigger button. */
   triggerClassName?: string;
+  /** Which edge of the trigger the menu lines up with. */
   align?: "start" | "end";
+  /** Optional line of text shown above the items. */
   heading?: string;
 };
 
 type Placement = { top: number; left?: number; right?: number };
 
+/** A button that opens a popup list of actions, with arrow-key navigation and focus return on close. */
 export function Menu({ label, items, children, triggerClassName, align = "end", heading }: MenuProps) {
   const reduce = useReducedMotion();
   const id = useId();
