@@ -4,6 +4,7 @@ import type { SendResult } from "../../src/send.ts";
 import type { Delivery, Webhook } from "../../src/types.ts";
 import { burst } from "../components/burst.ts";
 import { Menu } from "../components/Menu.tsx";
+import { PausedBadge } from "../components/PausedBadge.tsx";
 import { SentenceSummary } from "../components/SentenceSummary.tsx";
 import { StatusBadge } from "../components/StatusBadge.tsx";
 import { Switch } from "../components/Switch.tsx";
@@ -26,6 +27,7 @@ export function ListPage() {
 
   return (
     <motion.div className="page page-list" {...pageTransition}>
+      <h2 className="sr-only">Webhooks</h2>
       {error && !loaded ? (
         <p className="empty">Could not reach the mediahooks API.</p>
       ) : (
@@ -77,12 +79,30 @@ function Row({ w, last, index, enter }: RowProps) {
 
   const link = useLinkProps(`/webhooks/${w.id}`);
 
-  function onRowClick(event: MouseEvent<HTMLLIElement>) {
+  function rowLink(event: MouseEvent<HTMLLIElement>): HTMLAnchorElement | null {
     const target = event.target as Element;
     // Clicks inside the menu portal bubble here through React; only real descendants count.
-    if (!event.currentTarget.contains(target) || target.closest(".card-actions")) return;
-    if (getSelection()?.toString()) return;
+    if (!event.currentTarget.contains(target) || target.closest("button")) return null;
+    const anchor = event.currentTarget.querySelector<HTMLAnchorElement>(".card-main");
+    return anchor === target ? null : anchor;
+  }
+
+  function onRowClick(event: MouseEvent<HTMLLIElement>) {
+    const anchor = rowLink(event);
+    if (!anchor || getSelection()?.toString()) return;
+    const { metaKey, ctrlKey, shiftKey, altKey } = event;
+    if (metaKey || ctrlKey || shiftKey || altKey) {
+      anchor.dispatchEvent(new MouseEvent("click", { cancelable: true, view: window, metaKey, ctrlKey, shiftKey, altKey }));
+      return;
+    }
     link.onClick(event);
+  }
+
+  function onRowAuxClick(event: MouseEvent<HTMLLIElement>) {
+    const anchor = rowLink(event);
+    if (!anchor || event.button !== 1) return;
+    const mac = /Mac|iPhone|iPad/.test(navigator.userAgent);
+    anchor.dispatchEvent(new MouseEvent("click", { cancelable: true, view: window, metaKey: mac, ctrlKey: !mac }));
   }
 
   async function onToggle(enabled: boolean) {
@@ -137,6 +157,7 @@ function Row({ w, last, index, enter }: RowProps) {
       (next ?? document.getElementById("new-hook"))?.focus({ preventScroll: true });
     });
     toast.show(`Deleted ${w.name}`, {
+      subject: w.name,
       undo: () => {
         store.restore(w, index);
         store.setHighlight({ id: w.id, tone: "accent", focus: true });
@@ -183,8 +204,10 @@ function Row({ w, last, index, enter }: RowProps) {
         layout: SPRING.morph,
       }}
       onClick={onRowClick}
+      onAuxClick={onRowAuxClick}
     >
-      <a className="card-main" {...link}>
+      <div className="card-text">
+        <a className="card-main" aria-label={w.name} {...link} />
         <div className="card-title">
           <motion.span
             layoutId={ids.name(w.id)}
@@ -194,6 +217,7 @@ function Row({ w, last, index, enter }: RowProps) {
           >
             {w.name}
           </motion.span>
+          <PausedBadge paused={!w.enabled} />
         </div>
         <motion.div
           layoutId={ids.url(w.id)}
@@ -205,11 +229,9 @@ function Row({ w, last, index, enter }: RowProps) {
           {w.url}
         </motion.div>
         <SentenceSummary w={w} className="card-summary" />
-      </a>
+      </div>
       <div className="card-actions">
-        <span className="card-status">
-          <StatusBadge delivery={last} />
-        </span>
+        <StatusBadge delivery={last} />
         <Switch checked={w.enabled} onChange={onToggle} label={`${w.enabled ? "Disable" : "Enable"} ${w.name}`} />
         <Menu
           label={`More actions for ${w.name}`}

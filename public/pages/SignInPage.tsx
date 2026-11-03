@@ -89,6 +89,7 @@ export function SignInPage({ onSignedIn }: { onSignedIn: (user: AuthUser) => voi
       exit={{ opacity: 0, scale: 0.98, filter: "blur(4px)", transition: { duration: 0.2, ease: EASE.outQuint } }}
     >
       <div className="signin-panel">
+        <h2 className="sr-only">Sign in</h2>
         <Button
           variant="primary"
           className="signin-btn"

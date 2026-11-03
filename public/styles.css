@@ -34,7 +34,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-main {
+.shell {
   max-width: 960px;
   margin: 0 auto;
   padding: calc(32px + env(safe-area-inset-top)) calc(20px + env(safe-area-inset-right)) calc(64px + env(safe-area-inset-bottom))
@@ -206,7 +206,8 @@ textarea:focus-visible {
   .test-btn,
   .more-btn,
   .preview-samples button,
-  .toast-undo {
+  .toast-undo,
+  .toast-dismiss {
     position: relative;
   }
   .ingest-btn::before,
@@ -214,6 +215,7 @@ textarea:focus-visible {
   .more-btn::before,
   .preview-samples button::before,
   .toast-undo::before,
+  .toast-dismiss::before,
   .switch::before {
     content: "";
     position: absolute;
@@ -283,6 +285,7 @@ button.avatar-btn {
 }
 .nav-link[aria-current="page"] {
   color: var(--accent);
+  font-weight: 600;
 }
 .nav-indicator {
   position: absolute;
@@ -291,6 +294,18 @@ button.avatar-btn {
 }
 .nav-label {
   position: relative;
+  display: inline-grid;
+}
+.nav-label::after {
+  content: attr(data-label);
+  grid-area: 1 / 1;
+  height: 0;
+  overflow: hidden;
+  font-weight: 600;
+  visibility: hidden;
+}
+.nav-label > span {
+  grid-area: 1 / 1;
 }
 @media (hover: hover) and (pointer: fine) {
   .nav-link:not([aria-current="page"]):hover {
@@ -423,24 +438,27 @@ button.avatar-btn {
 .card-actions {
   cursor: auto;
 }
-.card-main {
+.card-text {
+  position: relative;
   min-width: 0;
-  color: inherit;
-  text-decoration: none;
-  transition: opacity 150ms ease;
+
   border-radius: 2px;
 }
-.card-main:focus-visible {
+.card-text:has(.card-main:focus-visible) {
   outline: var(--focus-ring);
   outline-offset: 4px;
-  box-shadow: none;
 }
-.card.disabled .card-main,
-.card.disabled .card-status {
-  opacity: 0.5;
+.card-main {
+  position: absolute;
+  inset: -10px 0 -10px -14px;
 }
-.card-status {
-  transition: opacity 150ms ease;
+.card-main:focus-visible {
+  outline: none;
+}
+.card-title,
+.card-url,
+.card-summary {
+  position: relative;
 }
 .card-title {
   display: flex;
@@ -461,6 +479,13 @@ button.avatar-btn {
   overflow: hidden;
   text-overflow: ellipsis;
   min-width: 0;
+}
+.card.disabled .card-name,
+.card.disabled .card-url {
+  color: var(--muted);
+}
+.card.disabled .card-url {
+  opacity: 1;
 }
 .card-summary {
   font-size: 12px;
@@ -516,6 +541,17 @@ button.avatar-btn {
   color: var(--error);
   background: rgba(255, 92, 92, 0.1);
 }
+.paused-badge {
+  flex-shrink: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 0 6px;
+  border-radius: 2px;
+  color: var(--fg);
+  background: rgba(122, 131, 150, 0.18);
+}
+
 .result-mark {
   width: 9px;
   height: 9px;
@@ -710,7 +746,8 @@ form.editor {
   font-size: 12px;
   padding: 2px 9px;
 }
-.optional {
+.optional,
+.required {
   font-size: 11px;
   font-weight: 400;
   color: var(--muted);
@@ -857,13 +894,22 @@ form.editor {
   transform-origin: 50% 0%;
   transform: rotateX(70deg);
 }
-.toast {
+.toast-region {
   position: fixed;
   left: 0;
   right: 0;
   bottom: calc(20px + env(safe-area-inset-bottom));
-  width: fit-content;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+  z-index: 30;
+}
+.toast-region[inert] {
+  z-index: 14;
+}
+.toast {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -873,8 +919,8 @@ form.editor {
   background: var(--surface);
   border-radius: 2px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
-  z-index: 30;
   max-width: calc(100vw - 24px);
+  pointer-events: auto;
 }
 .toast-text {
   min-width: 0;
@@ -893,7 +939,7 @@ form.editor {
 }
 
 @media (max-width: 640px) {
-  main {
+  .shell {
     padding: calc(20px + env(safe-area-inset-top)) calc(12px + env(safe-area-inset-right))
       calc(48px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-left));
   }
@@ -925,7 +971,7 @@ form.editor {
   .card-actions {
     justify-content: flex-end;
   }
-  .card-actions .card-status {
+  .card-actions .result {
     margin-right: auto;
   }
 
