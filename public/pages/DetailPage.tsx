@@ -2,7 +2,7 @@ import { AnimatePresence, motion, useIsPresent, useReducedMotion } from "motion/
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Delivery, DeliveryDetail, Webhook } from "../../src/types.ts";
 import { EmptyState } from "../ui/EmptyState.tsx";
-import { CodeBlock, CodeLabel } from "../ui/CodeBlock.tsx";
+import { CodeBlock } from "../ui/CodeBlock.tsx";
 import { ErrorMessage } from "../ui/ErrorMessage.tsx";
 import { Button, LinkButton } from "../ui/Button.tsx";
 import { WebhookIdentity } from "../ui/WebhookIdentity.tsx";
@@ -10,8 +10,9 @@ import { Panel } from "../ui/Panel.tsx";
 import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
 import { SectionHeader } from "../ui/SectionHeader.tsx";
 import { RelativeTime } from "../ui/RelativeTime.tsx";
-import { Table, TableRow, useHeight } from "../ui/Table.tsx";
-import { StatusBadge } from "../components/StatusBadge.tsx";
+import { HeightReveal } from "../ui/HeightReveal.tsx";
+import { Table, TableRow } from "../ui/Table.tsx";
+import { StatusBadge, StatusMark } from "../ui/StatusBadge.tsx";
 import { Switch } from "../ui/Switch.tsx";
 import { Toolbar } from "../ui/Toolbar.tsx";
 import { useToast } from "../ui/Toast.tsx";
@@ -48,8 +49,8 @@ export function DetailPage({ id }: { id: number }) {
         </>
       ) : (
         loaded && (
-          <Panel as="p" className="muted detail-missing" {...fadeIn}>
-            No such webhook
+          <Panel {...fadeIn}>
+            <EmptyState size="plain">No such webhook</EmptyState>
           </Panel>
         )
       )}
@@ -132,7 +133,7 @@ function Head({ w, direct }: HeadProps) {
     store.remove(w.id);
     navigate("/");
     requestAnimationFrame(() => {
-      const next = nextId === undefined ? null : document.querySelector<HTMLElement>(`[data-id="${nextId}"] .card-main`);
+      const next = nextId === undefined ? null : document.querySelector<HTMLElement>(`[data-id="${nextId}"] .clickable-card-link`);
       (next ?? document.getElementById("new-hook"))?.focus({ preventScroll: true });
     });
     toast.show(`Deleted ${w.name}`, {
@@ -157,7 +158,7 @@ function Head({ w, direct }: HeadProps) {
       layoutId={ids.card(w.id)}
       layoutCrossfade={false}
       className="detail-head"
-      style={{ borderRadius: 2 }}
+      style={{ borderRadius: "var(--radius-2)" }}
       initial={direct ? { opacity: 0 } : undefined}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.25, ease: EASE.css, layout: SPRING.morph }}
@@ -173,7 +174,7 @@ function Head({ w, direct }: HeadProps) {
       </div>
       <Toolbar className="detail-actions" {...fadeIn}>
         <StatusBadge delivery={store.lastDelivery[w.id] ?? null} />
-        <Switch checked={w.enabled} onChange={onToggle} label={`${w.enabled ? "Disable" : "Enable"} ${w.name}`} />
+        <Switch checked={w.enabled} onChange={onToggle} aria-label={`${w.enabled ? "Disable" : "Enable"} ${w.name}`} />
         <LinkButton to={`/webhooks/${w.id}/edit?from=detail`}>Edit</LinkButton>
         <Button variant="danger" onClick={onDelete}>
           Delete
@@ -184,10 +185,8 @@ function Head({ w, direct }: HeadProps) {
 }
 
 function Deliveries({ log, failed, updatedAt, refresh }: DeliveriesState) {
-  const reduce = useReducedMotion();
   const panel = useRef<HTMLElement>(null);
 
-  const [inner, height] = useHeight<HTMLDivElement>();
   const [settled, setSettled] = useState(false);
   useEffect(() => {
     if (!log || settled) return;
@@ -197,35 +196,28 @@ function Deliveries({ log, failed, updatedAt, refresh }: DeliveriesState) {
 
   return (
     <Panel ref={panel} className="deliveries" aria-labelledby="deliveries-heading" {...fadeIn}>
-      <motion.div
-        className="deliveries-size"
-        initial={false}
-        animate={{ height: height ?? "auto" }}
-        transition={settled && !reduce ? SPRING.morph : { duration: 0 }}
-      >
-        <div ref={inner} className="deliveries-inner">
-          <SectionHeader
-            className="deliveries-head"
-            level={3}
-            headingId="deliveries-heading"
-            title="Deliveries"
-            actions={<RefreshButton onRefresh={refresh} updatedAt={updatedAt} noun={["delivery", "deliveries"]} disabled={!log} />}
-          />
-          {log ? (
-            <Table className="deliveries-list">
-              {/* Outside AnimatePresence: it must leave in the same render the first row arrives. */}
-              {log.items.length === 0 && <EmptyState as="li" size="small" className="deliveries-empty">No deliveries yet</EmptyState>}
-              <AnimatePresence initial={false}>
-                {log.items.map((d) => (
-                  <DeliveryRow key={d.id} d={d} fresh={log.fresh.has(d.id)} />
-                ))}
-              </AnimatePresence>
-            </Table>
-          ) : (
-            failed && <p className="muted">Could not load deliveries</p>
-          )}
-        </div>
-      </motion.div>
+      <HeightReveal animated={settled}>
+        <SectionHeader
+          className="deliveries-head"
+          level={3}
+          headingId="deliveries-heading"
+          title="Deliveries"
+          actions={<RefreshButton onRefresh={refresh} updatedAt={updatedAt} noun={["delivery", "deliveries"]} disabled={!log} />}
+        />
+        {log ? (
+          <Table className="deliveries-list">
+            {/* Outside AnimatePresence: it must leave in the same render the first row arrives. */}
+            {log.items.length === 0 && <EmptyState as="li" size="small" className="deliveries-empty">No deliveries yet</EmptyState>}
+            <AnimatePresence initial={false}>
+              {log.items.map((d) => (
+                <DeliveryRow key={d.id} d={d} fresh={log.fresh.has(d.id)} />
+              ))}
+            </AnimatePresence>
+          </Table>
+        ) : (
+          failed && <EmptyState size="plain" className="deliveries-failed">Could not load deliveries</EmptyState>
+        )}
+      </HeightReveal>
     </Panel>
   );
 }
@@ -252,7 +244,8 @@ function DeliveryRow({ d, fresh }: { d: Delivery; fresh: boolean }) {
       transition={{ duration: 0.25, ease: EASE.outQuint, layout: SPRING.morph }}
       summary={
         <>
-          <span className={`result ${d.ok ? "ok" : "fail"}`}>
+          <span>
+            <StatusMark status={d.ok ? "success" : "failure"} className="status-mark-inline" />
             <span className="sr-only">{d.ok ? "Delivered" : "Failed"}: </span>
             {d.status ?? "ERR"} · {detail}
           </span>
@@ -279,9 +272,9 @@ function DeliveryExchange({ d }: { d: Delivery }) {
   }, [d.id]);
 
   return failed !== null ? (
-    <p className="muted">Couldn't load this delivery: {failed}</p>
+    <EmptyState size="plain">Couldn't load this delivery: {failed}</EmptyState>
   ) : detail === null ? null : detail.request === null ? (
-    <p className="muted">{detail.error ?? "Not recorded"}</p>
+    <EmptyState size="plain">{detail.error ?? "Not recorded"}</EmptyState>
   ) : (
     <>
       <CodeBlock label="Request" head={`POST ${detail.request.url}\n${headerLines(detail.request.headers)}\n\n`}>
@@ -289,10 +282,7 @@ function DeliveryExchange({ d }: { d: Delivery }) {
         {detail.request.truncated && <span className="muted">{"\n… cut at 8 KB"}</span>}
       </CodeBlock>
       {detail.response === null ? (
-        <>
-          <CodeLabel>Response</CodeLabel>
-          <p className="muted">No response: {detail.error}</p>
-        </>
+        <CodeBlock label="Response" note={`No response: ${detail.error}`} />
       ) : (
         <CodeBlock label="Response" head={`HTTP ${detail.status}\n${headerLines(detail.response.headers)}\n\n`}>
           {detail.response.body}

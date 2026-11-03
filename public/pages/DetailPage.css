@@ -19,10 +19,6 @@
   margin-top: var(--space-8);
 }
 
-.detail-missing {
-  margin: 0;
-}
-
 .deliveries-head {
   margin-bottom: var(--space-10);
 }
@@ -116,4 +112,8 @@
     grid-column: 1 / -1;
     grid-row: 2;
   }
+}
+
+.deliveries .deliveries-failed {
+  margin: 1em 0;
 }

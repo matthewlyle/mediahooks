@@ -12,7 +12,10 @@ export type NavLinkProps = {
   active: boolean;
 };
 
-/** A header navigation link whose active state is marked by an indicator that morphs between links. */
+/**
+ * A header navigation link whose active state is marked by an indicator that morphs between links.
+ * @group Navigation
+ */
 export function NavLink({ to, label, active }: NavLinkProps) {
   const link = useLinkProps(to);
   const reduce = useReducedMotion();
@@ -28,7 +31,7 @@ export function NavLink({ to, label, active }: NavLinkProps) {
         <motion.span
           layoutId={ids.nav}
           className="nav-indicator"
-          style={{ borderRadius: 2 }}
+          style={{ borderRadius: "var(--radius-2)" }}
           transition={SPRING.morph}
           aria-hidden="true"
         />

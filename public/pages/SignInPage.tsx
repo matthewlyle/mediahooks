@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import type { AuthUser } from "../../src/types.ts";
 import { ErrorMessage } from "../ui/ErrorMessage.tsx";
 import { Button } from "../ui/Button.tsx";
-import { Spinner } from "../ui/Spinner.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING } from "../lib/motion.ts";
 import "./SignInPage.css";
@@ -100,11 +99,9 @@ export function SignInPage({ onSignedIn }: { onSignedIn: (user: AuthUser) => voi
           size="large"
           className="signin-btn"
           onClick={signIn}
-          aria-disabled={(waiting && !link) || undefined}
-          aria-busy={waiting || undefined}
+          busy={waiting && !link}
         >
-          {waiting && !link && <Spinner inverse />}
-          {waiting && !link ? "Waiting for Plex…" : "Sign in with Plex"}
+          Sign in with Plex
         </Button>
         <div role="status">
           {waiting && !link && <span className="sr-only">Waiting for Plex…</span>}

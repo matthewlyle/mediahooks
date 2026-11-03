@@ -9,12 +9,12 @@ import { SAMPLE_MOVIE_PAYLOAD, SAMPLE_PAYLOAD, SAMPLE_TRACK_PAYLOAD } from "../.
 import { isJsonContentType, renderBody, renderHeaders, templateVars } from "../../src/template.ts";
 import { ErrorMessage } from "../ui/ErrorMessage.tsx";
 import { Button, LinkButton } from "../ui/Button.tsx";
-import { Field as FormField, FieldInput, useFieldControl } from "../ui/Field.tsx";
+import { Field as FormField, useFieldControl } from "../ui/Field.tsx";
 import { FieldError } from "../ui/FieldError.tsx";
 import { SectionHeader } from "../ui/SectionHeader.tsx";
 import { Segmented } from "../ui/Segmented.tsx";
 import { burst } from "../components/burst.ts";
-import { Spinner } from "../ui/Spinner.tsx";
+import { Checkbox } from "../ui/Checkbox.tsx";
 import { Switch } from "../ui/Switch.tsx";
 import { api, type Meta } from "../lib/api.ts";
 import { EASE, SPRING, fadeIn, flash, ids, pageTransition } from "../lib/motion.ts";
@@ -44,6 +44,7 @@ import { EventSentence } from "./editor/EventSentence.tsx";
 import { Disclosure } from "../ui/Disclosure.tsx";
 import { Toolbar } from "../ui/Toolbar.tsx";
 import { Reveal } from "../ui/Reveal.tsx";
+import { Select } from "../ui/Select.tsx";
 
 const PANEL_MOTION = {
   initial: { opacity: 0, y: 16 },
@@ -137,7 +138,7 @@ export function EditorPage({ id, back: closeTo }: { id: number | null; back?: st
       <>
         {heading}
         {missing && (
-          <Panel className="editor" {...PANEL_MOTION}>
+          <Panel dense className="editor" {...PANEL_MOTION}>
             <Missing text={missing} />
           </Panel>
         )}
@@ -405,38 +406,18 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
       <div className="editor-bar" data-stuck={stuck || undefined}>
         <div className="bar-lead">
           {heading}
-          <select
+          <Select
             className="template-picker"
-            aria-label="Template"
+            label="Template"
             value={activeTemplate}
+            options={[["custom", "Custom"], ...PRESETS.map((p): [string, string] => [p.id, p.label])]}
             onChange={(e) => onTemplateChange(e.target.value)}
-          >
-            <option value="custom">Custom</option>
-            {PRESETS.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.label}
-              </option>
-            ))}
-          </select>
+          />
         </div>
         <Toolbar className="form-actions" gap="medium" {...fadeIn}>
-          <span className="bar-enabled">
-            <span aria-hidden="true" onClick={() => set("enabled", !form.enabled)}>
-              Enabled
-            </span>
-            <Switch checked={form.enabled} onChange={(on) => set("enabled", on)} label="Enabled" />
-          </span>
-          <Button
-            ref={sendButton}
-            className="test-btn send-test"
-            onClick={onSendTest}
-          >
-            <span className="send-test-label">Send test</span>
-            {sending && (
-              <span className="send-test-busy" aria-hidden="true">
-                {reduce ? "Sending…" : <Spinner />}
-              </span>
-            )}
+          <Switch className="bar-enabled" checked={form.enabled} onChange={(on) => set("enabled", on)} label="Enabled" />
+          <Button ref={sendButton} className="test-btn" busy={sending} onClick={onSendTest}>
+            Send test
           </Button>
           <Button onClick={() => navigate(back)}>Cancel</Button>
           <Button type="submit" form={formId} variant="primary" disabled={saving}>
@@ -475,36 +456,35 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
         </AnimatePresence>
       </div>
 
-      <Panel as="form" id={formId} className="editor" onSubmit={onSave} noValidate {...PANEL_MOTION}>
+      <Panel as="form" dense id={formId} className="editor" onSubmit={onSave} noValidate {...PANEL_MOTION}>
         <div className="editor-section">
           <div className="row row-destination">
-            <FormField id={`${uid}-name`} label="Name" hint="required" error={shown("name")} errorId={errId("name")}>
-              <FieldInput
-                ref={nameField}
-                id={`${uid}-name`}
-                name="name"
-                required
-                autoComplete="off"
-                data-1p-ignore=""
-                value={form.name}
-                onChange={(e) => set("name", e.target.value)}
-                onBlur={touch("name")}
-              />
-            </FormField>
-            <FormField id={`${uid}-url`} label="URL" hint="required" error={shown("url")} errorId={errId("url")}>
-              <FieldInput
-                ref={urlField}
-                id={`${uid}-url`}
-                name="url"
-                type="url"
-                required
-                autoComplete="off"
-                placeholder={urlPlaceholder}
-                value={form.url}
-                onChange={(e) => onUrlChange(e.target.value)}
-                onBlur={touch("url")}
-              />
-            </FormField>
+            <FormField id={`${uid}-name`} label="Name" hint="required" error={shown("name")} errorId={errId("name")}
+              input={{
+                ref: nameField,
+                name: "name",
+                prose: true,
+                required: true,
+                autoComplete: "off",
+                "data-1p-ignore": "",
+                value: form.name,
+                onChange: (e) => set("name", e.target.value),
+                onBlur: touch("name"),
+              }}
+            />
+            <FormField id={`${uid}-url`} label="URL" hint="required" error={shown("url")} errorId={errId("url")}
+              input={{
+                ref: urlField,
+                name: "url",
+                type: "url",
+                required: true,
+                autoComplete: "off",
+                placeholder: urlPlaceholder,
+                value: form.url,
+                onChange: (e) => onUrlChange(e.target.value),
+                onBlur: touch("url"),
+              }}
+            />
           </div>
         </div>
 
@@ -570,7 +550,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
                       {meta.templateVars.map((v) => (
                         <Button
                           key={v}
-                          size="chip"
+                          size="small"
                           onMouseDown={(e) => e.preventDefault()}
                           onClick={() => insertVariable(v)}
                         >
@@ -585,15 +565,13 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
                   <AnimatePresence initial={false}>
                     {(discord !== null || form.attachPoster) && (
                       <Reveal key="poster">
-                        <label className="inline poster-option">
-                          <input
-                            type="checkbox"
-                            checked={form.attachPoster}
-                            onChange={(e) => set("attachPoster", e.target.checked)}
-                          />
-                          <span className="poster-label">Attach poster</span>
-                          <span className="poster-hint">sent as a file, Discord's format</span>
-                        </label>
+                        <Checkbox
+                          className="poster-option"
+                          checked={form.attachPoster}
+                          onChange={(on) => set("attachPoster", on)}
+                          label="Attach poster"
+                          hint="sent as a file, Discord's format"
+                        />
                       </Reveal>
                     )}
                   </AnimatePresence>

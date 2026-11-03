@@ -8,11 +8,13 @@ import { Panel } from "../ui/Panel.tsx";
 import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
 import { SectionHeader } from "../ui/SectionHeader.tsx";
 import { RelativeTime } from "../ui/RelativeTime.tsx";
-import { FADE_OUT, Table, TableRow } from "../ui/Table.tsx";
+import { FADE_OUT } from "../ui/HeightReveal.tsx";
+import { Table, TableRow } from "../ui/Table.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING, pageTransition } from "../lib/motion.ts";
 import { useEscape, useNav, useRouteHeading } from "../lib/nav.ts";
 import { useRefetchOnReturn } from "../lib/refetch.ts";
+import { StatusMark } from "../ui/StatusBadge.tsx";
 import "./EventsPage.css";
 
 const FADE_IN = { duration: 0.2, ease: EASE.css } as const;
@@ -153,9 +155,9 @@ function EventDetail({ e }: { e: IncomingEvent }) {
       {e.routing.length ? (
         <ul className="ev-routing">
           {e.routing.map((r) => (
-            <li key={r.webhookId} className={MARKS[r.status].className}>
-              <span className="mark" aria-hidden="true">
-                {MARKS[r.status].mark}
+            <li key={r.webhookId}>
+              <span className="mark">
+                <StatusMark status={MARKS[r.status]} />
               </span>
               <strong>{r.name}</strong>
               {r.reason === null ? " sent" : `: ${r.reason}`}
@@ -163,7 +165,7 @@ function EventDetail({ e }: { e: IncomingEvent }) {
           ))}
         </ul>
       ) : (
-        <p className="muted">No webhooks existed when this arrived.</p>
+        <EmptyState size="plain">No webhooks existed when this arrived.</EmptyState>
       )}
       <CodeBlock label="Payload">{JSON.stringify(e.payload, null, 2)}</CodeBlock>
     </>
@@ -172,9 +174,4 @@ function EventDetail({ e }: { e: IncomingEvent }) {
 
 const text = (v: unknown): string => (v === undefined || v === null ? "" : String(v));
 
-const MARKS: Record<RouteStatus, { mark: string; className: string }> = {
-  sent: { mark: "✓", className: "ok" },
-  grouped: { mark: "✓", className: "ok" },
-  held: { mark: "◷", className: "pending" },
-  skipped: { mark: "✗", className: "skipped" },
-};
+const MARKS = { sent: "success", grouped: "success", held: "pending", skipped: "failure" } as const satisfies Record<RouteStatus, string>;

@@ -24,3 +24,6 @@
 .empty-state-action p {
   margin: 0;
 }
+.empty-state-plain {
+  text-align: start;
+}
