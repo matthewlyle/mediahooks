@@ -1,7 +1,7 @@
 import { AnimatePresence, motion, MotionConfig, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState, type ReactElement } from "react";
 import { useLocation } from "wouter";
-import type { AuthUser } from "../src/types.ts";
+import type { AuthUser, Webhook } from "../src/types.ts";
 import { LinkButton } from "./components/Button.tsx";
 import { Menu } from "./components/Menu.tsx";
 import { Modal } from "./components/Modal.tsx";
@@ -9,7 +9,7 @@ import { ToastProvider } from "./components/Toast.tsx";
 import { api, setUnauthorizedHandler } from "./lib/api.ts";
 import { EASE, SPRING, TAP, ids, routeDirection, useFinePointer } from "./lib/motion.ts";
 import { useLinkProps, useNav } from "./lib/nav.ts";
-import { StoreProvider } from "./lib/store.tsx";
+import { StoreProvider, useStore } from "./lib/store.tsx";
 import { DetailPage } from "./pages/DetailPage.tsx";
 import { EditorPage } from "./pages/EditorPage.tsx";
 import { EventsPage } from "./pages/EventsPage.tsx";
@@ -29,21 +29,45 @@ export function App() {
 
 type Section = "webhooks" | "events" | "help";
 
-function route(path: string): { key: string; section: Section; page: ReactElement } | null {
-  if (path === "/") return { key: "list", section: "webhooks", page: <ListPage key="list" /> };
-  if (path === "/events") return { key: "events", section: "events", page: <EventsPage key="events" /> };
-  if (path === "/help") return { key: "help", section: "help", page: <HelpPage key="help" /> };
+type Route = { key: string; section: Section; page: ReactElement; title: (webhooks: Webhook[]) => string };
+
+function route(path: string): Route | null {
+  if (path === "/") return { key: "list", section: "webhooks", page: <ListPage key="list" />, title: () => "Webhooks" };
+  if (path === "/events") return { key: "events", section: "events", page: <EventsPage key="events" />, title: () => "Events" };
+  if (path === "/help") return { key: "help", section: "help", page: <HelpPage key="help" />, title: () => "Help" };
   const edit = /^\/webhooks\/(\d+)\/edit$/.exec(path);
   if (edit) {
     const id = Number(edit[1]);
-    return { key: `edit-${id}`, section: "webhooks", page: <EditorPage key={`edit-${id}`} id={id} /> };
+    return {
+      key: `edit-${id}`,
+      section: "webhooks",
+      page: <EditorPage key={`edit-${id}`} id={id} />,
+      title: (webhooks) => `Edit ${webhooks.find((w) => w.id === id)?.name ?? "webhook"}`,
+    };
   }
   const detail = /^\/webhooks\/(\d+)$/.exec(path);
   if (detail) {
     const id = Number(detail[1]);
-    return { key: `detail-${id}`, section: "webhooks", page: <DetailPage key={`detail-${id}`} id={id} /> };
+    return {
+      key: `detail-${id}`,
+      section: "webhooks",
+      page: <DetailPage key={`detail-${id}`} id={id} />,
+      title: (webhooks) => webhooks.find((w) => w.id === id)?.name ?? "Webhook",
+    };
   }
   return null;
+}
+
+function DocumentTitle({ title }: { title: string }) {
+  useEffect(() => {
+    document.title = `${title} · mediahooks`;
+  }, [title]);
+  return null;
+}
+
+function RouteTitle({ title }: { title: Route["title"] }) {
+  const { webhooks } = useStore();
+  return <DocumentTitle title={title(webhooks)} />;
 }
 
 const SECTION_ORDER: Section[] = ["webhooks", "events", "help"];
@@ -117,6 +141,7 @@ function Shell() {
         {auth.status === "signed-in" ? (
           <motion.div key="app" exit={FADE.exit}>
             <StoreProvider>
+              {current && <RouteTitle title={modal ? () => "New webhook" : current.title} />}
               <div className="routes" inert={modal || undefined}>
                 <AnimatePresence mode="popLayout" initial={false} custom={last.current.dir}>
                   {current?.page}
@@ -135,6 +160,7 @@ function Shell() {
           <SignInPage key="sign-in" onSignedIn={(user) => setAuth({ status: "signed-in", user })} />
         )}
       </AnimatePresence>
+      {auth.status === "signed-out" && <DocumentTitle title="Sign in" />}
     </main>
   );
 }
