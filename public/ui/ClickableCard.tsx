@@ -32,16 +32,7 @@ export function ClickableCard({ to, label, children, actions, className, onClick
     if (!anchor || getSelection()?.toString()) return;
     const { metaKey, ctrlKey, shiftKey, altKey } = event;
     if (metaKey || ctrlKey || shiftKey || altKey) {
-      anchor.dispatchEvent(
-        new MouseEvent("click", {
-          cancelable: true,
-          view: window,
-          metaKey,
-          ctrlKey,
-          shiftKey,
-          altKey,
-        }),
-      );
+      anchor.dispatchEvent(new MouseEvent("click", { cancelable: true, view: window, metaKey, ctrlKey, shiftKey, altKey }));
       return;
     }
     link.onClick(event);
@@ -52,14 +43,7 @@ export function ClickableCard({ to, label, children, actions, className, onClick
     const anchor = cardLink(event);
     if (!anchor || event.button !== 1) return;
     const mac = /Mac|iPhone|iPad/.test(navigator.userAgent);
-    anchor.dispatchEvent(
-      new MouseEvent("click", {
-        cancelable: true,
-        view: window,
-        metaKey: mac,
-        ctrlKey: !mac,
-      }),
-    );
+    anchor.dispatchEvent(new MouseEvent("click", { cancelable: true, view: window, metaKey: mac, ctrlKey: !mac }));
   }
 
   return (
