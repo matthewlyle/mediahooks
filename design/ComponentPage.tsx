@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import type { Component, Prop } from "./extract.ts";
-import { fixtures } from "./fixtures.ts";
+import { fixtures } from "design:fixtures";
 
 type Kind = "boolean" | "select" | "string" | "number" | "callback" | "json";
 
@@ -91,6 +91,7 @@ export function ComponentPage({ component }: { component: Component }) {
         const bind = fixture?.bind?.[p.name];
         if (typeof bind === "string") setValues((v) => ({ ...v, [bind]: args[0] }));
         else if (bind) setValues((v) => ({ ...v, ...bind(...args) }));
+        return fixture?.returns?.[p.name]?.(...args);
       };
     }
     return out;
@@ -106,7 +107,7 @@ export function ComponentPage({ component }: { component: Component }) {
       {component.doc && <p className="pg-doc">{component.doc}</p>}
 
       <h2>Preview</h2>
-      <div className="pg-stage">{Live ? <Live {...props} /> : <p className="muted">No fixture for {component.name} in design/fixtures.ts.</p>}</div>
+      <div className="pg-stage">{Live ? <Live {...props} /> : <p className="muted">No fixture for {component.name} in design/fixtures/</p>}</div>
 
       <h2>Controls</h2>
       {component.props.length ? (

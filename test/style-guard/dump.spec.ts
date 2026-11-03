@@ -5,7 +5,7 @@ import { expect, type Page, test } from "@playwright/test";
 
 const INTERACTIVE =
   'a[href],button,input,textarea,select,summary,[role="switch"],[role="menuitem"],[role="checkbox"],[role="tab"],[tabindex]:not([tabindex="-1"])';
-const SIGNED_OUT_URL = "http://localhost:8840/";
+const SIGNED_OUT_URL = `http://localhost:${process.env.MEDIAHOOKS_STYLE_PORTS!.split(",")[1]}/`;
 const FIXED_TIME = new Date("2026-01-15T12:00:00Z");
 const OUT = resolve(process.env.OUT ?? "test/style-guard/current.json");
 
@@ -241,7 +241,7 @@ test("dump computed styles", async ({ browser }) => {
   const out: Record<string, Dump> = {};
   for (const [profile, opts] of Object.entries(PROFILES)) {
     for (const [name, setup] of STATES) {
-      const context = await browser.newContext({ ...opts, reducedMotion: "reduce", baseURL: "http://localhost:8839" });
+      const context = await browser.newContext({ ...opts, reducedMotion: "reduce", baseURL: `http://localhost:${process.env.MEDIAHOOKS_STYLE_PORTS!.split(",")[0]}` });
       await context.addInitScript(installGuard, INTERACTIVE);
       const page = await context.newPage();
       await page.clock.setFixedTime(FIXED_TIME);

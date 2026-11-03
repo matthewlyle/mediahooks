@@ -11,7 +11,9 @@ about this repo. The process lives there; only what's specific to mediahooks liv
 ## Per issue
 
 - Each agent gets a port: `88` + the issue number zero-padded to two digits for the worker
-  (issue 4 → 8804), `89` + it for the reviewer. Never 8788 (dev) or 8787 (production).
+  (issue 4 → 8804), `89` + it for the reviewer. From 100 up, `9` + the three-digit number for
+  the worker (135 → 9135) and `19` + it for the reviewer (135 → 19135). Never 8787 (production)
+  or 8788 (dev).
 - Worker task: `Issue <n>, port <port>.` Reviewer task: `PR <pr>, issue <n>, port <port>.`
 - Worktree setup: `bun install`.
 - Lite fits a one-line CSS or copy fix, not a long browser session.
@@ -38,6 +40,8 @@ about this repo. The process lives there; only what's specific to mediahooks liv
 - Commit: a Conventional Commit whose scope matches the issue's topic (`fix(a11y): …` for
   `accessibility` issues), `Fixes #<n>` in the body. The PR title is the same line: it becomes the
   squash commit, and release-please puts the scope in the changelog.
+- Type: `feat` only for a change app users can see or use. Refactors, the dev-only playground,
+  tests, CI and tooling use `refactor`, `chore`, `test` or `ci`.
 - Merge: `gh pr merge <pr> -R matthewlyle/mediahooks --auto --squash`.
 - Off limits: `CHANGELOG.md`.
 - Releases: merging only adds a line to the release-please PR, which the owner merges. When a
