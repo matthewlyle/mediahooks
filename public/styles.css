@@ -425,11 +425,14 @@ button.avatar-btn {
 }
 .card-main {
   min-width: 0;
+  color: inherit;
+  text-decoration: none;
   border-radius: 2px;
 }
 .card-main:focus-visible {
   outline: var(--focus-ring);
   outline-offset: 4px;
+  box-shadow: none;
 }
 .card-title {
   display: flex;
