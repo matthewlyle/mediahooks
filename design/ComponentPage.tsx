@@ -204,7 +204,7 @@ export function ComponentPage({ component, width, setWidth, reduced, setReduced 
               ref={frame}
               title={`${component.name} preview`}
               src={stageUrl(component.name, callbackNames, reduced)}
-              style={{ width: width === "fill" ? "100%" : `${width}px`, height: 480 }}
+              style={{ width: width === "fill" ? "100%" : `${width}px`, height: 560 }}
             />
           ) : (
             <p>No fixture yet. Add design/fixtures/{component.name}.tsx.</p>

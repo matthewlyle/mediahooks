@@ -66,7 +66,7 @@ export function OverviewPage({ data }: { data: Extracted }) {
         <section className="pg-card" aria-labelledby="ov-use">
           <h2 id="ov-use">In use</h2>
           <div className="pg-canvas">
-            <iframe title="Components in use" src={stageUrl("showcase")} style={{ width: "100%", height: 320 }} />
+            <iframe title="Components in use" src={stageUrl("showcase")} style={{ width: "100%", height: 380 }} />
           </div>
         </section>
 
