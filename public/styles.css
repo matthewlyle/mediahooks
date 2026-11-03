@@ -502,6 +502,22 @@ button.avatar-btn {
   color: var(--error);
   background: rgba(255, 92, 92, 0.1);
 }
+.result-mark {
+  width: 9px;
+  height: 9px;
+  margin-right: 5px;
+  vertical-align: -1px;
+  overflow: visible;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
 
 .test-btn {
   min-width: 52px;
