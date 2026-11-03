@@ -8,7 +8,7 @@ import type { IncomingEvent, PlexPayload, Webhook } from "../../src/types.ts";
 import { SAMPLE_MOVIE_PAYLOAD, SAMPLE_PAYLOAD, SAMPLE_TRACK_PAYLOAD } from "../../src/sample.ts";
 import { isJsonContentType, renderBody, renderHeaders, templateVars } from "../../src/template.ts";
 import { Button, LinkButton } from "../ui/Button.tsx";
-import { Field as FormField, FieldInput, useFieldControl } from "../ui/Field.tsx";
+import { Field as FormField, useFieldControl } from "../ui/Field.tsx";
 import { FieldError } from "../ui/FieldError.tsx";
 import { SectionHeader } from "../ui/SectionHeader.tsx";
 import { Segmented } from "../ui/Segmented.tsx";
@@ -477,34 +477,32 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
       <Panel as="form" dense id={formId} className="editor" onSubmit={onSave} noValidate {...PANEL_MOTION}>
         <div className="editor-section">
           <div className="row row-destination">
-            <FormField id={`${uid}-name`} label="Name" hint="required" error={shown("name")} errorId={errId("name")}>
-              <FieldInput
-                ref={nameField}
-                id={`${uid}-name`}
-                name="name"
-                prose
-                required
-                autoComplete="off"
-                data-1p-ignore=""
-                value={form.name}
-                onChange={(e) => set("name", e.target.value)}
-                onBlur={touch("name")}
-              />
-            </FormField>
-            <FormField id={`${uid}-url`} label="URL" hint="required" error={shown("url")} errorId={errId("url")}>
-              <FieldInput
-                ref={urlField}
-                id={`${uid}-url`}
-                name="url"
-                type="url"
-                required
-                autoComplete="off"
-                placeholder={urlPlaceholder}
-                value={form.url}
-                onChange={(e) => onUrlChange(e.target.value)}
-                onBlur={touch("url")}
-              />
-            </FormField>
+            <FormField id={`${uid}-name`} label="Name" hint="required" error={shown("name")} errorId={errId("name")}
+              input={{
+                ref: nameField,
+                name: "name",
+                prose: true,
+                required: true,
+                autoComplete: "off",
+                "data-1p-ignore": "",
+                value: form.name,
+                onChange: (e) => set("name", e.target.value),
+                onBlur: touch("name"),
+              }}
+            />
+            <FormField id={`${uid}-url`} label="URL" hint="required" error={shown("url")} errorId={errId("url")}
+              input={{
+                ref: urlField,
+                name: "url",
+                type: "url",
+                required: true,
+                autoComplete: "off",
+                placeholder: urlPlaceholder,
+                value: form.url,
+                onChange: (e) => onUrlChange(e.target.value),
+                onBlur: touch("url"),
+              }}
+            />
           </div>
         </div>
 
