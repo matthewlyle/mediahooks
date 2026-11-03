@@ -43,6 +43,7 @@ import { EventSentence } from "./editor/EventSentence.tsx";
 import { Disclosure } from "../ui/Disclosure.tsx";
 import { Toolbar } from "../ui/Toolbar.tsx";
 import { Reveal } from "../ui/Reveal.tsx";
+import { Select } from "../ui/Select.tsx";
 
 const PANEL_MOTION = {
   initial: { opacity: 0, y: 16 },
@@ -404,19 +405,13 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
       <div className="editor-bar" data-stuck={stuck || undefined}>
         <div className="bar-lead">
           {heading}
-          <select
+          <Select
             className="template-picker"
-            aria-label="Template"
+            label="Template"
             value={activeTemplate}
+            options={[["custom", "Custom"], ...PRESETS.map((p): [string, string] => [p.id, p.label])]}
             onChange={(e) => onTemplateChange(e.target.value)}
-          >
-            <option value="custom">Custom</option>
-            {PRESETS.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.label}
-              </option>
-            ))}
-          </select>
+          />
         </div>
         <Toolbar className="form-actions" gap="medium" {...fadeIn}>
           <span className="bar-enabled">

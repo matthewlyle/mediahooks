@@ -26,25 +26,6 @@
   gap: var(--space-6) var(--space-16);
   min-width: 0;
 }
-.template-picker {
-  appearance: none;
-  font-family: var(--mono);
-  font-size: var(--text-12);
-  color: var(--fg);
-  background: var(--raised)
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' viewBox='0 0 8 5'%3E%3Cpath d='M1 1l3 3 3-3' fill='none' stroke='%237a8396' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
-    no-repeat right 8px center / 8px 5px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-2);
-  padding: var(--space-4) var(--space-28) var(--space-4) var(--space-8);
-  cursor: pointer;
-  transition: box-shadow 150ms ease;
-}
-@media (hover: hover) and (pointer: fine) {
-  .template-picker:hover {
-    box-shadow: var(--glow);
-  }
-}
 .editor-title {
   margin: 0;
   font-size: var(--text-15);
