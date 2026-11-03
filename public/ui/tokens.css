@@ -122,8 +122,6 @@
   --text-10: 10px;
   /** Font size, 11px. */
   --text-11: 11px;
-  /** Font size, 11.5px. */
-  --text-11-5: 11.5px;
   /** Font size, 12px. */
   --text-12: 12px;
   /** Font size, 13px. */
@@ -139,24 +137,14 @@
   /** Font size, 20px. */
   --text-20: 20px;
 
-  /** Gap, padding or margin, 1px. */
-  --space-1: 1px;
   /** Gap, padding or margin, 2px. */
   --space-2: 2px;
-  /** Gap, padding or margin, 3px. */
-  --space-3: 3px;
   /** Gap, padding or margin, 4px. */
   --space-4: 4px;
-  /** Gap, padding or margin, 5px. */
-  --space-5: 5px;
   /** Gap, padding or margin, 6px. */
   --space-6: 6px;
-  /** Gap, padding or margin, 7px. */
-  --space-7: 7px;
   /** Gap, padding or margin, 8px. */
   --space-8: 8px;
-  /** Gap, padding or margin, 9px. */
-  --space-9: 9px;
   /** Gap, padding or margin, 10px. */
   --space-10: 10px;
   /** Gap, padding or margin, 12px. */
@@ -169,8 +157,6 @@
   --space-20: 20px;
   /** Gap, padding or margin, 24px. */
   --space-24: 24px;
-  /** Gap, padding or margin, 26px. */
-  --space-26: 26px;
   /** Gap, padding or margin, 28px. */
   --space-28: 28px;
   /** Gap, padding or margin, 40px. */
@@ -180,8 +166,6 @@
 
   /** Corner radius, 2px. */
   --radius-2: 2px;
-  /** Corner radius, 3px. */
-  --radius-3: 3px;
   /** Corner radius, 4px. */
   --radius-4: 4px;
   /** Corner radius, 6px. */

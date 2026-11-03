@@ -26,7 +26,7 @@
 .result-mark {
   width: 9px;
   height: 9px;
-  margin-right: var(--space-5);
+  margin-right: var(--space-4);
   vertical-align: -1px;
   overflow: visible;
 }

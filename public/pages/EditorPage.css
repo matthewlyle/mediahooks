@@ -36,7 +36,7 @@
     no-repeat right 8px center / 8px 5px;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-2);
-  padding: var(--space-4) var(--space-26) var(--space-4) var(--space-8);
+  padding: var(--space-4) var(--space-28) var(--space-4) var(--space-8);
   cursor: pointer;
   transition: box-shadow 150ms ease;
 }
@@ -93,7 +93,7 @@
 
 form.editor {
   container: editor / inline-size;
-  gap: var(--space-26);
+  gap: var(--space-28);
 }
 .editor-section {
   display: flex;
@@ -211,7 +211,7 @@ form.editor {
 }
 .var-chip {
   font-size: var(--text-11);
-  padding: var(--space-1) var(--space-6);
+  padding: var(--space-2) var(--space-6);
   color: var(--muted);
 }
 .vars-hint {

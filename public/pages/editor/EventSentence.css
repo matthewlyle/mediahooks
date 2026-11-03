@@ -12,7 +12,7 @@
   line-height: normal;
 }
 .sentence-token {
-  padding: var(--space-1) var(--space-3);
+  padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-2);
   color: var(--accent);
   cursor: pointer;
@@ -34,7 +34,7 @@
   display: inline-block;
   width: 6px;
   height: 6px;
-  margin: 0 var(--space-1) 0 var(--space-6);
+  margin: 0 var(--space-2) 0 var(--space-6);
   vertical-align: 0.2em;
   border-right: 1.5px solid currentColor;
   border-bottom: 1.5px solid currentColor;

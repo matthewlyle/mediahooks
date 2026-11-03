@@ -102,7 +102,7 @@
   grid-template-columns: subgrid;
   align-items: baseline;
   column-gap: var(--space-12);
-  padding: var(--space-5) var(--space-8);
+  padding: var(--space-4) var(--space-8);
   font-family: var(--sans);
   font-size: inherit;
   text-align: left;
