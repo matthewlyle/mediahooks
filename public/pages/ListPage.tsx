@@ -8,6 +8,7 @@ import { PausedBadge } from "../ui/PausedBadge.tsx";
 import { Sentence } from "../ui/Sentence.tsx";
 import { StatusBadge } from "../components/StatusBadge.tsx";
 import { Switch } from "../ui/Switch.tsx";
+import { Toolbar } from "../ui/Toolbar.tsx";
 import { useToast } from "../ui/Toast.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING, flash, ids, pageTransition } from "../lib/motion.ts";
@@ -233,7 +234,7 @@ function Row({ w, last, index, enter }: RowProps) {
         </motion.div>
         <Sentence parts={webhookParts(w)} className="card-summary" />
       </div>
-      <div className="card-actions">
+      <Toolbar className="card-actions">
         <StatusBadge delivery={last} />
         <Switch checked={w.enabled} onChange={onToggle} label={`${w.enabled ? "Disable" : "Enable"} ${w.name}`} />
         <Menu
@@ -251,7 +252,7 @@ function Row({ w, last, index, enter }: RowProps) {
           <span className="dot" />
           <span className="dot" />
         </Menu>
-      </div>
+      </Toolbar>
     </motion.li>
   );
 }

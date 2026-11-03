@@ -36,6 +36,7 @@ import { Panel } from "../ui/Panel.tsx";
 import { DiscordPreview, isDiscordMessage } from "./editor/DiscordPreview.tsx";
 import { SlackPreview, isSlackMessage } from "./editor/SlackPreview.tsx";
 import { EventSentence } from "./editor/EventSentence.tsx";
+import { Toolbar } from "../ui/Toolbar.tsx";
 import { Reveal } from "../ui/Reveal.tsx";
 
 const PANEL_MOTION = {
@@ -410,7 +411,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
             ))}
           </select>
         </div>
-        <motion.div className="form-actions" {...fadeIn}>
+        <Toolbar className="form-actions" gap="medium" {...fadeIn}>
           <span className="bar-enabled">
             <span aria-hidden="true" onClick={() => set("enabled", !form.enabled)}>
               Enabled
@@ -433,7 +434,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
           <Button type="submit" form={formId} variant="primary" disabled={saving}>
             Save
           </Button>
-        </motion.div>
+        </Toolbar>
         <p className="sr-only" role="status">
           {sending ? (sendingAnnounced ? "Sending test…" : "") : result && line ? `${result.ok ? "Test delivered" : "Test failed"}: ${line.full}` : ""}
         </p>
