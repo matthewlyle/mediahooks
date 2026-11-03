@@ -439,43 +439,6 @@ button.avatar-btn {
   align-items: center;
   gap: var(--space-6);
 }
-.result {
-  font-family: var(--mono);
-  font-size: var(--text-11);
-  font-weight: 600;
-  padding: var(--space-2) var(--space-8);
-  border-radius: var(--radius-2);
-  display: inline-block;
-}
-.result:empty {
-  display: none;
-}
-.result.ok {
-  color: var(--success);
-  background: var(--success-10);
-}
-.result.fail {
-  color: var(--error);
-  background: var(--error-10);
-}
-.paused-badge {
-  flex-shrink: 0;
-  font-family: var(--mono);
-  font-size: var(--text-11);
-  font-weight: 600;
-  padding: 0 var(--space-6);
-  border-radius: var(--radius-2);
-  color: var(--fg);
-  background: var(--muted-18);
-}
-
-.result-mark {
-  width: 9px;
-  height: 9px;
-  margin-right: var(--space-5);
-  vertical-align: -1px;
-  overflow: visible;
-}
 
 .test-btn {
   min-width: 52px;
@@ -838,7 +801,7 @@ form.editor {
   .card-actions {
     justify-content: flex-end;
   }
-  .card-actions .result {
+  .card-actions .badge {
     margin-right: auto;
   }
 
