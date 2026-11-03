@@ -2,7 +2,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { EASE } from "../lib/motion.ts";
 import { Button } from "./Button.tsx";
-import { RelativeTime } from "../components/RelativeTime.tsx";
+import { RelativeTime } from "./RelativeTime.tsx";
 import "./RefreshButton.css";
 
 /** Result of a refresh: how many new items arrived, or the error message. */

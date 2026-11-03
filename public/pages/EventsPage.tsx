@@ -3,7 +3,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject }
 import type { IncomingEvent, RouteStatus } from "../../src/types.ts";
 import { templateVars } from "../../src/template.ts";
 import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
-import { RelativeTime } from "../components/RelativeTime.tsx";
+import { RelativeTime } from "../ui/RelativeTime.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING, flash, pageTransition } from "../lib/motion.ts";
 import { useEscape, useNav, useRouteHeading } from "../lib/nav.ts";

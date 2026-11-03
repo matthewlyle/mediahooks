@@ -7,6 +7,7 @@ import { FieldError } from "../public/ui/FieldError.tsx";
 import { Menu } from "../public/ui/Menu.tsx";
 import { Popover, type PopoverProps } from "../public/ui/Popover.tsx";
 import { RefreshButton, type RefreshButtonProps } from "../public/ui/RefreshButton.tsx";
+import { RelativeTime } from "../public/ui/RelativeTime.tsx";
 import { Segmented } from "../public/ui/Segmented.tsx";
 import { Spinner } from "../public/ui/Spinner.tsx";
 import { Switch } from "../public/ui/Switch.tsx";
@@ -78,6 +79,7 @@ export const fixtures: Record<string, Fixture> = {
     bind: { onChange: "value" },
   },
   Spinner: { component: Spinner, props: { inverse: false } },
+  RelativeTime: { component: RelativeTime, props: { ms: Date.now() - 3 * 60_000 } },
 };
 
 function PopoverDemo({ anchor: _anchor, ...props }: PopoverProps) {
