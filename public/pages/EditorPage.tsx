@@ -36,7 +36,7 @@ import { Panel } from "../ui/Panel.tsx";
 import { DiscordPreview, isDiscordMessage } from "./editor/DiscordPreview.tsx";
 import { SlackPreview, isSlackMessage } from "./editor/SlackPreview.tsx";
 import { EventSentence } from "./editor/EventSentence.tsx";
-import { Reveal } from "./editor/Reveal.tsx";
+import { Reveal } from "../ui/Reveal.tsx";
 
 const PANEL_MOTION = {
   initial: { opacity: 0, y: 16 },
@@ -439,7 +439,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
         </p>
         <AnimatePresence initial={false}>
           {result && line && (
-            <Reveal key="result">
+            <Reveal key="result" className="bar-reveal">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.p
                   key={result.n}
@@ -457,7 +457,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
         </AnimatePresence>
         <AnimatePresence initial={false}>
           {formError !== null && (
-            <Reveal key="error">
+            <Reveal key="error" className="bar-reveal">
               <div ref={errorBox} className="form-error" role="alert">
                 {formError}
               </div>
