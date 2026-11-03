@@ -3,20 +3,21 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { EASE } from "../lib/motion.ts";
 import { Button } from "./Button.tsx";
 
-export type ToastOptions = { onCommit?: () => void } & (
+export type ToastOptions = { onCommit?: () => void; sticky?: boolean } & (
   | { undo?: undefined; subject?: undefined }
   | { undo: () => void; subject: string }
 );
 export type Toaster = { show(text: string, opts?: ToastOptions): void };
 
 const TOAST_MS = 4000;
+const FOCUS_SETTLE_MS = 500;
 
 const ToastContext = createContext<Toaster | null>(null);
 const ToastInertContext = createContext<(inert: boolean) => void>(() => { });
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const reduce = useReducedMotion();
-  const [toasts, setToasts] = useState<{ id: number; text: string; undo: boolean; subject?: string }[]>([]);
+  const [toasts, setToasts] = useState<{ id: number; text: string; undo: boolean; sticky: boolean; subject?: string }[]>([]);
   const [inert, setInert] = useState(false);
   const pending = useRef(new Map<number, ToastOptions>());
   const nextId = useRef(0);
@@ -26,9 +27,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const show = useCallback(
     (text: string, opts: ToastOptions = {}) => {
       const id = nextId.current++;
-      setToasts((list) => [...list, { id, text, undo: Boolean(opts.undo), subject: opts.subject }]);
+      const add = () =>
+        setToasts((list) => [...list, { id, text, undo: Boolean(opts.undo), sticky: Boolean(opts.sticky), subject: opts.subject }]);
+      if (opts.sticky) setTimeout(add, FOCUS_SETTLE_MS);
+      else add();
       if (opts.undo) pending.current.set(id, opts);
-      else setTimeout(() => close(id), TOAST_MS);
+      else if (!opts.sticky) setTimeout(() => close(id), TOAST_MS);
     },
     [close],
   );
@@ -53,33 +57,45 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<Toaster>(() => ({ show }), [show]);
 
+  function renderToast(t: (typeof toasts)[number]) {
+    return (
+      <motion.div
+        key={t.id}
+        className="toast"
+        initial={reduce ? { opacity: 0 } : { opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0, transition: { duration: 0.2, ease: EASE.outQuint } }}
+        exit={reduce ? { opacity: 0, transition: { duration: 0.15, ease: EASE.css } } : { opacity: 0, y: 8, transition: { duration: 0.15, ease: EASE.outQuint } }}
+      >
+        <span className="toast-text" role={t.sticky ? "alert" : undefined}>{t.text}</span>
+        {t.sticky && (
+          <Button className="toast-dismiss" aria-label={`Dismiss: ${t.text}`} onClick={() => close(t.id)}>
+            Dismiss
+          </Button>
+        )}
+        {t.undo && (
+          <>
+            <Button className="toast-undo" aria-label={`Undo deleting ${t.subject}`} onClick={() => settle(t.id, (p) => p.undo?.())}>
+              Undo
+            </Button>
+            <Button className="toast-dismiss" aria-label={`Dismiss: delete ${t.subject}`} onClick={() => settle(t.id, (p) => p.onCommit?.())}>
+              Dismiss
+            </Button>
+          </>
+        )}
+      </motion.div>
+    );
+  }
+
   return (
     <ToastContext.Provider value={value}>
       <ToastInertContext.Provider value={setInert}>{children}</ToastInertContext.Provider>
-      <div role="status" className="toast-region" inert={inert || undefined}>
-        <AnimatePresence>
-          {toasts.map((t) => (
-            <motion.div
-              key={t.id}
-              className="toast"
-              initial={reduce ? { opacity: 0 } : { opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0, transition: { duration: 0.2, ease: EASE.outQuint } }}
-              exit={reduce ? { opacity: 0, transition: { duration: 0.15, ease: EASE.css } } : { opacity: 0, y: 8, transition: { duration: 0.15, ease: EASE.outQuint } }}
-            >
-              <span className="toast-text">{t.text}</span>
-              {t.undo && (
-                <>
-                  <Button className="toast-undo" aria-label={`Undo deleting ${t.subject}`} onClick={() => settle(t.id, (p) => p.undo?.())}>
-                    Undo
-                  </Button>
-                  <Button className="toast-dismiss" aria-label={`Dismiss: delete ${t.subject}`} onClick={() => settle(t.id, (p) => p.onCommit?.())}>
-                    Dismiss
-                  </Button>
-                </>
-              )}
-            </motion.div>
-          ))}
-        </AnimatePresence>
+      <div className="toast-region" inert={inert || undefined}>
+        <div role="status" className="toast-stack">
+          <AnimatePresence>{toasts.filter((t) => !t.sticky).map(renderToast)}</AnimatePresence>
+        </div>
+        <div className="toast-stack">
+          <AnimatePresence>{toasts.filter((t) => t.sticky).map(renderToast)}</AnimatePresence>
+        </div>
       </div>
     </ToastContext.Provider>
   );

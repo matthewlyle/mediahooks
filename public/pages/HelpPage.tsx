@@ -1,8 +1,9 @@
 import { motion } from "motion/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "../components/Button.tsx";
 import { CopyButton } from "../components/CopyButton.tsx";
 import { PlexConnection } from "../components/PlexStatus.tsx";
+import { useToast } from "../components/Toast.tsx";
 import { api } from "../lib/api.ts";
 import { fadeIn, flash, pageTransition } from "../lib/motion.ts";
 import { useRouteHeading } from "../lib/nav.ts";
@@ -12,18 +13,36 @@ import "./HelpPage.css";
 export function HelpPage() {
   const heading = useRouteHeading<HTMLHeadingElement>();
   const { meta, refresh } = useStore();
+  const toast = useToast();
   const code = useRef<HTMLElement>(null);
   const row = useRef<HTMLDivElement>(null);
+  const newToken = useRef<HTMLButtonElement>(null);
+  const restoreFocus = useRef(false);
   const [confirming, setConfirming] = useState(false);
   const [replacing, setReplacing] = useState(false);
   const ingestUrl = `${location.origin}/plex?token=${meta?.ingestToken ?? ""}`;
+
+  useEffect(() => {
+    if (confirming || !restoreFocus.current) return;
+    restoreFocus.current = false;
+    newToken.current?.focus();
+  }, [confirming]);
+
+  function leaveConfirm() {
+    restoreFocus.current = true;
+    setConfirming(false);
+  }
 
   async function onReplace() {
     setReplacing(true);
     const res = await api<{ ingestToken: string }>("/api/ingest-token", { method: "POST" });
     if (res.ok) await refresh();
     setReplacing(false);
-    setConfirming(false);
+    leaveConfirm();
+    if (!res.ok) {
+      const state = res.status === 0 ? "check the URL before relying on it" : "the old one still works";
+      toast.show(`Couldn't replace the token, ${state}: ${res.error}`, { sticky: true });
+    }
     flash(row.current, res.ok ? "accent" : "error");
   }
 
@@ -41,7 +60,7 @@ export function HelpPage() {
                   <Button variant="danger" className="ingest-btn" disabled={replacing} onClick={() => void onReplace()}>
                     Replace token
                   </Button>
-                  <Button className="ingest-btn" disabled={replacing} onClick={() => setConfirming(false)}>
+                  <Button className="ingest-btn" disabled={replacing} onClick={leaveConfirm}>
                     Cancel
                   </Button>
                 </>
@@ -52,7 +71,7 @@ export function HelpPage() {
                     className="ingest-btn"
                     onFail={() => code.current && getSelection()?.selectAllChildren(code.current)}
                   />
-                  <Button className="ingest-btn" onClick={() => setConfirming(true)}>
+                  <Button ref={newToken} className="ingest-btn" onClick={() => setConfirming(true)}>
                     New token
                   </Button>
                 </>

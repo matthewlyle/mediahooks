@@ -123,3 +123,17 @@ test("detail page after opening a row", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 2, name: "Living room alerts" })).toBeFocused();
   await scan(page, "detail page after opening a row");
 });
+
+test("failure toast after a failed toggle", async ({ page, request }) => {
+  const res = await request.post("/api/webhooks", {
+    data: { name: "Toggle me", url: "http://127.0.0.1:9/hook", events: ["media.play"], enabled: true },
+  });
+  expect(res.ok()).toBe(true);
+  await page.route("**/api/webhooks/*", (route) =>
+    route.request().method() === "PUT" ? route.fulfill({ status: 500, json: { error: "database is locked" } }) : route.continue(),
+  );
+  await page.goto("/");
+  await page.getByRole("switch", { name: "Disable Toggle me" }).click();
+  await expect(page.getByRole("button", { name: /^Dismiss: Couldn't pause Toggle me/ })).toBeVisible();
+  await scan(page, "failure toast after a failed toggle");
+});

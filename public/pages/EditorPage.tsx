@@ -164,13 +164,10 @@ const FIELD_OF: Partial<Record<keyof FormState, Field>> = {
   bodyTemplate: "bodyTemplate",
 };
 
-const RESULT_DETAIL_MAX = 120;
-
 function resultLine(r: SendResult): { text: string; full: string } {
   const detail = r.ok ? `${r.durationMs}ms` : r.error?.replace(/\s+/g, " ").trim() || `${r.durationMs}ms`;
-  const short = detail.length > RESULT_DETAIL_MAX ? `${detail.slice(0, RESULT_DETAIL_MAX)}…` : detail;
   const status = r.status ?? "ERR";
-  return { text: `${r.ok ? "✓" : "✗"} ${status} · ${short}`, full: `${status} · ${detail}` };
+  return { text: `${r.ok ? "✓" : "✗"} ${status} · ${detail}`, full: `${status} · ${detail}` };
 }
 
 function FieldError({ id, error }: { id: string; error: string | undefined }) {
@@ -494,7 +491,6 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
                 <motion.p
                   key={result.n}
                   className={`send-result ${result.ok ? "ok" : "fail"}`}
-                  title={line.full}
                   aria-hidden="true"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1, transition: { duration: 0.15, ease: EASE.css } }}
@@ -720,7 +716,6 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
                     <motion.span
                       key="invalid"
                       className="preview-error"
-                      title={preview.invalid}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1, transition: { duration: 0.2, ease: EASE.css } }}
                       exit={{ opacity: 0, transition: { duration: 0.12, ease: EASE.css } }}
