@@ -17,7 +17,6 @@ import { eventWords } from "../lib/sentence.ts";
 import { useStore } from "../lib/store.tsx";
 import "./DetailPage.css";
 
-
 export function DetailPage({ id }: { id: number }) {
   const navigate = useNav();
   const present = useIsPresent();
@@ -278,9 +277,7 @@ function DeliveryRow({ d, fresh }: { d: Delivery; fresh: boolean }) {
           {d.status ?? "ERR"} · {detail}
         </span>
         <span className="d-what">
-          <span className="d-event">
-            {eventWords(d.event)}
-          </span>
+          <span className="d-event">{eventWords(d.event)}</span>
           {retries > 0 && <span className="d-retries">after {retries === 1 ? "1 retry" : `${retries} retries`}</span>}
         </span>
         <span className="d-time">
