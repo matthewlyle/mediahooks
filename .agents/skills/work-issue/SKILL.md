@@ -44,7 +44,7 @@ Fix GitHub issue #{N} in matthewlyle/mediahooks: `gh issue view {N} -R matthewly
 - Run `bun test` and `bun run typecheck`; both must pass.
 - If you changed anything under `public/`, run `bun x playwright test -c test/axe` (needs `bun x playwright install chromium` once) and fix what it reports before opening the PR. A new route or state gets a scan in `test/axe/axe.spec.ts`.
 - Stay within this issue. Don't touch other issues' code or `CHANGELOG.md`.
-- Commit with a Conventional Commit message, with `Fixes #{N}` in the body.
+- Commit with a Conventional Commit message whose scope matches the issue's topic (`fix(a11y): …` for `accessibility` issues), with `Fixes #{N}` in the body. The PR title is the same line; release-please puts the scope in the changelog.
 - You're explicitly asked to push `{BRANCH}` to origin and open a pull request: title is the Conventional Commit. Write the body yourself (never `gh pr create --fill`), using exactly the PR body template in `~/src/mediahooks/.agents/skills/work-issue/SKILL.md` under "Writing for GitHub" (read it from that path, not your worktree). If anything visible changed or must look unchanged, add before/after screenshots: commit PNGs to the `issue-assets` branch under `pr/<issue>-<what>.png` and link `https://raw.githubusercontent.com/matthewlyle/mediahooks/issue-assets/pr/<file>.png`. Never merge it.
 - Finish with a short report: what you changed, the PR URL, and how each success criterion was verified.
 ```
