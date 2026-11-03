@@ -10,6 +10,7 @@ import { RelativeTime } from "../ui/RelativeTime.tsx";
 import { Sentence } from "../ui/Sentence.tsx";
 import { StatusBadge } from "../components/StatusBadge.tsx";
 import { Switch } from "../ui/Switch.tsx";
+import { Toolbar } from "../ui/Toolbar.tsx";
 import { useToast } from "../ui/Toast.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING, fadeIn, flash, ids, pageTransition } from "../lib/motion.ts";
@@ -190,14 +191,14 @@ function Head({ w, direct }: HeadProps) {
           </motion.p>
         )}
       </div>
-      <motion.div className="detail-actions" {...fadeIn}>
+      <Toolbar className="detail-actions" {...fadeIn}>
         <StatusBadge delivery={store.lastDelivery[w.id] ?? null} />
         <Switch checked={w.enabled} onChange={onToggle} label={`${w.enabled ? "Disable" : "Enable"} ${w.name}`} />
         <LinkButton to={`/webhooks/${w.id}/edit?from=detail`}>Edit</LinkButton>
         <Button variant="danger" onClick={onDelete}>
           Delete
         </Button>
-      </motion.div>
+      </Toolbar>
     </Panel>
   );
 }

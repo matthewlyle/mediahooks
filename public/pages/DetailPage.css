@@ -54,11 +54,6 @@
   color: var(--error);
   overflow-wrap: anywhere;
 }
-.detail-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-6);
-}
 
 .detail-missing {
   margin: 0;

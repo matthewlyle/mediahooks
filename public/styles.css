@@ -158,10 +158,6 @@ textarea:focus-visible {
 .header-action {
   grid-column: 2;
   grid-row: 1;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--space-12);
 }
 button.avatar-btn {
   display: grid;
@@ -310,11 +306,6 @@ button.avatar-btn {
   line-height: 18px;
   color: var(--muted);
 }
-.card-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-6);
-}
 
 .test-btn {
   min-width: 52px;
@@ -441,9 +432,6 @@ form.editor {
   padding: var(--space-8) var(--space-12);
 }
 .form-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-8);
   margin-left: auto;
 }
 
