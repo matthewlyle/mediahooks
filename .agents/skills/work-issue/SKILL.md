@@ -116,10 +116,9 @@ PR body, at most about 100 words outside the screenshots and the folded checks:
 ```markdown
 Fixes #N
 
-> [!TIP]
-> **What changed:** <one or two sentences, in user terms>
->
-> **Try it:** <one line>
+<One or two sentences: what changed, in user terms. Plain text, no callout.>
+
+**Try it:** <one line>
 
 <before/after screenshot table, if anything visible changed or must look unchanged>
 
@@ -133,7 +132,8 @@ Fixes #N
 </details>
 ```
 
-If something wasn't checked, add a `> [!WARNING]` with **Not checked:** before `<details>`.
+Callouts in a PR body are only for something that needs attention: a `> [!WARNING]` with
+**Not checked:** before `<details>`. The description itself is never in a callout.
 
 Review comment, merge:
 
