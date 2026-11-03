@@ -1,6 +1,7 @@
 import { Fragment, createElement, useState, type ComponentType } from "react";
 import { Button, LinkButton } from "../public/ui/Button.tsx";
 import { Modal, type ModalProps } from "../public/ui/Modal.tsx";
+import { FieldError } from "../public/ui/FieldError.tsx";
 import { Popover, type PopoverProps } from "../public/ui/Popover.tsx";
 import { Segmented } from "../public/ui/Segmented.tsx";
 import { Switch } from "../public/ui/Switch.tsx";
@@ -15,6 +16,7 @@ export type Fixture = {
 export const fixtures: Record<string, Fixture> = {
   Button: { component: Button, props: { children: "Save" } },
   LinkButton: { component: LinkButton, props: { to: "/", children: "Back" } },
+  FieldError: { component: FieldError, props: { id: "field-error", error: "Enter a name" } },
   Switch: { component: Switch, props: { checked: false, label: "Enabled" }, bind: { onChange: "checked" } },
   Segmented: {
     component: Segmented,
