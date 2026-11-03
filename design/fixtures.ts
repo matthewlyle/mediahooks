@@ -1,4 +1,4 @@
-import { Fragment, createElement, useState, type ComponentType } from "react";
+import { Fragment, createElement, useState, type ComponentType, type ReactNode } from "react";
 import { Badge } from "../public/ui/Badge.tsx";
 import { Button, LinkButton } from "../public/ui/Button.tsx";
 import { Check } from "../public/ui/Check.tsx";
@@ -7,6 +7,16 @@ import { Popover, type PopoverProps } from "../public/ui/Popover.tsx";
 import { Segmented } from "../public/ui/Segmented.tsx";
 import { Spinner } from "../public/ui/Spinner.tsx";
 import { Switch } from "../public/ui/Switch.tsx";
+import { ToastProvider, useToast } from "../public/ui/Toast.tsx";
+
+function ToastDemo({ children }: { children?: ReactNode }) {
+  const toast = useToast();
+  return createElement(Button, { onClick: () => toast.show(String(children ?? "")) }, "Show toast");
+}
+
+function ToastPreview({ children }: { children?: ReactNode }) {
+  return createElement(ToastProvider, null, createElement(ToastDemo, null, children));
+}
 
 export type Fixture = {
   component: ComponentType<any>;
@@ -22,6 +32,7 @@ export const fixtures: Record<string, Fixture> = {
   Check: { component: Check, props: { checked: true, children: "Option" } },
   FieldError: { component: FieldError, props: { id: "field-error", error: "Enter a name" } },
   Switch: { component: Switch, props: { checked: false, label: "Enabled" }, bind: { onChange: "checked" } },
+  ToastProvider: { component: ToastPreview, props: { children: "Saved" } },
   Segmented: {
     component: Segmented,
     props: {
