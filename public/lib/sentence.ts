@@ -187,10 +187,3 @@ export function webhookParts(w: Pick<Webhook, "events" | "users" | "libraries">)
     libraries: w.libraries,
   });
 }
-
-export function partsText(parts: Part[], full = false): string {
-  return parts
-    .map((p) => (p.kind === "words" ? `${p.text} ` : p.kind === "space" ? " " : `${full ? p.full : p.text}${p.suffix}`))
-    .join("")
-    .trim();
-}

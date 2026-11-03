@@ -17,8 +17,6 @@ import { eventWords } from "../lib/sentence.ts";
 import { useStore } from "../lib/store.tsx";
 import "./DetailPage.css";
 
-const ERROR_PREVIEW = 80;
-
 export function DetailPage({ id }: { id: number }) {
   const navigate = useNav();
   const present = useIsPresent();
@@ -92,12 +90,16 @@ function useDeliveries(id: number): DeliveriesState {
 
 type HeadProps = { w: Webhook; direct: boolean };
 
+const cleanError = (error: string | null) => (error ?? "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+
 function Head({ w, direct }: HeadProps) {
   const heading = useRouteHeading<HTMLHeadingElement>();
   const store = useStore();
   const toast = useToast();
   const navigate = useNav();
   const panel = useRef<HTMLElement>(null);
+  const last = store.lastDelivery[w.id];
+  const failure = last && !last.ok ? cleanError(last.error) : "";
   const toggling = useRef(false);
 
   async function onToggle(enabled: boolean) {
@@ -171,7 +173,6 @@ function Head({ w, direct }: HeadProps) {
           layoutId={ids.url(w.id)}
           layoutCrossfade={false}
           className="detail-url"
-          title={w.url}
           transition={{ layout: SPRING.morph }}
         >
           {w.url}
@@ -179,6 +180,12 @@ function Head({ w, direct }: HeadProps) {
         <motion.div {...fadeIn}>
           <SentenceSummary w={w} className="detail-sentence" />
         </motion.div>
+        {failure && (
+          <motion.p className="detail-error" {...fadeIn}>
+            <span className="sr-only">Last delivery error: </span>
+            {failure}
+          </motion.p>
+        )}
       </div>
       <motion.div className="detail-actions" {...fadeIn}>
         <StatusBadge delivery={store.lastDelivery[w.id] ?? null} />
@@ -243,9 +250,8 @@ function DeliveryRow({ d, fresh }: { d: Delivery; fresh: boolean }) {
   useEffect(() => {
     if (fresh) flash(row.current);
   }, [fresh]);
-  const error = (d.error ?? "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
-  const preview = error.length > ERROR_PREVIEW ? `${error.slice(0, ERROR_PREVIEW)}…` : error;
-  const detail = d.ok || !error ? `${d.durationMs} ms` : preview;
+  const error = cleanError(d.error);
+  const detail = d.ok || !error ? `${d.durationMs} ms` : error;
   const retries = d.attempts - 1;
   const detailId = `delivery-${d.id}-detail`;
 
@@ -266,14 +272,12 @@ function DeliveryRow({ d, fresh }: { d: Delivery; fresh: boolean }) {
         aria-controls={open ? detailId : undefined}
         onClick={() => setOpen((o) => !o)}
       >
-        <span className={`result ${d.ok ? "ok" : "fail"}`} title={d.ok ? undefined : d.error || undefined}>
+        <span className={`result ${d.ok ? "ok" : "fail"}`}>
           <span className="sr-only">{d.ok ? "Delivered" : "Failed"}: </span>
           {d.status ?? "ERR"} · {detail}
         </span>
         <span className="d-what">
-          <span className="d-event" title={d.event}>
-            {eventWords(d.event)}
-          </span>
+          <span className="d-event">{eventWords(d.event)}</span>
           {retries > 0 && <span className="d-retries">after {retries === 1 ? "1 retry" : `${retries} retries`}</span>}
         </span>
         <span className="d-time">

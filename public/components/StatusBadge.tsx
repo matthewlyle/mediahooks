@@ -11,7 +11,6 @@ export function StatusBadge({ delivery }: { delivery: Delivery | null }) {
         <motion.span
           key={delivery.id}
           className={`result ${delivery.ok ? "ok" : "fail"}`}
-          title={delivery.error ?? undefined}
           initial={reduce ? { opacity: 0 } : delivery.ok ? { opacity: 0, scale: 0.9 } : { opacity: 0, y: -2 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, transition: { duration: 0 } }}

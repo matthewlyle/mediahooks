@@ -224,7 +224,6 @@ function Row({ w, last, index, enter }: RowProps) {
           layoutId={ids.url(w.id)}
           layoutCrossfade={false}
           className="card-url"
-          title={w.url}
           transition={{ layout: SPRING.morph }}
         >
           {w.url}
