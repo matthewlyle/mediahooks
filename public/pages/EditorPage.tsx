@@ -239,7 +239,14 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
   const [formError, setFormError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [sending, setSending] = useState(false);
+  const [sendingAnnounced, setSendingAnnounced] = useState(false);
   const [result, setResult] = useState<(SendResult & { n: number }) | null>(null);
+  useEffect(() => {
+    if (!sending) return setSendingAnnounced(false);
+    // Announced after the button's own speech, which otherwise drops the live region update.
+    const timer = setTimeout(() => setSendingAnnounced(true), 500);
+    return () => clearTimeout(timer);
+  }, [sending]);
   const [stuck, setStuck] = useState(false);
 
   const errors = useMemo(() => validateForm(form), [form]);
@@ -477,8 +484,8 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
             Save
           </Button>
         </motion.div>
-        <p className="sr-only" role="status" aria-live="assertive">
-          {sending ? "Sending test…" : result && line ? `${result.ok ? "Test delivered" : "Test failed"}: ${line.full}` : ""}
+        <p className="sr-only" role="status">
+          {sending ? (sendingAnnounced ? "Sending test…" : "") : result && line ? `${result.ok ? "Test delivered" : "Test failed"}: ${line.full}` : ""}
         </p>
         <AnimatePresence initial={false}>
           {result && line && (
