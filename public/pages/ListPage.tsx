@@ -11,12 +11,13 @@ import { Switch } from "../components/Switch.tsx";
 import { useToast } from "../components/Toast.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING, flash, ids, pageTransition } from "../lib/motion.ts";
-import { useLinkProps, useNav } from "../lib/nav.ts";
+import { useLinkProps, useNav, useRouteHeading } from "../lib/nav.ts";
 import { useStore } from "../lib/store.tsx";
 
 type Enter = "stagger" | "pop";
 
 export function ListPage() {
+  const heading = useRouteHeading<HTMLHeadingElement>();
   const { webhooks, lastDelivery, loaded, error } = useStore();
   const reduce = useReducedMotion();
   const firstLoad = useRef(!loaded);
@@ -27,7 +28,7 @@ export function ListPage() {
 
   return (
     <motion.div className="page page-list" {...pageTransition}>
-      <h2 className="sr-only">Webhooks</h2>
+      <h2 ref={heading} tabIndex={-1} className="sr-only">Webhooks</h2>
       {error && !loaded ? (
         <p className="empty">Could not reach the mediahooks API.</p>
       ) : (

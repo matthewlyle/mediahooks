@@ -6,7 +6,7 @@ import { RefreshButton, type RefreshOutcome } from "../components/RefreshButton.
 import { RelativeTime } from "../components/RelativeTime.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING, flash, pageTransition } from "../lib/motion.ts";
-import { useEscape, useNav } from "../lib/nav.ts";
+import { useEscape, useNav, useRouteHeading } from "../lib/nav.ts";
 import { useRefetchOnReturn } from "../lib/refetch.ts";
 import "./EventsPage.css";
 
@@ -19,6 +19,7 @@ let cached: IncomingEvent[] | null = null;
 let cachedAt: number | null = null;
 
 export function EventsPage() {
+  const heading = useRouteHeading<HTMLHeadingElement>();
   const navigate = useNav();
   const [events, setEvents] = useState<IncomingEvent[] | null>(cached);
   const [updatedAt, setUpdatedAt] = useState<number | null>(cachedAt);
@@ -50,7 +51,7 @@ export function EventsPage() {
 
   return (
     <motion.div className="page page-events" {...pageTransition}>
-      <h2 className="sr-only">Events</h2>
+      <h2 ref={heading} tabIndex={-1} className="sr-only">Events</h2>
       <section className="panel events-panel" aria-label="Recent events">
         <div className="ev-head">
           <RefreshButton onRefresh={load} updatedAt={updatedAt} noun={["event", "events"]} disabled={!events && !error} />
