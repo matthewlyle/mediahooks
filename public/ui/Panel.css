@@ -1,0 +1,11 @@
+.panel {
+  background: var(--surface);
+  border-radius: var(--radius-2);
+  padding: var(--space-16);
+}
+
+.panel h2 {
+  margin: 0 0 var(--space-8);
+  font-size: var(--text-16);
+  font-weight: 600;
+}
