@@ -125,7 +125,7 @@ function Row({ w, last, index, enter }: RowProps) {
     }
     const { ok, status, durationMs, error } = res.data;
     toast.show(ok ? `Test to ${w.name}: ${status} · ${durationMs}ms` : `Test to ${w.name} failed: ${status ?? error ?? "error"}`, { sticky: !ok });
-    if (ok) burst(row.current?.querySelector<HTMLElement>(".more-btn"));
+    if (ok) burst(row.current?.querySelector<HTMLElement>(".menu-overflow"));
     else flash(row.current, "error");
   }
 
@@ -159,7 +159,7 @@ function Row({ w, last, index, enter }: RowProps) {
       layoutCrossfade={false}
       data-id={w.id}
       className="card"
-      style={{ borderRadius: 2 }}
+      style={{ borderRadius: "var(--radius-2)" }}
       initial={
         reduce
           ? { opacity: 0 }
@@ -172,12 +172,12 @@ function Row({ w, last, index, enter }: RowProps) {
         reduce
           ? { opacity: 0, transition: { duration: 0.15, ease: EASE.css } }
           : {
-              opacity: 0,
-              x: -24,
-              scale: 0.96,
-              filter: ["blur(0px)", "blur(4px)"],
-              transition: { duration: 0.2, ease: EASE.outQuint },
-            }
+            opacity: 0,
+            x: -24,
+            scale: 0.96,
+            filter: ["blur(0px)", "blur(4px)"],
+            transition: { duration: 0.2, ease: EASE.outQuint },
+          }
       }
       transition={{
         ...(arrival.enter === "stagger" ? { ...SPRING.page, delay: arrival.delay } : SPRING.pop),
@@ -191,7 +191,7 @@ function Row({ w, last, index, enter }: RowProps) {
           <Switch checked={w.enabled} onChange={onToggle} label={`${w.enabled ? "Disable" : "Enable"} ${w.name}`} />
           <Menu
             label={`More actions for ${w.name}`}
-            triggerClassName="more-btn"
+            overflow
             items={[
               { label: "Edit", onSelect: () => navigate(`/webhooks/${w.id}/edit`) },
               { label: "Test", onSelect: () => void onSendTest() },
@@ -199,11 +199,7 @@ function Row({ w, last, index, enter }: RowProps) {
               { label: "Duplicate", onSelect: () => void onDuplicate() },
               { label: "Delete", onSelect: onDelete, danger: true },
             ]}
-          >
-            <span className="dot" />
-            <span className="dot" />
-            <span className="dot" />
-          </Menu>
+          />
         </Toolbar>
       }
     >
