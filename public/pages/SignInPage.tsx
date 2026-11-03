@@ -100,7 +100,7 @@ export function SignInPage({ onSignedIn }: { onSignedIn: (user: AuthUser) => voi
         >
           Sign in with Plex
         </Button>
-        <LiveRegion visible>
+        <LiveRegion visible as="div">
           {waiting && !link && <span className="sr-only">Waiting for Plex…</span>}
           <AnimatePresence initial={false} mode="wait">
             {(link || note) && (

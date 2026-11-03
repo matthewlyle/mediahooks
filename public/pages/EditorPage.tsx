@@ -424,7 +424,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
             Save
           </Button>
         </Toolbar>
-        <LiveRegion>
+        <LiveRegion as="p">
           {sending ? (sendingAnnounced ? "Sending test…" : "") : result && line ? `${result.ok ? "Test delivered" : "Test failed"}: ${line.full}` : ""}
         </LiveRegion>
         <AnimatePresence initial={false}>
