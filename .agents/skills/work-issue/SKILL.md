@@ -64,6 +64,7 @@ Fix GitHub issue #{N} in matthewlyle/mediahooks: `gh issue view {N} -R matthewly
 - Reproduce the problem in a browser first, then fix it, then re-check every success-criteria item in the browser.
 - Run `bun test` and `bun run typecheck`; both must pass.
 - If you changed anything under `public/`, run `bun x playwright test -c test/axe` (needs `bun x playwright install chromium` once) and fix what it reports before opening the PR. A new route or state gets a scan in `test/axe/axe.spec.ts`.
+- In the browser, check behaviour with the page's text and accessibility tree first. Take screenshots only for the PR's before/after and for criteria about how something looks: each one stays in your context and is re-read on every later step.
 - Stay within this issue. Don't touch other issues' code or `CHANGELOG.md`.
 - Commit with a Conventional Commit message whose scope matches the issue's topic (`fix(a11y): …` for `accessibility` issues), with `Fixes #{N}` in the body. The PR title is the same line; release-please puts the scope in the changelog.
 - You're explicitly asked to push `{BRANCH}` to origin and open a pull request: title is the Conventional Commit. Before pushing, merge the latest `main` (`git fetch git@github.com:matthewlyle/mediahooks.git main && git merge FETCH_HEAD`; force-pushes are blocked) and re-run the checks. Write the body yourself (never `gh pr create --fill`), using exactly the PR body template in `.agents/skills/work-issue/SKILL.md` under "Writing for GitHub". If anything visible changed or must look unchanged, add before/after screenshots: commit PNGs to the `issue-assets` branch under `pr/<issue>-<what>.png` (fetch and rebase it first; other agents push to it too) and link `https://raw.githubusercontent.com/matthewlyle/mediahooks/issue-assets/pr/<file>.png`. After pushing, confirm the PR's head commit equals your local HEAD. Never merge it.
@@ -88,6 +89,7 @@ Review pull request #{PR} in matthewlyle/mediahooks, which claims to fix issue #
 Check, and re-run what you can rather than trusting the PR body:
 - Every success criterion in the issue is met. Run the branch (`AUTH=off PORT={PORT} bun --hot src/server.ts`, port 89 + the issue number zero-padded) and check each criterion in a browser.
 - A criterion phrased "VoiceOver announces…" counts as checked when the `voiceover` job on the PR passed with the expected phrase in its `spoken-phrase-log` artifact (`gh run download <run> -n spoken-phrase-log`). A fix with a VoiceOver criterion should add a scenario for it in `test/screen-reader/`; if there's no scenario, or the run was flaky (Playwright reports it as flaky, or it passed only on a rerun), that criterion goes to a person.
+- In the browser, read the page's text and accessibility tree; screenshot only criteria about how something looks.
 - The diff stays within the issue, follows AGENTS.md, and has no dead code, comments that aren't needed, or unrelated changes.
 - `bun test` and `bun run typecheck` pass.
 - The `axe` job on the PR passed. That's one check, not proof of accessibility: axe finds only scanner-detectable problems (labels, contrast, ARIA), so still check each criterion by hand.
