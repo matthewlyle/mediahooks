@@ -8,7 +8,8 @@
     "start": "bun src/server.ts",
     "dev": "PORT=8788 bun --hot src/server.ts",
     "test": "bun test",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "design": "PORT=${PORT:-8790} bun --hot design/server.ts"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.20.4",
