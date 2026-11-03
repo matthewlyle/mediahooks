@@ -43,3 +43,38 @@
     min-height: 44px;
   }
 }
+
+.menu-overflow {
+  align-self: stretch;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: 0 var(--space-10);
+}
+.menu-overflow .menu-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: currentColor;
+  transition: translate 150ms ease;
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .menu-overflow:not(:disabled):hover .menu-dot:first-child {
+    translate: -2px 0;
+  }
+  .menu-overflow:not(:disabled):hover .menu-dot:last-child {
+    translate: 2px 0;
+  }
+}
+@media (pointer: coarse) {
+  .menu-overflow {
+    position: relative;
+    min-width: 40px;
+    justify-content: center;
+  }
+  .menu-overflow::before {
+    content: "";
+    position: absolute;
+    inset: -9px;
+  }
+}

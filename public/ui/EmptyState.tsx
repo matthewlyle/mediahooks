@@ -4,12 +4,12 @@ import "./EmptyState.css";
 
 const TAGS = { p: motion.p, li: motion.li, div: motion.div };
 
-type Size = "large" | "medium" | "small";
+type Size = "large" | "medium" | "small" | "plain";
 
 export type EmptyStateProps = Omit<HTMLMotionProps<"div">, "children"> & {
   /** Element rendered: a paragraph, a list item or a div. Defaults to p. */
   as?: keyof typeof TAGS;
-  /** How much room the message takes: large for a whole page, medium for a panel, small for a row in a list. Defaults to large. */
+  /** How much room the message takes: large for a whole page, medium for a panel, small for a row in a list, plain for a line inside content that has its own padding. Defaults to large. */
   size?: Size;
   /** The message: that nothing is here, or why it couldn't load. */
   children?: ReactNode;

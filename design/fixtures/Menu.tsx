@@ -6,6 +6,7 @@ export default {
   props: {
     label: "Actions",
     children: "Actions",
+    overflow: false,
     heading: "Webhook",
     items: [
       { label: "Edit", onSelect: () => {} },

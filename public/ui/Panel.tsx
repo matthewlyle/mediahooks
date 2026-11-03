@@ -9,12 +9,14 @@ export type PanelProps = Omit<HTMLMotionProps<"form">, "ref"> & {
   as?: keyof typeof TAGS;
   /** Ref to the rendered element. */
   ref?: Ref<HTMLElement>;
+  /** Tighter side padding, for a panel that holds a form. */
+  dense?: boolean;
   /** Content shown on the surface. */
   children?: ReactNode;
 };
 
 /** A raised surface that groups a block of content on a page. */
-export function Panel({ as = "section", className, ...rest }: PanelProps) {
+export function Panel({ as = "section", dense, className, ...rest }: PanelProps) {
   const Tag: ElementType = TAGS[as];
-  return <Tag className={["panel", className].filter(Boolean).join(" ")} {...rest} />;
+  return <Tag className={["panel", dense && "panel-dense", className].filter(Boolean).join(" ")} {...rest} />;
 }
