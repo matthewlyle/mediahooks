@@ -1,6 +1,7 @@
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, useReducedMotion } from "motion/react";
 import type { Delivery } from "../../src/types.ts";
 import { EASE, SPRING } from "../lib/motion.ts";
+import { Badge } from "../ui/Badge.tsx";
 import { RelativeTime } from "./RelativeTime.tsx";
 
 export function StatusBadge({ delivery }: { delivery: Delivery | null }) {
@@ -8,9 +9,9 @@ export function StatusBadge({ delivery }: { delivery: Delivery | null }) {
   return (
     <AnimatePresence initial={false} mode="popLayout">
       {delivery && (
-        <motion.span
+        <Badge
           key={delivery.id}
-          className={`result ${delivery.ok ? "ok" : "fail"}`}
+          tone={delivery.ok ? "success" : "error"}
           initial={reduce ? { opacity: 0 } : delivery.ok ? { opacity: 0, scale: 0.9 } : { opacity: 0, y: -2 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, transition: { duration: 0 } }}
@@ -28,7 +29,7 @@ export function StatusBadge({ delivery }: { delivery: Delivery | null }) {
           </svg>
           <span className="sr-only">{delivery.ok ? "Delivered" : "Failed"}: </span>
           {delivery.status ?? "ERR"} · <RelativeTime ms={delivery.createdAt} />
-        </motion.span>
+        </Badge>
       )}
     </AnimatePresence>
   );
