@@ -19,8 +19,8 @@
 .dc code {
   font-family: var(--mono);
   font-size: 0.85em;
-  padding: 0 var(--space-3);
-  border-radius: var(--radius-3);
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-4);
   background: var(--discord-embed-bg);
 }
 .dc-avatar {
@@ -50,8 +50,8 @@
 .dc-app {
   font-size: var(--text-10);
   font-weight: 600;
-  padding: var(--space-1) var(--space-4);
-  border-radius: var(--radius-3);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-4);
   background: var(--discord-blurple);
   color: var(--white);
   align-self: center;

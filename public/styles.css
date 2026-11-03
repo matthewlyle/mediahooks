@@ -189,7 +189,7 @@ button.avatar-btn {
 
 .ingest-btn {
   font-size: var(--text-11);
-  padding: var(--space-1) var(--space-8);
+  padding: var(--space-2) var(--space-8);
   min-width: 56px;
 }
 
@@ -350,7 +350,7 @@ button.avatar-btn {
   align-self: stretch;
   display: inline-flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-4);
   padding: 0 var(--space-10);
 }
 .more-btn .dot {
@@ -419,7 +419,7 @@ form.editor {
   padding: var(--space-8) var(--space-10);
   max-height: 200px;
   overflow: auto;
-  font-size: var(--text-11-5);
+  font-size: var(--text-12);
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -455,7 +455,7 @@ form.editor {
   background: var(--bg);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-2);
-  padding: var(--space-7) var(--space-10);
+  padding: var(--space-8) var(--space-10);
   width: 100%;
 }
 .editor input[name="name"] {

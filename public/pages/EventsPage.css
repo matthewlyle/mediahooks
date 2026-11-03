@@ -74,7 +74,7 @@
 }
 .ev-time {
   font-family: var(--mono);
-  font-size: var(--text-11-5);
+  font-size: var(--text-12);
   color: var(--muted);
 }
 .ev-title {
@@ -103,7 +103,7 @@
   margin: 0 0 var(--space-10);
   padding: 0;
   display: grid;
-  gap: var(--space-3);
+  gap: var(--space-4);
   font-size: var(--text-12);
   color: var(--muted);
 }
