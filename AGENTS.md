@@ -23,7 +23,7 @@ runs on every PR but only starts the macOS job when `public/**`, non-test `src/*
 the workflow, never with `paths:`. Run it by hand with
 `gh workflow run voiceover.yml -f ref=<branch>`; each run uploads the log as the
 `spoken-phrase-log` artifact. Running them on a Mac needs `npx @guidepup/setup` and takes over
-VoiceOver, so leave them to CI. `bun test` skips them (`bunfig.toml` roots it at `src/`). A fix with
+VoiceOver, so leave them to CI. `bun test` skips them (`bunfig.toml` ignores `test/**`). A fix with
 a "VoiceOver announces…" criterion adds a scenario there.
 
 Axe tests: `test/axe/axe.spec.ts` scans every route and key states with `@axe-core/playwright` in
