@@ -1,4 +1,6 @@
 .pop-add {
+  position: sticky;
+  bottom: 0;
   margin: var(--space-4) var(--space-2) var(--space-2);
   padding: var(--space-6) var(--space-10);
   font-family: var(--mono);

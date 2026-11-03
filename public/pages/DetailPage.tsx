@@ -2,7 +2,7 @@ import { AnimatePresence, motion, useIsPresent, useReducedMotion } from "motion/
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Delivery, DeliveryDetail, Webhook } from "../../src/types.ts";
 import { EmptyState } from "../ui/EmptyState.tsx";
-import { CodeBlock, CodeLabel } from "../ui/CodeBlock.tsx";
+import { CodeBlock } from "../ui/CodeBlock.tsx";
 import { Button, LinkButton } from "../ui/Button.tsx";
 import { WebhookIdentity } from "../ui/WebhookIdentity.tsx";
 import { Panel } from "../ui/Panel.tsx";
@@ -173,7 +173,7 @@ function Head({ w, direct }: HeadProps) {
       </div>
       <Toolbar className="detail-actions" {...fadeIn}>
         <StatusBadge delivery={store.lastDelivery[w.id] ?? null} />
-        <Switch checked={w.enabled} onChange={onToggle} label={`${w.enabled ? "Disable" : "Enable"} ${w.name}`} />
+        <Switch checked={w.enabled} onChange={onToggle} aria-label={`${w.enabled ? "Disable" : "Enable"} ${w.name}`} />
         <LinkButton to={`/webhooks/${w.id}/edit?from=detail`}>Edit</LinkButton>
         <Button variant="danger" onClick={onDelete}>
           Delete
@@ -280,10 +280,7 @@ function DeliveryExchange({ d }: { d: Delivery }) {
         {detail.request.truncated && <span className="muted">{"\n… cut at 8 KB"}</span>}
       </CodeBlock>
       {detail.response === null ? (
-        <>
-          <CodeLabel>Response</CodeLabel>
-          <EmptyState size="plain">No response: {detail.error}</EmptyState>
-        </>
+        <CodeBlock label="Response" note={`No response: ${detail.error}`} />
       ) : (
         <CodeBlock label="Response" head={`HTTP ${detail.status}\n${headerLines(detail.response.headers)}\n\n`}>
           {detail.response.body}
