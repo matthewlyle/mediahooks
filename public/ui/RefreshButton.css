@@ -1,0 +1,58 @@
+.refresh {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-10);
+}
+.refresh-status {
+  font-family: var(--mono);
+  font-size: var(--text-11);
+  white-space: nowrap;
+}
+.refresh-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+.refresh-label.muted {
+  color: var(--muted);
+}
+.refresh-label.new {
+  color: var(--accent);
+}
+.refresh-label.fail {
+  color: var(--error);
+}
+.refresh-check {
+  width: 10px;
+  height: 10px;
+  color: var(--success);
+}
+.refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+.refresh-btn[aria-busy="true"] {
+  opacity: 1;
+  cursor: progress;
+}
+.refresh-icon {
+  width: 12px;
+  height: 12px;
+  /* Rotate around the icon's own center (SVG transforms default to the viewport origin). */
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.refresh-icon.spinning {
+  animation: refresh-spin 600ms linear infinite;
+}
+@keyframes refresh-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .refresh-icon.spinning {
+    animation: none;
+  }
+}
