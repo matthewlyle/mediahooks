@@ -118,7 +118,10 @@ export function createAuth({ db, plex, enabled, clientId: cid }: AuthOptions): A
             const plexToken = await plex.pinToken(id);
             if (!plexToken) return Response.json({ status: "waiting" });
             const account = await plex.account(plexToken);
-            if (!(await plex.ownsServer(plexToken))) return error(NOT_OWNER, 403);
+            if (!(await plex.ownsServer(plexToken))) {
+              console.log(`sign-in refused for ${account.username}: not the server owner`);
+              return error(NOT_OWNER, 403);
+            }
             db.setSetting("owner_token", plexToken);
             const token = Buffer.from(crypto.getRandomValues(new Uint8Array(32))).toString("base64url");
             const now = Date.now();
