@@ -3,7 +3,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties
 import { createPortal } from "react-dom";
 import { useLocation } from "wouter";
 import { EASE } from "../lib/motion.ts";
-import { Button } from "./Button.tsx";
+import { Button } from "../ui/Button.tsx";
 
 export type MenuItem = { label: string; onSelect: () => void; danger?: boolean; disabled?: boolean };
 

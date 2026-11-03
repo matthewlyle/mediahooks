@@ -1,7 +1,7 @@
 import { AnimatePresence, motion, useIsPresent, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import type { Delivery, DeliveryDetail, Webhook } from "../../src/types.ts";
-import { Button, LinkButton } from "../components/Button.tsx";
+import { Button, LinkButton } from "../ui/Button.tsx";
 import { PausedBadge } from "../components/PausedBadge.tsx";
 import { RefreshButton, type RefreshOutcome } from "../components/RefreshButton.tsx";
 import { RelativeTime } from "../components/RelativeTime.tsx";

@@ -2,7 +2,7 @@ import { AnimatePresence, motion, MotionConfig, useReducedMotion } from "motion/
 import { useEffect, useRef, useState, type ReactElement } from "react";
 import { useLocation } from "wouter";
 import type { AuthUser, Webhook } from "../src/types.ts";
-import { LinkButton } from "./components/Button.tsx";
+import { LinkButton } from "./ui/Button.tsx";
 import { Menu } from "./components/Menu.tsx";
 import { Modal } from "./components/Modal.tsx";
 import { ToastProvider } from "./components/Toast.tsx";
