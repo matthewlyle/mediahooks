@@ -86,7 +86,6 @@ textarea:focus-visible {
 }
 
 /* Individual scale/translate properties so hovers stack with Motion's inline transform. */
-.card-url,
 .editor label.inline {
   transition:
     color 150ms ease,
@@ -100,9 +99,6 @@ textarea:focus-visible {
     box-shadow 150ms ease;
 }
 @media (hover: hover) and (pointer: fine) {
-  .card:hover .card-url {
-    opacity: 1;
-  }
   .editor label.inline:hover {
     color: var(--accent-hover);
   }
@@ -278,42 +274,6 @@ button.avatar-btn {
 }
 .card-main:focus-visible {
   outline: none;
-}
-.card-title,
-.card-url,
-.card-summary {
-  position: relative;
-}
-.card-title {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-10);
-  min-width: 0;
-}
-.card-name {
-  font-weight: 600;
-  overflow-wrap: anywhere;
-}
-.card-url {
-  font-family: var(--mono);
-  font-size: var(--text-12);
-  color: var(--fg);
-  opacity: 0.85;
-  overflow-wrap: anywhere;
-  min-width: 0;
-}
-.card.disabled .card-name,
-.card.disabled .card-url {
-  color: var(--muted);
-}
-.card.disabled .card-url {
-  opacity: 1;
-}
-.card-summary {
-  font-size: var(--text-12);
-  color: var(--muted);
-  margin: var(--space-2) 0 0;
-  overflow-wrap: anywhere;
 }
 .plex-status {
   margin: var(--space-8) 0 0;
