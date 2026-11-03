@@ -25,6 +25,9 @@ the workflow, never with `paths:`. Run it by hand with
 `spoken-phrase-log` artifact. Running them on a Mac needs `npx @guidepup/setup` and takes over
 VoiceOver, so leave them to CI. `bun test` skips them (`bunfig.toml` ignores `test/**`). A fix with
 a "VoiceOver announces…" criterion adds a scenario there.
+The `skip: voiceover` PR label skips the job (the required check passes as skipped); `workflow_dispatch`
+ignores it. Use it only for pure moves and refactors that don't touch focus, live regions or
+anything a `test/screen-reader` scenario exercises.
 
 Axe tests: `test/axe/axe.spec.ts` scans every route and key states with `@axe-core/playwright` in
 Chromium (WCAG 2.2 A/AA tags, reduced motion, after animations finish). The `axe` workflow runs on
