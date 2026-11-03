@@ -42,12 +42,6 @@ code,
   font-size: var(--text-12);
 }
 
-.label {
-  font-family: var(--mono);
-  font-size: var(--text-12);
-  color: var(--muted);
-}
-
 .button.icon-reveal {
   position: relative;
   overflow: hidden;
@@ -86,7 +80,6 @@ textarea:focus-visible {
 }
 
 /* Individual scale/translate properties so hovers stack with Motion's inline transform. */
-.card-url,
 .editor label.inline {
   transition:
     color 150ms ease,
@@ -100,9 +93,6 @@ textarea:focus-visible {
     box-shadow 150ms ease;
 }
 @media (hover: hover) and (pointer: fine) {
-  .card:hover .card-url {
-    opacity: 1;
-  }
   .editor label.inline:hover {
     color: var(--accent-hover);
   }
@@ -158,10 +148,6 @@ textarea:focus-visible {
 .header-action {
   grid-column: 2;
   grid-row: 1;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--space-12);
 }
 button.avatar-btn {
   display: grid;
@@ -205,18 +191,6 @@ button.avatar-btn {
 }
 [data-motion-pop-id] {
   pointer-events: none;
-}
-
-.panel {
-  background: var(--surface);
-  border-radius: var(--radius-2);
-  padding: var(--space-16);
-}
-
-.panel h2 {
-  margin: 0 0 var(--space-8);
-  font-size: var(--text-16);
-  font-weight: 600;
 }
 
 [data-flash="accent"] {
@@ -279,53 +253,12 @@ button.avatar-btn {
 .card-main:focus-visible {
   outline: none;
 }
-.card-title,
-.card-url,
-.card-summary {
-  position: relative;
-}
-.card-title {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-10);
-  min-width: 0;
-}
-.card-name {
-  font-weight: 600;
-  overflow-wrap: anywhere;
-}
-.card-url {
-  font-family: var(--mono);
-  font-size: var(--text-12);
-  color: var(--fg);
-  opacity: 0.85;
-  overflow-wrap: anywhere;
-  min-width: 0;
-}
-.card.disabled .card-name,
-.card.disabled .card-url {
-  color: var(--muted);
-}
-.card.disabled .card-url {
-  opacity: 1;
-}
-.card-summary {
-  font-size: var(--text-12);
-  color: var(--muted);
-  margin: var(--space-2) 0 0;
-  overflow-wrap: anywhere;
-}
 .plex-status {
   margin: var(--space-8) 0 0;
   font-family: var(--mono);
   font-size: var(--text-11);
   line-height: 18px;
   color: var(--muted);
-}
-.card-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-6);
 }
 
 .test-btn {
@@ -344,12 +277,6 @@ button.avatar-btn {
   border-radius: var(--radius-full);
   background: currentColor;
   transition: translate 150ms ease;
-}
-
-.empty {
-  color: var(--muted);
-  text-align: center;
-  padding: var(--space-40) var(--space-16);
 }
 
 .editor {
@@ -380,9 +307,6 @@ form.editor {
   min-width: 0;
 }
 .preview-head {
-  display: flex;
-  align-items: center;
-  gap: var(--space-8);
   padding: var(--space-4) var(--space-10);
   padding-bottom: var(--space-6);
 }
@@ -398,15 +322,6 @@ form.editor {
   font-size: var(--text-11);
   color: var(--error);
   overflow-wrap: anywhere;
-}
-.preview-body {
-  margin: 0;
-  padding: var(--space-8) var(--space-10);
-  max-height: 200px;
-  overflow: auto;
-  font-size: var(--text-12);
-  white-space: pre-wrap;
-  word-break: break-word;
 }
 .editor .row {
   display: grid;
@@ -459,9 +374,6 @@ form.editor {
   padding: var(--space-8) var(--space-12);
 }
 .form-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-8);
   margin-left: auto;
 }
 
@@ -562,13 +474,11 @@ form.editor {
   .editor input:not([type="checkbox"]),
   .editor select,
   .editor-bar .template-picker,
-  .menu .pop-add,
   .code-editor .cm-editor .cm-content {
     font-size: var(--text-16);
   }
   .editor input:not([type="checkbox"]),
-  .editor-bar .template-picker,
-  .menu .pop-add {
+  .editor-bar .template-picker {
     min-height: 40px;
   }
   .more-btn {

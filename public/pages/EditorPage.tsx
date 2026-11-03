@@ -1,5 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useId, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { EmptyState } from "../ui/EmptyState.tsx";
+import { CodeBlock } from "../ui/CodeBlock.tsx";
 import { matches, type Filters } from "../../src/filters.ts";
 import type { SendResult } from "../../src/send.ts";
 import type { IncomingEvent, PlexPayload, Webhook } from "../../src/types.ts";
@@ -7,6 +9,7 @@ import { SAMPLE_MOVIE_PAYLOAD, SAMPLE_PAYLOAD, SAMPLE_TRACK_PAYLOAD } from "../.
 import { isJsonContentType, renderBody, renderHeaders, templateVars } from "../../src/template.ts";
 import { Button, LinkButton } from "../ui/Button.tsx";
 import { FieldError } from "../ui/FieldError.tsx";
+import { SectionHeader } from "../ui/SectionHeader.tsx";
 import { Segmented } from "../ui/Segmented.tsx";
 import { burst } from "../components/burst.ts";
 import { Spinner } from "../ui/Spinner.tsx";
@@ -32,10 +35,12 @@ import {
   type FormState,
 } from "./editor/form.ts";
 import { CodeEditor, type CodeEditorHandle } from "../ui/CodeEditor.tsx";
+import { Panel } from "../ui/Panel.tsx";
 import { DiscordPreview, isDiscordMessage } from "./editor/DiscordPreview.tsx";
 import { SlackPreview, isSlackMessage } from "./editor/SlackPreview.tsx";
 import { EventSentence } from "./editor/EventSentence.tsx";
-import { Reveal } from "./editor/Reveal.tsx";
+import { Toolbar } from "../ui/Toolbar.tsx";
+import { Reveal } from "../ui/Reveal.tsx";
 
 const PANEL_MOTION = {
   initial: { opacity: 0, y: 16 },
@@ -124,9 +129,9 @@ export function EditorPage({ id, back: closeTo }: { id: number | null; back?: st
       <>
         {heading}
         {missing && (
-          <motion.section className="panel editor" {...PANEL_MOTION}>
+          <Panel className="editor" {...PANEL_MOTION}>
             <Missing text={missing} />
-          </motion.section>
+          </Panel>
         )}
       </>
     );
@@ -140,10 +145,9 @@ export function EditorPage({ id, back: closeTo }: { id: number | null; back?: st
 
 function Missing({ text }: { text: string }) {
   return (
-    <div className="editor-missing">
-      <p className="muted">{text}</p>
-      <LinkButton to="/">Back to webhooks</LinkButton>
-    </div>
+    <EmptyState as="div" action={<LinkButton to="/">Back to webhooks</LinkButton>}>
+      {text}
+    </EmptyState>
   );
 }
 
@@ -409,7 +413,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
             ))}
           </select>
         </div>
-        <motion.div className="form-actions" {...fadeIn}>
+        <Toolbar className="form-actions" gap="medium" {...fadeIn}>
           <span className="bar-enabled">
             <span aria-hidden="true" onClick={() => set("enabled", !form.enabled)}>
               Enabled
@@ -432,13 +436,13 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
           <Button type="submit" form={formId} variant="primary" disabled={saving}>
             Save
           </Button>
-        </motion.div>
+        </Toolbar>
         <p className="sr-only" role="status">
           {sending ? (sendingAnnounced ? "Sending test…" : "") : result && line ? `${result.ok ? "Test delivered" : "Test failed"}: ${line.full}` : ""}
         </p>
         <AnimatePresence initial={false}>
           {result && line && (
-            <Reveal key="result">
+            <Reveal key="result" className="bar-reveal">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.p
                   key={result.n}
@@ -456,7 +460,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
         </AnimatePresence>
         <AnimatePresence initial={false}>
           {formError !== null && (
-            <Reveal key="error">
+            <Reveal key="error" className="bar-reveal">
               <div ref={errorBox} className="form-error" role="alert">
                 {formError}
               </div>
@@ -465,7 +469,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
         </AnimatePresence>
       </div>
 
-      <motion.form id={formId} className="panel editor" onSubmit={onSave} noValidate {...PANEL_MOTION}>
+      <Panel as="form" id={formId} className="editor" onSubmit={onSave} noValidate {...PANEL_MOTION}>
         <div className="editor-section">
           <div className="row row-destination">
             <div className="field">
@@ -640,7 +644,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
               </AnimatePresence>
             </div>
             <div className="preview">
-              <div className="preview-head">
+              <SectionHeader className="preview-head">
                 <Segmented
                   label="Preview with"
                   options={[
@@ -676,7 +680,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
                     </motion.span>
                   )}
                 </AnimatePresence>
-              </div>
+              </SectionHeader>
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                   key={richShown ?? "request"}
@@ -689,17 +693,16 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
                   ) : richShown === "slack" && slack ? (
                     <SlackPreview message={slack} />
                   ) : (
-                    <pre className="preview-body mono">
-                      {preview.headers && <span className="preview-headers">{`${preview.headers}\n\n`}</span>}
+                    <CodeBlock inset={false} className="preview-body" head={preview.headers ? `${preview.headers}\n\n` : undefined}>
                       {preview.text}
-                    </pre>
+                    </CodeBlock>
                   )}
                 </motion.div>
               </AnimatePresence>
             </div>
           </div>
         </div>
-      </motion.form>
+      </Panel>
     </>
   );
 }

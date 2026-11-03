@@ -16,7 +16,7 @@
 .editor-bar[data-stuck] {
   box-shadow: 0 10px 12px -10px var(--black-70);
 }
-.editor-bar > .reveal {
+.editor-bar > .bar-reveal {
   flex-basis: 100%;
 }
 .bar-lead {
@@ -44,9 +44,6 @@
   .template-picker:hover {
     box-shadow: var(--glow);
   }
-}
-.preview-headers {
-  color: var(--muted);
 }
 .editor-title {
   margin: 0;
@@ -81,16 +78,6 @@
   color: var(--error);
 }
 
-.editor-missing {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-8);
-}
-.editor-missing p {
-  margin: 0;
-}
-
 form.editor {
   container: editor / inline-size;
   gap: var(--space-28);
@@ -109,17 +96,6 @@ form.editor {
   --reveal-gap: var(--space-6);
 }
 
-.reveal {
-  overflow: hidden;
-  margin-top: calc(-1 * var(--reveal-gap, var(--space-14)));
-}
-.reveal.settled {
-  overflow: visible;
-}
-.reveal-inner {
-  display: flow-root; /* children's margins count in the measured height */
-  padding-top: var(--reveal-gap, var(--space-14));
-}
 .editor input:not([type="checkbox"])[aria-invalid="true"] {
   border-color: var(--error-80);
 }
