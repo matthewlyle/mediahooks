@@ -285,6 +285,7 @@ button.avatar-btn {
 }
 .nav-link[aria-current="page"] {
   color: var(--accent);
+  font-weight: 600;
 }
 .nav-indicator {
   position: absolute;
@@ -293,6 +294,18 @@ button.avatar-btn {
 }
 .nav-label {
   position: relative;
+  display: inline-grid;
+}
+.nav-label::after {
+  content: attr(data-label);
+  grid-area: 1 / 1;
+  height: 0;
+  overflow: hidden;
+  font-weight: 600;
+  visibility: hidden;
+}
+.nav-label > span {
+  grid-area: 1 / 1;
 }
 @media (hover: hover) and (pointer: fine) {
   .nav-link:not([aria-current="page"]):hover {
