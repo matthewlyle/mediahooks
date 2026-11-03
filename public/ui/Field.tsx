@@ -14,8 +14,13 @@ export function useFieldControl() {
   return useContext(FieldControlContext);
 }
 
-/** A text input, set in the body font with `prose`, that reports the surrounding field's error through `aria-invalid` and `aria-describedby`. */
-export function FieldInput({ prose, className, ...props }: ComponentProps<"input"> & { prose?: boolean }) {
+type FieldInputProps = ComponentProps<"input"> & {
+  /** Sets the text in the body font instead of the monospace one. */
+  prose?: boolean;
+  "data-1p-ignore"?: string;
+};
+
+function FieldInput({ prose, className, ...props }: FieldInputProps) {
   const { invalid, describedBy } = useFieldControl();
   const classes = ["field-input", prose && "field-input-prose", className].filter(Boolean).join(" ");
   return <input className={classes} aria-invalid={invalid} aria-describedby={describedBy} {...props} />;
@@ -40,8 +45,10 @@ export type FieldProps = {
   className?: string;
   /** Content shown under the error message. */
   footer?: ReactNode;
-  /** The control. Use `FieldInput` for a text input, or `useFieldControl` to wire another control. */
-  children: ReactNode;
+  /** Props of a text input the field renders and wires to its label and error. Give this or `children`. */
+  input?: FieldInputProps;
+  /** Another control, wired to the field with `useFieldControl`. */
+  children?: ReactNode;
 };
 
 /** A form field: a label with an optional hint, the control, and a validation message wired to the control. */
@@ -55,6 +62,7 @@ export function Field({
   errorId,
   className,
   footer,
+  input,
   children,
 }: FieldProps) {
   return (
@@ -67,7 +75,7 @@ export function Field({
         </label>
       )}
       <FieldControlContext.Provider value={{ invalid: Boolean(error), describedBy: error ? errorId : undefined }}>
-        {children}
+        {input ? <FieldInput id={id} {...input} /> : children}
       </FieldControlContext.Provider>
       <FieldError id={errorId} error={error} />
       {footer}
