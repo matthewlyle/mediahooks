@@ -1,16 +1,16 @@
 .dc {
   display: flex;
-  gap: 14px;
-  padding: 12px 14px 14px;
-  background: #313338;
-  color: #dbdee1;
+  gap: var(--space-14);
+  padding: var(--space-12) var(--space-14) var(--space-14);
+  background: var(--discord-bg);
+  color: var(--discord-text);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-  font-size: 15px;
+  font-size: var(--text-15);
   line-height: 1.375;
   white-space: normal;
 }
 .dc a {
-  color: #00a8fc;
+  color: var(--discord-link);
   text-decoration: none;
 }
 .dc a:hover {
@@ -19,19 +19,19 @@
 .dc code {
   font-family: var(--mono);
   font-size: 0.85em;
-  padding: 0 3px;
-  border-radius: 3px;
-  background: #2b2d31;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-3);
+  background: var(--discord-embed-bg);
 }
 .dc-avatar {
   flex: none;
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   display: grid;
   place-items: center;
-  background: #e5a00d;
-  color: #1e1f22;
+  background: var(--plex-gold);
+  color: var(--discord-bg-deep);
   font-weight: 700;
 }
 .dc-body {
@@ -41,64 +41,64 @@
 .dc-header {
   display: flex;
   align-items: baseline;
-  gap: 6px;
+  gap: var(--space-6);
 }
 .dc-name {
   font-weight: 600;
-  color: #f2f3f5;
+  color: var(--discord-text-strong);
 }
 .dc-app {
-  font-size: 10px;
+  font-size: var(--text-10);
   font-weight: 600;
-  padding: 1px 4px;
-  border-radius: 3px;
-  background: #5865f2;
-  color: #fff;
+  padding: var(--space-1) var(--space-4);
+  border-radius: var(--radius-3);
+  background: var(--discord-blurple);
+  color: var(--white);
   align-self: center;
 }
 .dc-time {
-  font-size: 12px;
-  color: #949ba4;
+  font-size: var(--text-12);
+  color: var(--discord-text-muted);
 }
 .dc-content {
   overflow-wrap: anywhere;
 }
 .dc-embed {
   max-width: 520px;
-  margin-top: 4px;
-  padding: 8px 16px 16px 12px;
-  border-left: 4px solid #1e1f22;
-  border-radius: 4px;
-  background: #2b2d31;
-  font-size: 14px;
+  margin-top: var(--space-4);
+  padding: var(--space-8) var(--space-16) var(--space-16) var(--space-12);
+  border-left: 4px solid var(--discord-bg-deep);
+  border-radius: var(--radius-4);
+  background: var(--discord-embed-bg);
+  font-size: var(--text-14);
 }
 .dc-embed-grid {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 16px;
+  gap: var(--space-16);
 }
 .dc-embed-main {
   min-width: 0;
 }
 .dc-title {
   display: block;
-  margin-top: 8px;
-  font-size: 16px;
+  margin-top: var(--space-8);
+  font-size: var(--text-16);
   font-weight: 600;
-  color: #f2f3f5;
+  color: var(--discord-text-strong);
 }
 a.dc-title {
-  color: #00a8fc;
+  color: var(--discord-link);
 }
 .dc-description {
-  margin-top: 8px;
+  margin-top: var(--space-8);
   overflow-wrap: anywhere;
 }
 .dc-fields {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 8px;
+  gap: var(--space-8);
+  margin-top: var(--space-8);
 }
 .dc-field {
   grid-column: 1 / -1;
@@ -114,33 +114,33 @@ a.dc-title {
 }
 .dc-field-name {
   font-weight: 600;
-  color: #f2f3f5;
-  margin-bottom: 2px;
+  color: var(--discord-text-strong);
+  margin-bottom: var(--space-2);
 }
 .dc-image {
   display: block;
   max-width: min(100%, 400px);
   max-height: 300px;
-  margin-top: 16px;
-  border-radius: 4px;
+  margin-top: var(--space-16);
+  border-radius: var(--radius-4);
 }
 .dc-embed-grid .dc-image {
   max-width: 80px;
-  margin-top: 8px;
+  margin-top: var(--space-8);
 }
 .dc-poster-placeholder {
   width: 200px;
   height: 300px;
-  margin-top: 16px;
-  border-radius: 4px;
+  margin-top: var(--space-16);
+  border-radius: var(--radius-4);
   display: grid;
   place-items: center;
-  background: linear-gradient(160deg, #3a3d44, #1e1f22);
-  color: #949ba4;
-  font-size: 13px;
+  background: linear-gradient(160deg, var(--discord-thumb), var(--discord-bg-deep));
+  color: var(--discord-text-muted);
+  font-size: var(--text-13);
 }
 .dc-footer {
-  margin-top: 8px;
-  font-size: 12px;
-  color: #949ba4;
+  margin-top: var(--space-8);
+  font-size: var(--text-12);
+  color: var(--discord-text-muted);
 }

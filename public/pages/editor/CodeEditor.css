@@ -22,10 +22,10 @@
   max-height: 240px;
 }
 .code-editor.is-invalid .cm-editor {
-  border-color: rgba(255, 92, 92, 0.8);
+  border-color: var(--error-80);
 }
 .code-editor.is-invalid .cm-editor.cm-focused {
-  box-shadow: 0 0 12px rgba(255, 92, 92, 0.25);
+  box-shadow: 0 0 12px var(--error-25);
 }
 .code-editor .cm-template-var,
 .code-editor .cm-template-var * {
@@ -33,7 +33,7 @@
 }
 .code-editor .cm-template-var {
   background: var(--accent-dim);
-  border-radius: 2px;
+  border-radius: var(--radius-2);
 }
 .code-editor .cm-lintRange-error {
   background-image: none;
