@@ -14,10 +14,11 @@ export function useFieldControl() {
   return useContext(FieldControlContext);
 }
 
-/** A text input that reports the surrounding field's error through `aria-invalid` and `aria-describedby`. */
-export function FieldInput(props: ComponentProps<"input">) {
+/** A text input, set in the body font with `prose`, that reports the surrounding field's error through `aria-invalid` and `aria-describedby`. */
+export function FieldInput({ prose, className, ...props }: ComponentProps<"input"> & { prose?: boolean }) {
   const { invalid, describedBy } = useFieldControl();
-  return <input aria-invalid={invalid} aria-describedby={describedBy} {...props} />;
+  const classes = ["field-input", prose && "field-input-prose", className].filter(Boolean).join(" ");
+  return <input className={classes} aria-invalid={invalid} aria-describedby={describedBy} {...props} />;
 }
 
 export type FieldProps = {

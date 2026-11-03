@@ -30,7 +30,7 @@ export function Segmented<T extends string>({ label, options, value, onChange, c
             <motion.span
               layoutId={pill}
               className="segmented-pill"
-              style={{ borderRadius: 2 }}
+              style={{ borderRadius: "var(--radius-2)" }}
               transition={SPRING.morph}
               aria-hidden="true"
             />
