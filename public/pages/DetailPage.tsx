@@ -132,7 +132,7 @@ function Head({ w, direct }: HeadProps) {
     store.remove(w.id);
     navigate("/");
     requestAnimationFrame(() => {
-      const next = nextId === undefined ? null : document.querySelector<HTMLElement>(`[data-id="${nextId}"] .card-main`);
+      const next = nextId === undefined ? null : document.querySelector<HTMLElement>(`[data-id="${nextId}"] .clickable-card-link`);
       (next ?? document.getElementById("new-hook"))?.focus({ preventScroll: true });
     });
     toast.show(`Deleted ${w.name}`, {

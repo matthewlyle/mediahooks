@@ -1,7 +1,8 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useEffect, useRef, useState, type MouseEvent } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { SendResult } from "../../src/send.ts";
 import type { Delivery, Webhook } from "../../src/types.ts";
+import { ClickableCard } from "../ui/ClickableCard.tsx";
 import { EmptyState } from "../ui/EmptyState.tsx";
 import { burst } from "../components/burst.ts";
 import { Menu } from "../ui/Menu.tsx";
@@ -12,7 +13,7 @@ import { Toolbar } from "../ui/Toolbar.tsx";
 import { useToast } from "../ui/Toast.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING, flash, ids, pageTransition } from "../lib/motion.ts";
-import { useLinkProps, useNav, useRouteHeading } from "../lib/nav.ts";
+import { useNav, useRouteHeading } from "../lib/nav.ts";
 import { webhookParts } from "../lib/sentence.ts";
 import { useStore } from "../lib/store.tsx";
 
@@ -77,36 +78,10 @@ function Row({ w, last, index, enter }: RowProps) {
     if (highlight?.id !== w.id) return;
     setHighlight(null);
     flash(row.current, highlight.tone);
-    if (highlight.focus) row.current?.querySelector<HTMLElement>(".card-main")?.focus({ preventScroll: true });
+    if (highlight.focus) row.current?.querySelector<HTMLElement>(".clickable-card-link")?.focus({ preventScroll: true });
   }, [highlight, setHighlight, w.id]);
 
-  const link = useLinkProps(`/webhooks/${w.id}`);
-
-  function rowLink(event: MouseEvent<HTMLLIElement>): HTMLAnchorElement | null {
-    const target = event.target as Element;
-    // Clicks inside the menu portal bubble here through React; only real descendants count.
-    if (!event.currentTarget.contains(target) || target.closest("button")) return null;
-    const anchor = event.currentTarget.querySelector<HTMLAnchorElement>(".card-main");
-    return anchor === target ? null : anchor;
-  }
-
-  function onRowClick(event: MouseEvent<HTMLLIElement>) {
-    const anchor = rowLink(event);
-    if (!anchor || getSelection()?.toString()) return;
-    const { metaKey, ctrlKey, shiftKey, altKey } = event;
-    if (metaKey || ctrlKey || shiftKey || altKey) {
-      anchor.dispatchEvent(new MouseEvent("click", { cancelable: true, view: window, metaKey, ctrlKey, shiftKey, altKey }));
-      return;
-    }
-    link.onClick(event);
-  }
-
-  function onRowAuxClick(event: MouseEvent<HTMLLIElement>) {
-    const anchor = rowLink(event);
-    if (!anchor || event.button !== 1) return;
-    const mac = /Mac|iPhone|iPad/.test(navigator.userAgent);
-    anchor.dispatchEvent(new MouseEvent("click", { cancelable: true, view: window, metaKey: mac, ctrlKey: !mac }));
-  }
+  const path = `/webhooks/${w.id}`;
 
   async function onToggle(enabled: boolean) {
     if (toggling.current) return;
@@ -158,7 +133,7 @@ function Row({ w, last, index, enter }: RowProps) {
     const nextId = store.webhooks[index + 1]?.id;
     store.remove(w.id);
     requestAnimationFrame(() => {
-      const next = nextId === undefined ? null : document.querySelector<HTMLElement>(`[data-id="${nextId}"] .card-main`);
+      const next = nextId === undefined ? null : document.querySelector<HTMLElement>(`[data-id="${nextId}"] .clickable-card-link`);
       (next ?? document.getElementById("new-hook"))?.focus({ preventScroll: true });
     });
     toast.show(`Deleted ${w.name}`, {
@@ -178,7 +153,7 @@ function Row({ w, last, index, enter }: RowProps) {
   }
 
   return (
-    <motion.li
+    <ClickableCard
       ref={row}
       layoutId={ids.card(w.id)}
       layoutCrossfade={false}
@@ -208,32 +183,31 @@ function Row({ w, last, index, enter }: RowProps) {
         ...(arrival.enter === "stagger" ? { ...SPRING.page, delay: arrival.delay } : SPRING.pop),
         layout: SPRING.morph,
       }}
-      onClick={onRowClick}
-      onAuxClick={onRowAuxClick}
+      to={path}
+      label={w.name}
+      actions={
+        <Toolbar className="card-actions">
+          <StatusBadge delivery={last} />
+          <Switch checked={w.enabled} onChange={onToggle} label={`${w.enabled ? "Disable" : "Enable"} ${w.name}`} />
+          <Menu
+            label={`More actions for ${w.name}`}
+            triggerClassName="more-btn"
+            items={[
+              { label: "Edit", onSelect: () => navigate(`/webhooks/${w.id}/edit`) },
+              { label: "Test", onSelect: () => void onSendTest() },
+              { label: "Deliveries", onSelect: () => navigate(path) },
+              { label: "Duplicate", onSelect: () => void onDuplicate() },
+              { label: "Delete", onSelect: onDelete, danger: true },
+            ]}
+          >
+            <span className="dot" />
+            <span className="dot" />
+            <span className="dot" />
+          </Menu>
+        </Toolbar>
+      }
     >
-      <div className="card-text">
-        <a className="card-main" aria-label={w.name} {...link} />
-        <WebhookIdentity id={w.id} name={w.name} url={w.url} paused={!w.enabled} parts={webhookParts(w)} variant="card" />
-      </div>
-      <Toolbar className="card-actions">
-        <StatusBadge delivery={last} />
-        <Switch checked={w.enabled} onChange={onToggle} label={`${w.enabled ? "Disable" : "Enable"} ${w.name}`} />
-        <Menu
-          label={`More actions for ${w.name}`}
-          triggerClassName="more-btn"
-          items={[
-            { label: "Edit", onSelect: () => navigate(`/webhooks/${w.id}/edit`) },
-            { label: "Test", onSelect: () => void onSendTest() },
-            { label: "Deliveries", onSelect: () => navigate(link.href) },
-            { label: "Duplicate", onSelect: () => void onDuplicate() },
-            { label: "Delete", onSelect: onDelete, danger: true },
-          ]}
-        >
-          <span className="dot" />
-          <span className="dot" />
-          <span className="dot" />
-        </Menu>
-      </Toolbar>
-    </motion.li>
+      <WebhookIdentity id={w.id} name={w.name} url={w.url} paused={!w.enabled} parts={webhookParts(w)} variant="card" />
+    </ClickableCard>
   );
 }
