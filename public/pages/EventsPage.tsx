@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject } from "react";
 import type { IncomingEvent, RouteStatus } from "../../src/types.ts";
 import { templateVars } from "../../src/template.ts";
+import { Panel } from "../ui/Panel.tsx";
 import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
 import { RelativeTime } from "../ui/RelativeTime.tsx";
 import { api } from "../lib/api.ts";
@@ -52,7 +53,7 @@ export function EventsPage() {
   return (
     <motion.div className="page page-events" {...pageTransition}>
       <h2 ref={heading} tabIndex={-1} className="sr-only">Events</h2>
-      <section className="panel events-panel" aria-label="Recent events">
+      <Panel className="events-panel" aria-label="Recent events">
         <div className="ev-head">
           <RefreshButton onRefresh={load} updatedAt={updatedAt} noun={["event", "events"]} disabled={!events && !error} />
         </div>
@@ -85,7 +86,7 @@ export function EventsPage() {
             </motion.div>
           )}
         </AnimatePresence>
-      </section>
+      </Panel>
     </motion.div>
   );
 }

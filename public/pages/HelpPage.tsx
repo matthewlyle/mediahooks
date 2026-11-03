@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/Button.tsx";
 import { CopyButton } from "../ui/CopyButton.tsx";
+import { Panel } from "../ui/Panel.tsx";
 import { PlexConnection } from "../components/PlexStatus.tsx";
 import { useToast } from "../ui/Toast.tsx";
 import { api } from "../lib/api.ts";
@@ -48,7 +49,7 @@ export function HelpPage() {
 
   return (
     <motion.div className="page page-help" {...pageTransition}>
-      <motion.section className="panel help" {...fadeIn}>
+      <Panel className="help" {...fadeIn}>
         <h2 ref={heading} tabIndex={-1}>Help</h2>
         <ol className="help-steps">
           <li>
@@ -86,7 +87,7 @@ export function HelpPage() {
           <li>Choose when it sends, then press Send test.</li>
         </ol>
         {meta && <p className="muted help-version">mediahooks {meta.version}</p>}
-      </motion.section>
+      </Panel>
     </motion.div>
   );
 }

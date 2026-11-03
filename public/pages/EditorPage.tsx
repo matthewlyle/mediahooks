@@ -32,6 +32,7 @@ import {
   type FormState,
 } from "./editor/form.ts";
 import { CodeEditor, type CodeEditorHandle } from "../ui/CodeEditor.tsx";
+import { Panel } from "../ui/Panel.tsx";
 import { DiscordPreview, isDiscordMessage } from "./editor/DiscordPreview.tsx";
 import { SlackPreview, isSlackMessage } from "./editor/SlackPreview.tsx";
 import { EventSentence } from "./editor/EventSentence.tsx";
@@ -124,9 +125,9 @@ export function EditorPage({ id, back: closeTo }: { id: number | null; back?: st
       <>
         {heading}
         {missing && (
-          <motion.section className="panel editor" {...PANEL_MOTION}>
+          <Panel className="editor" {...PANEL_MOTION}>
             <Missing text={missing} />
-          </motion.section>
+          </Panel>
         )}
       </>
     );
@@ -465,7 +466,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
         </AnimatePresence>
       </div>
 
-      <motion.form id={formId} className="panel editor" onSubmit={onSave} noValidate {...PANEL_MOTION}>
+      <Panel as="form" id={formId} className="editor" onSubmit={onSave} noValidate {...PANEL_MOTION}>
         <div className="editor-section">
           <div className="row row-destination">
             <div className="field">
@@ -699,7 +700,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
             </div>
           </div>
         </div>
-      </motion.form>
+      </Panel>
     </>
   );
 }

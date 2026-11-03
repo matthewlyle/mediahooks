@@ -21,7 +21,7 @@
   gap: var(--space-10);
   min-width: 0;
 }
-.panel h2.detail-name {
+.detail-head h2.detail-name {
   margin: 0;
   font-size: var(--text-18);
   font-weight: 600;
@@ -34,11 +34,11 @@
   margin-top: var(--space-2);
   word-break: break-all;
 }
-.panel.disabled h2.detail-name,
-.panel.disabled .detail-url {
+.detail-head.disabled h2.detail-name,
+.detail-head.disabled .detail-url {
   color: var(--muted);
 }
-.panel.disabled .detail-url {
+.detail-head.disabled .detail-url {
   opacity: 1;
 }
 .detail-sentence {
