@@ -14,6 +14,7 @@ import { SectionHeader } from "../ui/SectionHeader.tsx";
 import { Segmented } from "../ui/Segmented.tsx";
 import { burst } from "../components/burst.ts";
 import { Spinner } from "../ui/Spinner.tsx";
+import { Checkbox } from "../ui/Checkbox.tsx";
 import { Switch } from "../ui/Switch.tsx";
 import { api, type Meta } from "../lib/api.ts";
 import { EASE, SPRING, fadeIn, flash, ids, pageTransition } from "../lib/motion.ts";
@@ -584,15 +585,13 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
                   <AnimatePresence initial={false}>
                     {(discord !== null || form.attachPoster) && (
                       <Reveal key="poster">
-                        <label className="inline poster-option">
-                          <input
-                            type="checkbox"
-                            checked={form.attachPoster}
-                            onChange={(e) => set("attachPoster", e.target.checked)}
-                          />
-                          <span className="poster-label">Attach poster</span>
-                          <span className="poster-hint">sent as a file, Discord's format</span>
-                        </label>
+                        <Checkbox
+                          className="poster-option"
+                          checked={form.attachPoster}
+                          onChange={(on) => set("attachPoster", on)}
+                          label="Attach poster"
+                          hint="sent as a file, Discord's format"
+                        />
                       </Reveal>
                     )}
                   </AnimatePresence>

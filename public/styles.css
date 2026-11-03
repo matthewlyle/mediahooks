@@ -79,12 +79,6 @@ textarea:focus-visible {
   }
 }
 
-/* Individual scale/translate properties so hovers stack with Motion's inline transform. */
-.editor label.inline {
-  transition:
-    color 150ms ease,
-    opacity 150ms ease;
-}
 .editor input:not([type="checkbox"]),
 .editor select {
   transition:
@@ -93,9 +87,6 @@ textarea:focus-visible {
     box-shadow 150ms ease;
 }
 @media (hover: hover) and (pointer: fine) {
-  .editor label.inline:hover {
-    color: var(--accent-hover);
-  }
   .editor input:not([type="checkbox"]):not(:focus):hover,
   .editor select:not(:focus):hover {
     background-color: var(--inset);
@@ -321,16 +312,6 @@ form.editor {
     grid-template-columns: 1fr;
   }
 }
-.editor label.inline {
-  font-family: var(--mono);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--space-8);
-  font-size: var(--text-12);
-  font-weight: 400;
-  min-width: 0;
-}
 .editor input:not([type="checkbox"]),
 .editor select {
   font-family: var(--mono);
@@ -345,9 +326,6 @@ form.editor {
 .editor input[name="name"] {
   font-family: var(--sans);
   font-size: var(--text-14);
-}
-.editor input[type="checkbox"] {
-  accent-color: var(--accent);
 }
 .form-error {
   font-family: var(--mono);
