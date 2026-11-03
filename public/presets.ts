@@ -61,7 +61,7 @@ export const PRESETS: Preset[] = [
     headers: [
       "Content-Type: text/plain",
       "Title: {{display_title}}",
-      "Tags: tv",
+      "Tags: {{type}}",
       "Click: {{plex_url}}",
       "Attach: {{thumb_url}}",
     ].join("\n"),
