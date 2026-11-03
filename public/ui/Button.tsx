@@ -6,19 +6,24 @@ import "./Button.css";
 
 type Variant = "primary" | "danger";
 
+export type ButtonSize = "small" | "chip" | "large" | "avatar";
+
 export type ButtonProps = HTMLMotionProps<"button"> & {
   /** Emphasis: primary fills with the accent color, danger tints the label red. Omit for the default raised button. */
   variant?: Variant;
+  /** Dimensions: small is compact, chip is smaller still with a muted label, large is the sign-in size, avatar is a 28px circle. Omit for the default size. */
+  size?: ButtonSize;
   /** Label or content shown inside the button. */
   children?: ReactNode;
 };
 
 /** A pressable button that scales down while pressed and defaults to `type="button"`. */
-export function Button({ variant, className, type = "button", whileTap, transition, ...rest }: ButtonProps) {
+export function Button({ variant, size, className, type = "button", whileTap, transition, ...rest }: ButtonProps) {
   const reduce = useReducedMotion();
   return (
     <motion.button
       type={type}
+      data-size={size}
       className={[variant, className].filter(Boolean).join(" ") || undefined}
       whileTap={reduce ? undefined : (whileTap ?? TAP)}
       transition={transition ?? SPRING.press}

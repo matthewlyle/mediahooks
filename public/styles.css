@@ -140,24 +140,6 @@ textarea:focus-visible {
   grid-column: 2;
   grid-row: 1;
 }
-button.avatar-btn {
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  border-radius: var(--radius-full);
-  overflow: hidden;
-  font-family: var(--sans);
-  font-size: var(--text-13);
-  font-weight: 600;
-}
-.avatar-btn img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
 
 .nav {
   display: flex;
@@ -165,8 +147,6 @@ button.avatar-btn {
 }
 
 .ingest-btn {
-  font-size: var(--text-11);
-  padding: var(--space-2) var(--space-8);
   min-width: 56px;
 }
 
