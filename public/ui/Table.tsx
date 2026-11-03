@@ -1,31 +1,8 @@
-import { AnimatePresence, motion, useReducedMotion, type HTMLMotionProps } from "motion/react";
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from "react";
-import { EASE, flash } from "../lib/motion.ts";
+import { AnimatePresence, motion, type HTMLMotionProps } from "motion/react";
+import { useEffect, useRef, type ReactNode } from "react";
+import { flash } from "../lib/motion.ts";
+import { HeightReveal } from "./HeightReveal.tsx";
 import "./Table.css";
-
-const HEIGHT_IN = { duration: 0.3, ease: [0.25, 1, 0.5, 1] } as const;
-const HEIGHT_OUT = { duration: 0.2, ease: EASE.outQuint } as const;
-const FADE_IN = { duration: 0.2, ease: EASE.css } as const;
-
-/** Fade-out timing for a row or detail panel leaving the table. */
-export const FADE_OUT = { duration: 0.12, ease: EASE.css } as const;
-
-/** Tracks the rendered height of an element, for animating a container to fit its content. */
-export function useHeight<T extends HTMLElement>(): [RefObject<T | null>, number | null] {
-  const ref = useRef<T>(null);
-  const [height, setHeight] = useState<number | null>(null);
-  useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new ResizeObserver(([entry]) => {
-      const box = entry?.borderBoxSize[0];
-      if (box) setHeight(box.blockSize);
-    });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-  return [ref, height];
-}
 
 export type TableProps = {
   /** Column labels shown above the rows; omit for a table without a header. */
@@ -124,24 +101,9 @@ export function TableRow({
 }
 
 function TableDetail({ id, className, children }: { id: string; className?: string; children: ReactNode }) {
-  const reduce = useReducedMotion();
-  const [inner, height] = useHeight<HTMLDivElement>();
   return (
-    <motion.div
-      id={id}
-      className="table-detail"
-      initial={reduce ? { opacity: 0 } : { opacity: 0, height: 0 }}
-      animate={reduce ? { opacity: 1 } : { opacity: 1, height: height ?? 0 }}
-      exit={
-        reduce
-          ? { opacity: 0, transition: FADE_OUT }
-          : { opacity: 0, height: 0, transition: { height: HEIGHT_OUT, opacity: FADE_OUT } }
-      }
-      transition={{ height: HEIGHT_IN, opacity: FADE_IN }}
-    >
-      <div ref={inner} className={className}>
-        {children}
-      </div>
-    </motion.div>
+    <HeightReveal presence id={id} className="table-detail" innerClassName={className}>
+      {children}
+    </HeightReveal>
   );
 }
