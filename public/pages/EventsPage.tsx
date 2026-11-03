@@ -8,7 +8,8 @@ import { Panel } from "../ui/Panel.tsx";
 import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
 import { SectionHeader } from "../ui/SectionHeader.tsx";
 import { RelativeTime } from "../ui/RelativeTime.tsx";
-import { FADE_OUT, Table, TableRow } from "../ui/Table.tsx";
+import { FADE_OUT } from "../ui/HeightReveal.tsx";
+import { Table, TableRow } from "../ui/Table.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING, pageTransition } from "../lib/motion.ts";
 import { useEscape, useNav, useRouteHeading } from "../lib/nav.ts";
@@ -163,7 +164,7 @@ function EventDetail({ e }: { e: IncomingEvent }) {
           ))}
         </ul>
       ) : (
-        <p className="muted">No webhooks existed when this arrived.</p>
+        <EmptyState size="plain">No webhooks existed when this arrived.</EmptyState>
       )}
       <CodeBlock label="Payload">{JSON.stringify(e.payload, null, 2)}</CodeBlock>
     </>

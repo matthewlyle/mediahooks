@@ -137,7 +137,7 @@ export function EditorPage({ id, back: closeTo }: { id: number | null; back?: st
       <>
         {heading}
         {missing && (
-          <Panel className="editor" {...PANEL_MOTION}>
+          <Panel dense className="editor" {...PANEL_MOTION}>
             <Missing text={missing} />
           </Panel>
         )}
@@ -475,7 +475,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
         </AnimatePresence>
       </div>
 
-      <Panel as="form" id={formId} className="editor" onSubmit={onSave} noValidate {...PANEL_MOTION}>
+      <Panel as="form" dense id={formId} className="editor" onSubmit={onSave} noValidate {...PANEL_MOTION}>
         <div className="editor-section">
           <div className="row row-destination">
             <FormField id={`${uid}-name`} label="Name" hint="required" error={shown("name")} errorId={errId("name")}>
@@ -483,6 +483,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
                 ref={nameField}
                 id={`${uid}-name`}
                 name="name"
+                prose
                 required
                 autoComplete="off"
                 data-1p-ignore=""
