@@ -42,6 +42,7 @@ import { SlackPreview, isSlackMessage } from "./editor/SlackPreview.tsx";
 import { EventSentence } from "./editor/EventSentence.tsx";
 import { Disclosure } from "../ui/Disclosure.tsx";
 import { Toolbar } from "../ui/Toolbar.tsx";
+import { LiveRegion } from "../ui/LiveRegion.tsx";
 import { Reveal } from "../ui/Reveal.tsx";
 import { Select } from "../ui/Select.tsx";
 
@@ -423,9 +424,9 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
             Save
           </Button>
         </Toolbar>
-        <p className="sr-only" role="status">
+        <LiveRegion as="p">
           {sending ? (sendingAnnounced ? "Sending test…" : "") : result && line ? `${result.ok ? "Test delivered" : "Test failed"}: ${line.full}` : ""}
-        </p>
+        </LiveRegion>
         <AnimatePresence initial={false}>
           {result && line && (
             <Reveal key="result" className="bar-reveal">
