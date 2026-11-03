@@ -4,6 +4,7 @@
   --surface-hover: #151a25;
   --inset: #0c0f16;
   --raised: #161b27;
+  --border-strong: #646d81;
   --glow: inset 0 0 0 1px rgba(34, 211, 238, 0.6), 0 0 12px rgba(34, 211, 238, 0.3);
   --focus-ring: 2px solid var(--accent);
   --fg: #e3e9f2;
@@ -159,6 +160,7 @@ textarea:focus-visible {
 .editor select {
   transition:
     background-color 150ms ease,
+    border-color 150ms ease,
     box-shadow 150ms ease;
 }
 @media (hover: hover) and (pointer: fine) {
@@ -634,12 +636,15 @@ button.avatar-btn {
   border-radius: 3px;
   position: relative;
   background: var(--raised);
+  border-color: var(--border-strong);
   transition:
     background-color 150ms ease,
+    border-color 150ms ease,
     box-shadow 150ms ease;
 }
 .switch[aria-checked="true"] {
   background: var(--accent);
+  border-color: var(--accent);
   box-shadow: 0 0 10px rgba(34, 211, 238, 0.45);
 }
 @media (hover: hover) and (pointer: fine) {
@@ -649,6 +654,7 @@ button.avatar-btn {
   }
   .switch[aria-checked="true"]:not(:disabled):hover {
     background: var(--accent-hover);
+    border-color: var(--accent-hover);
     box-shadow: 0 0 14px rgba(34, 211, 238, 0.55);
   }
 }
@@ -771,7 +777,7 @@ form.editor {
   font-size: 12px;
   color: var(--fg);
   background: var(--bg);
-  border: 1px solid transparent;
+  border: 1px solid var(--border-strong);
   border-radius: 2px;
   padding: 7px 10px;
   width: 100%;
