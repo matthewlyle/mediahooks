@@ -1,6 +1,7 @@
 import { Fragment, createElement, useState, type ComponentType } from "react";
 import { Button, LinkButton } from "../public/ui/Button.tsx";
 import { Popover, type PopoverProps } from "../public/ui/Popover.tsx";
+import { Segmented } from "../public/ui/Segmented.tsx";
 
 export type Fixture = {
   component: ComponentType<any>;
@@ -12,6 +13,19 @@ export type Fixture = {
 export const fixtures: Record<string, Fixture> = {
   Button: { component: Button, props: { children: "Save" } },
   LinkButton: { component: LinkButton, props: { to: "/", children: "Back" } },
+  Segmented: {
+    component: Segmented,
+    props: {
+      label: "Preview with",
+      options: [
+        ["episode", "Episode"],
+        ["movie", "Movie"],
+        ["track", "Music"],
+      ],
+      value: "episode",
+    },
+    bind: { onChange: "value" },
+  },
 };
 
 function PopoverDemo({ anchor: _anchor, ...props }: PopoverProps) {
