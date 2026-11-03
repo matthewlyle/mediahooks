@@ -272,8 +272,8 @@ form.editor {
 .send-test > span {
   grid-area: 1 / 1;
 }
-.send-test-label[aria-hidden="true"] {
-  visibility: hidden;
+.send-test[aria-busy="true"] .send-test-label {
+  opacity: 0;
 }
 
 @media (max-width: 640px) {

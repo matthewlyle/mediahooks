@@ -456,11 +456,19 @@ function EditorForm({ id, w, meta, back, onSaved, heading }: EditorFormProps) {
             </span>
             <Switch checked={form.enabled} onChange={(on) => set("enabled", on)} label="Enabled" />
           </span>
-          <Button ref={sendButton} className="test-btn send-test" disabled={sending} onClick={onSendTest}>
-            <span className="send-test-label" aria-hidden={sending}>
-              Send test
-            </span>
-            {sending && <span className="send-test-busy">{reduce ? "Sending…" : <Spinner />}</span>}
+          <Button
+            ref={sendButton}
+            className="test-btn send-test"
+            disabled={sending}
+            aria-busy={sending || undefined}
+            onClick={onSendTest}
+          >
+            <span className="send-test-label">Send test</span>
+            {sending && (
+              <span className="send-test-busy" aria-hidden="true">
+                {reduce ? "Sending…" : <Spinner />}
+              </span>
+            )}
           </Button>
           <Button onClick={() => navigate(back)}>Cancel</Button>
           <Button type="submit" form={formId} variant="primary" disabled={saving}>
@@ -468,7 +476,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading }: EditorFormProps) {
           </Button>
         </motion.div>
         <p className="sr-only" role="status">
-          {result && line && !sending ? `${result.ok ? "Test delivered" : "Test failed"}: ${line.full}` : ""}
+          {sending ? "Sending test…" : result && line ? `${result.ok ? "Test delivered" : "Test failed"}: ${line.full}` : ""}
         </p>
         <AnimatePresence initial={false}>
           {result && line && (
