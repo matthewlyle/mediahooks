@@ -16,8 +16,6 @@ button.signin-btn {
   justify-content: center;
   gap: var(--space-8);
   min-width: 200px;
-  padding: var(--space-8) var(--space-16);
-  font-size: var(--text-13);
 }
 .signin-note {
   margin: var(--space-12) 0 0;
