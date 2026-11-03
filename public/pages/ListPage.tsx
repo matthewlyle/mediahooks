@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, type MouseEvent } from "react";
 import type { SendResult } from "../../src/send.ts";
 import type { Delivery, Webhook } from "../../src/types.ts";
 import { burst } from "../components/burst.ts";
-import { Menu } from "../components/Menu.tsx";
+import { Menu } from "../ui/Menu.tsx";
 import { PausedBadge } from "../components/PausedBadge.tsx";
 import { SentenceSummary } from "../components/SentenceSummary.tsx";
 import { StatusBadge } from "../components/StatusBadge.tsx";
