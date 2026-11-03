@@ -7,7 +7,7 @@ import { EmptyState } from "../ui/EmptyState.tsx";
 import { burst } from "../components/burst.ts";
 import { Menu } from "../ui/Menu.tsx";
 import { WebhookIdentity } from "../ui/WebhookIdentity.tsx";
-import { StatusBadge } from "../components/StatusBadge.tsx";
+import { StatusBadge } from "../ui/StatusBadge.tsx";
 import { Switch } from "../ui/Switch.tsx";
 import { Toolbar } from "../ui/Toolbar.tsx";
 import { useToast } from "../ui/Toast.tsx";
