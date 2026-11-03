@@ -2,7 +2,6 @@
 
 Forward Plex Media Server webhooks to Discord, Slack, ntfy, Home Assistant or any URL.
 
-- Pre-made templates for Discord, Slack, ntfy and Home Assistant
 - Live previews and template variables
 - See the last 100 events sent from Plex and whether they were delivered or not
 - See the latest deliveries to each hook and their full request and payload
