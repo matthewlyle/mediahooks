@@ -116,60 +116,8 @@ form.editor {
   box-shadow: 0 0 12px var(--error-25);
 }
 
-.options,
-.vars {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  --reveal-gap: 0px;
-}
-.options > div,
-.vars > div {
-  align-self: stretch;
-}
 .options-body {
   padding-top: var(--space-10);
-}
-.disclosure {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-6);
-  padding: var(--space-2) 0;
-  border: none;
-  background: none;
-  font-family: var(--sans);
-  font-size: var(--text-13);
-  color: var(--fg);
-}
-.disclosure::before {
-  content: "";
-  width: 0;
-  height: 0;
-  border-left: 5px solid var(--muted);
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
-  transition: rotate 200ms cubic-bezier(0.23, 1, 0.32, 1);
-}
-.disclosure[aria-expanded="true"]::before {
-  rotate: 90deg;
-}
-.disclosure-summary {
-  font-family: var(--mono);
-  font-size: var(--text-12);
-  color: var(--muted);
-}
-@media (prefers-reduced-motion: reduce) {
-  .disclosure::before {
-    transition: none;
-  }
-}
-@media (hover: hover) and (pointer: fine) {
-  .disclosure:not(:disabled):hover {
-    color: var(--accent-hover);
-    background: none;
-    box-shadow: none;
-    scale: none;
-  }
 }
 
 .message-grid {
