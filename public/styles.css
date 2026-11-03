@@ -578,6 +578,11 @@ button.avatar-btn {
 .refresh-icon.spinning {
   animation: spin 600ms linear infinite;
 }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .refresh-icon.spinning {
     animation: none;
