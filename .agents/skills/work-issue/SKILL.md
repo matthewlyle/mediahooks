@@ -14,18 +14,25 @@ below may queue a merge.
 Workers run in the Herdr desktop app through `hc` (herdr-core), so they show in its Agents list.
 Don't use the older `herdr` CLI; its agents don't appear in the app.
 
+Each issue gets its own tab in the coordinator's Herdr space: the worker and, later, its reviewer
+are panes in that tab. Read the space id from your own terminal and make a new tab id:
+
+```sh
+SPACE=$(hc get "$HC_TERMINAL_ID" | jq -r '.labels["herdr.space"]')
+TAB=tb$(openssl rand -hex 16)   # keep it for the reviewer
+```
+
 ```sh
 git -C ~/src/mediahooks fetch git@github.com:matthewlyle/mediahooks.git +main:refs/remotes/github/main
 git -C ~/src/mediahooks worktree add ~/.herdr/worktrees/mediahooks/issue-<n>-<slug> -b issue-<n>-<slug> refs/remotes/github/main
-hc run --bg --name <n>-<slug> --cwd ~/.herdr/worktrees/mediahooks/issue-<n>-<slug> omp --model <model> "<prompt below>"
+hc run --bg --keep --name <n>-<slug> --label herdr.space=$SPACE --label herdr.tab=$TAB --label issue=<n> \
+  --cwd ~/.herdr/worktrees/mediahooks/issue-<n>-<slug> omp --model <model> "<prompt below>"
 ```
 
-The name is what the Herdr sidebar shows: `<n>-<what it fixes>`, up to 32 of `a-z 0-9 - _`
-(`9-wrap-truncated-text`, not `issue-9`). Reviewers: `<n>-review`.
-
-```sh
-hc label <n>-<slug> issue=<n>
-```
+The name is what the Agents list shows: `<n>-<what it fixes>`, up to 32 of `a-z 0-9 - _`
+(`9-wrap-truncated-text`, not `issue-9`). Reviewers: `<n>-review`. A new tab is numbered until
+someone renames it, and renaming happens in the app (`herdr-app do tab.rename`), not from `hc`:
+tell the owner the tab to name `#<n> <short title>`.
 
 Check `first_message.sent` in the launch output; if false, `hc read <name>` before sending
 anything. Collect results with `hc wait --children any`; reports arrive as `<hc from=…>` messages.
@@ -69,7 +76,8 @@ When a worker reports its PR, start a reviewer (a different agent from the worke
 worktree:
 
 ```sh
-hc run --bg --name <n>-review --cwd <worktree> omp --model claude-opus-5-5 --thinking low "<reviewer prompt below>"
+hc run --bg --keep --name <n>-review --label herdr.space=$SPACE --label herdr.tab=$TAB --label issue=<n> \
+  --cwd <worktree> omp --model claude-opus-5-5 --thinking low "<reviewer prompt below>"
 ```
 
 Reviewer prompt, fill `{N}` (issue), `{PR}` and `{LEAD}`:
