@@ -1,11 +1,19 @@
 import { expect, test } from "./voiceover.ts";
 
+let created: number | null = null;
+
+test.afterEach(async ({ request }) => {
+  if (created !== null) await request.delete(`/api/webhooks/${created}`);
+  created = null;
+});
+
 test("the poster checkbox announces its label, state and hint", async ({ page, request, voiceOver }) => {
-  const created = await request.post("/api/webhooks", {
+  const response = await request.post("/api/webhooks", {
     data: { name: "Poster hook", url: "http://127.0.0.1:9/hook", events: ["media.play"], attachPoster: true },
   });
-  expect(created.ok()).toBe(true);
-  const { id } = (await created.json()) as { id: number };
+  expect(response.ok()).toBe(true);
+  const { id } = (await response.json()) as { id: number };
+  created = id;
 
   await page.goto(`/webhooks/${id}/edit`);
   const box = page.getByRole("checkbox", { name: "Attach poster" });
