@@ -39,7 +39,9 @@ Use `App-wide` as the area when the problem shows up on several pages.
 
 ## Body
 
-Use these sections in this order. Omit a section only if it says it's optional.
+Use these sections in this order. Omit a section only if it says it's optional. Keep every
+section short: fragments are fine, one line per item, no narration or hedging. Description and
+Actual are one or two sentences each; aim for under about 150 words before Reference.
 
 ```markdown
 ## Description
@@ -88,6 +90,10 @@ Severity:
 - minor: polish.
 
 ## Filing
+
+Don't hard-wrap prose: GitHub turns every newline in an issue, PR or comment body into a line
+break. Write one line per paragraph or list item. This applies to PR bodies too, so don't reuse a
+wrapped commit message as the body (`gh pr create --fill` does exactly that).
 
 Write the body to a file so Markdown doesn't get mangled by shell quoting:
 
