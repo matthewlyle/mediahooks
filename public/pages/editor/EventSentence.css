@@ -69,44 +69,6 @@
   }
 }
 
-.sentence-pop {
-  max-width: calc(100vw - 24px);
-  max-height: min(420px, calc(100vh - 80px));
-  overflow-y: auto;
-  min-width: 200px;
-}
-.sentence-pop.sheet {
-  top: auto;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  max-width: none;
-  max-height: 70vh;
-  padding: 0 var(--space-8) calc(var(--space-8) + env(safe-area-inset-bottom));
-  border-radius: var(--radius-2) var(--radius-2) 0 0;
-  box-shadow: 0 -8px 24px var(--black-45);
-}
-.sheet-scrim {
-  position: fixed;
-  inset: 0;
-  z-index: 19;
-  background: var(--backdrop);
-}
-.sheet-head {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--space-10) var(--space-2) var(--space-6) var(--space-10);
-  font-size: var(--text-13);
-  font-weight: 600;
-  background: var(--surface);
-}
-.menu .sheet-done {
-  color: var(--accent);
-}
 .pop-heading {
   padding: var(--space-8) var(--space-10) var(--space-2);
   font-size: var(--text-11);
