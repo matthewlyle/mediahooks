@@ -1,3 +1,4 @@
+import { spawnSync } from "node:child_process";
 import { writeFile } from "node:fs/promises";
 import { voiceOver as guidepupVoiceOver } from "@guidepup/guidepup";
 import { applicationIdMap } from "@guidepup/playwright/lib/applicationIdMap.js";
@@ -12,6 +13,7 @@ const START_ATTEMPTS = 4;
 
 async function startVoiceOver(voiceOver: VoiceOver, options: Parameters<VoiceOver["start"]>[0]) {
   await voiceOver.stop().catch(() => {});
+  spawnSync("killall", ["VoiceOver"]);
   for (let attempt = 1; ; attempt++) {
     try {
       await voiceOver.start(options);
@@ -29,8 +31,15 @@ export const test = voiceOverTest.extend<{ spokenPhraseLog: void }>({
     const voiceOver = guidepupVoiceOver as VoiceOverPlaywright;
     const applicationId = applicationIdMap[browserName];
     if (!applicationId) throw new Error(`Browser ${browserName} is not recognised.`);
-    voiceOver.navigateToWebContent = ({ capture } = {}) =>
-      navigateVoiceOverToWebContent({ voiceOver, page, applicationId, capture });
+    voiceOver.navigateToWebContent = async ({ capture } = {}) => {
+      try {
+        await navigateVoiceOverToWebContent({ voiceOver, page, applicationId, capture });
+      } catch (error) {
+        if (!/not running/i.test(String(error))) throw error;
+        await startVoiceOver(voiceOver, voiceOverStartOptions);
+        await navigateVoiceOverToWebContent({ voiceOver, page, applicationId, capture });
+      }
+    };
     try {
       await startVoiceOver(voiceOver, voiceOverStartOptions);
       await use(voiceOver);
