@@ -28,8 +28,8 @@ a "VoiceOver announces…" criterion adds a scenario there.
 
 Axe tests: `test/axe/axe.spec.ts` scans every route and key states with `@axe-core/playwright` in
 Chromium (WCAG 2.2 A/AA tags, reduced motion, after animations finish). The `axe` workflow runs on
-every PR but only scans when `public/**`, `src/app.ts`, `test/axe/**` or dependencies change; `axe`
-is a required check, so filter inside the job, never with `paths:`. Run it by hand with
+every PR but only scans when `public/**`, non-test `src/**`, `test/axe/**` or dependencies change;
+`axe` is a required check, so filter inside the job, never with `paths:`. Run it by hand with
 `gh workflow run axe.yml -f ref=<branch>`, or locally with `bun x playwright test -c test/axe`. A
 new route or state adds a scan there.
 
