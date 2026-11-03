@@ -116,10 +116,3 @@ test("editor after a failed save", async ({ page }) => {
   await expect(page.locator(".field-error").first()).toBeVisible();
   await scan(page, "editor after a failed save");
 });
-
-test("editor with the body editor focused", async ({ page }) => {
-  await page.goto(`/webhooks/${active}/edit`);
-  await page.locator(".message-grid .cm-content").focus();
-  await expect(page.getByText("Press Esc, then Tab to move on")).toBeVisible();
-  await scan(page, "editor with the body editor focused");
-});

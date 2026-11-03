@@ -8,7 +8,7 @@ import {
   type CompletionContext,
   type CompletionResult,
 } from "@codemirror/autocomplete";
-import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
+import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
 import { json, jsonLanguage } from "@codemirror/lang-json";
 import { HighlightStyle, bracketMatching, indentOnInput, syntaxHighlighting } from "@codemirror/language";
 import { linter, type Diagnostic } from "@codemirror/lint";
@@ -24,7 +24,7 @@ import {
   type ViewUpdate,
 } from "@codemirror/view";
 import { tags } from "@lezer/highlight";
-import { forwardRef, useEffect, useId, useImperativeHandle, useRef, useState, type KeyboardEvent } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, type KeyboardEvent } from "react";
 import "./CodeEditor.css";
 
 export type CodeEditorHandle = {
@@ -232,9 +232,6 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(function
   const latest = useRef(props);
   latest.current = props;
   const compartments = useRef({ language: new Compartment(), placeholder: new Compartment(), attrs: new Compartment() });
-  const hintId = useId();
-  const [focused, setFocused] = useState(false);
-  const hintDescribedBy = [props.ariaDescribedBy, hintId].filter(Boolean).join(" ");
 
   useEffect(() => {
     const c = compartments.current;
@@ -253,18 +250,14 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(function
             icons: false,
             activateOnTyping: true,
           }),
-          keymap.of([...closeBracketsKeymap, ...completionKeymap, ...defaultKeymap, ...historyKeymap, indentWithTab]),
+          keymap.of([...closeBracketsKeymap, ...completionKeymap, ...defaultKeymap, ...historyKeymap]),
           EditorView.lineWrapping,
           syntaxHighlighting(highlight),
           placeholderMarks,
           theme,
           c.language.of(languageExtension(latest.current.language)),
           c.placeholder.of(placeholderExt(latest.current.placeholder ?? "")),
-          c.attrs.of(
-            EditorView.contentAttributes.of(
-              contentAttributes({ ...latest.current, ariaDescribedBy: hintDescribedBy }),
-            ),
-          ),
+          c.attrs.of(EditorView.contentAttributes.of(contentAttributes(latest.current))),
           EditorView.updateListener.of((u) => {
             const external = u.transactions.some((t) => t.annotation(External));
             if (u.docChanged && !external) latest.current.onChange(u.state.doc.toString());
@@ -309,11 +302,9 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(function
 
   useEffect(() => {
     view.current?.dispatch({
-      effects: compartments.current.attrs.reconfigure(
-        EditorView.contentAttributes.of(contentAttributes({ ...props, ariaDescribedBy: hintDescribedBy })),
-      ),
+      effects: compartments.current.attrs.reconfigure(EditorView.contentAttributes.of(contentAttributes(props))),
     });
-  }, [props.id, props.ariaLabel, props.ariaLabelledBy, hintDescribedBy, props.invalid]);
+  }, [props.id, props.ariaLabel, props.ariaLabelledBy, props.ariaDescribedBy, props.invalid]);
 
   useImperativeHandle(
     ref,
@@ -334,19 +325,12 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(function
   );
 
   return (
-    <>
-      <div
-        ref={host}
-        className={["code-editor", props.invalid && "is-invalid", props.className].filter(Boolean).join(" ")}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
-        onKeyDown={(e: KeyboardEvent) => {
-          if (e.key === "Escape") e.preventDefault();
-        }}
-      />
-      <p id={hintId} className={focused ? "code-editor-hint" : "sr-only"}>
-        Press Esc, then Tab to move on
-      </p>
-    </>
+    <div
+      ref={host}
+      className={["code-editor", props.invalid && "is-invalid", props.className].filter(Boolean).join(" ")}
+      onKeyDown={(e: KeyboardEvent) => {
+        if (e.key === "Escape") e.preventDefault();
+      }}
+    />
   );
 });
