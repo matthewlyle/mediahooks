@@ -8,7 +8,7 @@ import {
   type CompletionContext,
   type CompletionResult,
 } from "@codemirror/autocomplete";
-import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
+import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
 import { json, jsonLanguage } from "@codemirror/lang-json";
 import { HighlightStyle, bracketMatching, indentOnInput, syntaxHighlighting } from "@codemirror/language";
 import { linter, type Diagnostic } from "@codemirror/lint";
@@ -250,7 +250,7 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(function
             icons: false,
             activateOnTyping: true,
           }),
-          keymap.of([...closeBracketsKeymap, ...completionKeymap, ...defaultKeymap, ...historyKeymap, indentWithTab]),
+          keymap.of([...closeBracketsKeymap, ...completionKeymap, ...defaultKeymap, ...historyKeymap]),
           EditorView.lineWrapping,
           syntaxHighlighting(highlight),
           placeholderMarks,
