@@ -7,7 +7,7 @@ import { Menu } from "../components/Menu.tsx";
 import { PausedBadge } from "../components/PausedBadge.tsx";
 import { SentenceSummary } from "../components/SentenceSummary.tsx";
 import { StatusBadge } from "../components/StatusBadge.tsx";
-import { Switch } from "../components/Switch.tsx";
+import { Switch } from "../ui/Switch.tsx";
 import { useToast } from "../components/Toast.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING, flash, ids, pageTransition } from "../lib/motion.ts";

@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
 import { Button, LinkButton } from "../public/ui/Button.tsx";
+import { Switch } from "../public/ui/Switch.tsx";
 
 export type Fixture = {
   component: ComponentType<any>;
@@ -11,4 +12,5 @@ export type Fixture = {
 export const fixtures: Record<string, Fixture> = {
   Button: { component: Button, props: { children: "Save" } },
   LinkButton: { component: LinkButton, props: { to: "/", children: "Back" } },
+  Switch: { component: Switch, props: { checked: false, label: "Enabled" }, bind: { onChange: "checked" } },
 };
