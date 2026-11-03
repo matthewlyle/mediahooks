@@ -1,5 +1,6 @@
-import type { ComponentType } from "react";
+import { Fragment, createElement, useState, type ComponentType } from "react";
 import { Button, LinkButton } from "../public/ui/Button.tsx";
+import { Popover, type PopoverProps } from "../public/ui/Popover.tsx";
 import { Segmented } from "../public/ui/Segmented.tsx";
 import { Switch } from "../public/ui/Switch.tsx";
 
@@ -27,4 +28,20 @@ export const fixtures: Record<string, Fixture> = {
     },
     bind: { onChange: "value" },
   },
+};
+
+function PopoverDemo({ anchor: _anchor, ...props }: PopoverProps) {
+  const [el, setEl] = useState<HTMLButtonElement | null>(null);
+  return createElement(
+    Fragment,
+    null,
+    createElement("button", { type: "button", ref: setEl }, "Anchor"),
+    createElement(Popover, { ...props, anchor: el }, createElement("button", { type: "button" }, "First option"), createElement("button", { type: "button" }, "Second option")),
+  );
+}
+
+fixtures.Popover = {
+  component: PopoverDemo,
+  props: { id: "demo-popover", open: true, label: "Pick one" },
+  bind: { onClose: () => ({ open: false }) },
 };
