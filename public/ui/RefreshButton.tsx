@@ -1,9 +1,11 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { EASE } from "../lib/motion.ts";
-import { Button } from "../ui/Button.tsx";
-import { RelativeTime } from "./RelativeTime.tsx";
+import { Button } from "./Button.tsx";
+import { RelativeTime } from "../components/RelativeTime.tsx";
+import "./RefreshButton.css";
 
+/** Result of a refresh: how many new items arrived, or the error message. */
 export type RefreshOutcome = { ok: true; added: number } | { ok: false; error: string };
 
 type Status = { kind: "idle" } | { kind: "busy" } | { kind: "result"; outcome: RefreshOutcome; n: number };
@@ -42,17 +44,19 @@ function delay(ms: number): Promise<void> {
   return promise;
 }
 
-export function RefreshButton({
-  onRefresh,
-  updatedAt,
-  noun,
-  disabled,
-}: {
+export type RefreshButtonProps = {
+  /** Runs the refresh and resolves with its outcome. */
   onRefresh: () => Promise<RefreshOutcome>;
+  /** Epoch milliseconds of the last successful load, or null to hide the status. */
   updatedAt: number | null;
+  /** Singular and plural name of the refreshed items, used in the "N new" result. */
   noun: [string, string];
+  /** Disables the button. */
   disabled?: boolean;
-}) {
+};
+
+/** A refresh button with a status line that shows the last update time, then the outcome of each refresh. */
+export function RefreshButton({ onRefresh, updatedAt, noun, disabled }: RefreshButtonProps) {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const n = useRef(0);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);

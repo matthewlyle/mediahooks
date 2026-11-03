@@ -2,7 +2,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject } from "react";
 import type { IncomingEvent, RouteStatus } from "../../src/types.ts";
 import { templateVars } from "../../src/template.ts";
-import { RefreshButton, type RefreshOutcome } from "../components/RefreshButton.tsx";
+import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
 import { RelativeTime } from "../components/RelativeTime.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING, flash, pageTransition } from "../lib/motion.ts";

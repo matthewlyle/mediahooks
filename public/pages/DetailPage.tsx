@@ -3,7 +3,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObje
 import type { Delivery, DeliveryDetail, Webhook } from "../../src/types.ts";
 import { Button, LinkButton } from "../ui/Button.tsx";
 import { PausedBadge } from "../components/PausedBadge.tsx";
-import { RefreshButton, type RefreshOutcome } from "../components/RefreshButton.tsx";
+import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
 import { RelativeTime } from "../components/RelativeTime.tsx";
 import { SentenceSummary } from "../components/SentenceSummary.tsx";
 import { StatusBadge } from "../components/StatusBadge.tsx";
