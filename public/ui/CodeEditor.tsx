@@ -27,27 +27,52 @@ import { tags } from "@lezer/highlight";
 import { forwardRef, useEffect, useImperativeHandle, useRef, type KeyboardEvent } from "react";
 import "./CodeEditor.css";
 
+/** Imperative methods exposed through the editor's ref. */
 export type CodeEditorHandle = {
+  /** The editor's root element, or null before it mounts. */
   readonly dom: HTMLElement | null;
+  /** Moves keyboard focus into the editor. */
   focus(options?: FocusOptions): void;
+  /** Scrolls the editor into view. */
   scrollIntoView(arg?: ScrollIntoViewOptions): void;
+  /** Replaces the selection with the text and focuses the editor. */
   insert(text: string): void;
 };
 
-export type CompletionData = { vars: Record<string, unknown>; payload: unknown };
+/** Names and values offered when completing a placeholder. */
+export type CompletionData = {
+  /** Top-level variables, keyed by name. */
+  vars: Record<string, unknown>;
+  /** Nested object whose dotted paths are offered as payload completions. */
+  payload: unknown;
+};
 
 export type CodeEditorProps = {
+  /** The text in the editor. */
   value: string;
+  /** Called with the new text when the user edits it. */
   onChange: (value: string) => void;
+  /** Syntax mode; "json" adds highlighting and linting that ignores {{placeholders}}. */
   language: "json" | "plain";
+  /** Variables and payload paths suggested after typing {{. */
   completions: CompletionData;
+  /** Hint shown while the editor is empty. */
   placeholder?: string;
+  /** DOM id of the editable area, for label association. */
   id?: string;
+  /** Accessible name when there is no visible label. */
   ariaLabel?: string;
+  /** Id of the element that labels the editor. */
   ariaLabelledBy?: string;
+  /** Id of the element that describes the editor, such as an error message. */
   ariaDescribedBy?: string;
+  /** Marks the content as invalid and tints the border red. */
   invalid?: boolean;
+  /** Uses a shorter editing area. */
+  compact?: boolean;
+  /** Called when the editor loses focus. */
   onBlur?: () => void;
+  /** Extra class names for the root element. */
   className?: string;
 };
 
@@ -226,6 +251,7 @@ function contentAttributes(p: CodeEditorProps): Record<string, string> {
   return attrs;
 }
 
+/** A multi-line code field with {{placeholder}} completion, highlighting and, for JSON, error linting. */
 export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(function CodeEditor(props, ref) {
   const host = useRef<HTMLDivElement>(null);
   const view = useRef<EditorView | null>(null);
@@ -327,7 +353,7 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(function
   return (
     <div
       ref={host}
-      className={["code-editor", props.invalid && "is-invalid", props.className].filter(Boolean).join(" ")}
+      className={["code-editor", props.invalid && "is-invalid", props.compact && "is-compact", props.className].filter(Boolean).join(" ")}
       onKeyDown={(e: KeyboardEvent) => {
         if (e.key === "Escape") e.preventDefault();
       }}

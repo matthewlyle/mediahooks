@@ -2,13 +2,15 @@ import { motion } from "motion/react";
 import { fadeIn } from "../lib/motion.ts";
 import { usePlexStatus } from "../lib/store.tsx";
 import { RelativeTime } from "../ui/RelativeTime.tsx";
+import { StatusDot } from "../ui/StatusDot.tsx";
+import "./PlexStatus.css";
 
 export function PlexConnection() {
   const status = usePlexStatus();
   if (!status) return null;
   return (
     <motion.p className="plex-status" {...fadeIn}>
-      <span className={status.lastEventAt === null ? "status-dot" : "status-dot on"} aria-hidden="true" />
+      <StatusDot on={status.lastEventAt !== null} />
       {status.lastEventAt === null ? (
         "Waiting for the first event"
       ) : (

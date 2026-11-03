@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/Button.tsx";
 import { CopyButton } from "../ui/CopyButton.tsx";
+import { Panel } from "../ui/Panel.tsx";
 import { PlexConnection } from "../components/PlexStatus.tsx";
 import { useToast } from "../ui/Toast.tsx";
 import { api } from "../lib/api.ts";
@@ -48,7 +49,7 @@ export function HelpPage() {
 
   return (
     <motion.div className="page page-help" {...pageTransition}>
-      <motion.section className="panel help" {...fadeIn}>
+      <Panel className="help" {...fadeIn}>
         <h2 ref={heading} tabIndex={-1}>Help</h2>
         <ol className="help-steps">
           <li>
@@ -57,10 +58,10 @@ export function HelpPage() {
               <code ref={code}>{ingestUrl}</code>
               {confirming ? (
                 <>
-                  <Button variant="danger" className="ingest-btn" disabled={replacing} onClick={() => void onReplace()}>
+                  <Button variant="danger" size="small" className="ingest-btn" disabled={replacing} onClick={() => void onReplace()}>
                     Replace token
                   </Button>
-                  <Button className="ingest-btn" disabled={replacing} onClick={leaveConfirm}>
+                  <Button size="small" className="ingest-btn" disabled={replacing} onClick={leaveConfirm}>
                     Cancel
                   </Button>
                 </>
@@ -68,10 +69,11 @@ export function HelpPage() {
                 <>
                   <CopyButton
                     text={ingestUrl}
+                    size="small"
                     className="ingest-btn"
                     onFail={() => code.current && getSelection()?.selectAllChildren(code.current)}
                   />
-                  <Button ref={newToken} className="ingest-btn" onClick={() => setConfirming(true)}>
+                  <Button ref={newToken} size="small" className="ingest-btn" onClick={() => setConfirming(true)}>
                     New token
                   </Button>
                 </>
@@ -86,7 +88,7 @@ export function HelpPage() {
           <li>Choose when it sends, then press Send test.</li>
         </ol>
         {meta && <p className="muted help-version">mediahooks {meta.version}</p>}
-      </motion.section>
+      </Panel>
     </motion.div>
   );
 }

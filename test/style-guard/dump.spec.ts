@@ -1,3 +1,5 @@
+import { once } from "node:events";
+import { createServer } from "node:http";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { gzipSync } from "node:zlib";
 import { dirname, resolve } from "node:path";
@@ -18,27 +20,48 @@ type Dump = { defaults: Record<string, Record<string, string>>; nodes: Record<st
 
 let active: number;
 let paused: number;
+let receiverStatus = 200;
+const receiver = createServer((req, res) => {
+  req.resume();
+  res.writeHead(receiverStatus, { "content-type": "text/plain" }).end(receiverStatus === 200 ? "ok" : "rejected");
+});
 
 test.beforeAll(async ({ request }) => {
-  const create = async (name: string, enabled: boolean) => {
+  await once(receiver.listen(0, "127.0.0.1"), "listening");
+  const receiverUrl = `http://127.0.0.1:${(receiver.address() as { port: number }).port}/hook`;
+  const create = async (name: string, enabled: boolean, url = "http://127.0.0.1:9/hook") => {
     const res = await request.post("/api/webhooks", {
-      data: { name, url: "http://127.0.0.1:9/hook", events: ["library.new", "media.play"], enabled },
+      data: { name, url, events: ["library.new", "media.play"], enabled },
     });
     expect(res.ok()).toBe(true);
     return ((await res.json()) as { id: number }).id;
   };
-  active = await create("Living room alerts", true);
+  active = await create("Living room alerts", true, receiverUrl);
   paused = await create("Paused webhook", false);
   await create("Delete me", true);
   await create("Delete me too", true);
   await create("Toggle me", true);
 
   const meta = await (await request.get("/api/meta")).json();
-  const sent = await request.post(`/plex?token=${meta.ingestToken}`, {
-    data: { event: "media.play", Metadata: { type: "movie", title: "Arrival", year: 2016 } },
-  });
-  expect(sent.ok()).toBe(true);
-  await expect.poll(async () => (await (await request.get("/api/events")).json()).length).toBeGreaterThan(0);
+  const send = async (event: string, title: string) => {
+    const res = await request.post(`/plex?token=${meta.ingestToken}`, {
+      data: { event, Metadata: { type: "movie", title, year: 2016 } },
+    });
+    expect(res.ok()).toBe(true);
+  };
+  const deliveries = async () => (await (await request.get(`/api/webhooks/${active}/deliveries`)).json()).length as number;
+
+  await send("media.play", "Arrival");
+  await expect.poll(deliveries).toBe(1);
+  receiverStatus = 400;
+  await send("media.play", "Sicario");
+  await expect.poll(deliveries).toBe(2);
+  await send("media.pause", "Arrival");
+  await expect.poll(async () => (await (await request.get("/api/events")).json()).length).toBe(3);
+});
+
+test.afterAll(() => {
+  receiver.close();
 });
 
 function installGuard(INTERACTIVE: string) {
@@ -221,6 +244,16 @@ const STATES: State[] = [
       await page.goto("/");
       await page.getByRole("link", { name: /Living room alerts/ }).press("Enter");
       await expect(page.getByRole("heading", { level: 2, name: "Living room alerts" })).toBeFocused();
+    },
+  ],
+  [
+    "events-open",
+    async (page) => {
+      await page.goto("/events");
+      const rows = page.getByRole("main").getByRole("button", { expanded: false });
+      await expect(rows).toHaveCount(3);
+      for (let i = 0; i < 3; i++) await rows.first().click();
+      await expect(page.locator(".ev-routing")).toHaveCount(3);
     },
   ],
   [

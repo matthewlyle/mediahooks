@@ -1,5 +1,5 @@
 import { AnimatePresence } from "motion/react";
-import { Reveal } from "../pages/editor/Reveal.tsx";
+import { Reveal } from "./Reveal.tsx";
 import "./FieldError.css";
 
 /** A validation message under a form field that animates in and out as the error appears or clears. */
@@ -13,7 +13,7 @@ export function FieldError({ id, error }: {
     <div className="reveal-region" role="status">
       <AnimatePresence initial={false}>
         {error && (
-          <Reveal key="error">
+          <Reveal key="error" className="field-error-reveal">
             <p id={id} className="field-error">
               {error}
             </p>

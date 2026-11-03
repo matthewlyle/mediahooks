@@ -3,7 +3,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties
 import { createPortal } from "react-dom";
 import { useLocation } from "wouter";
 import { EASE } from "../lib/motion.ts";
-import { Button } from "./Button.tsx";
+import { Button, type ButtonSize } from "./Button.tsx";
 
 import "./Menu.css";
 
@@ -23,10 +23,14 @@ export type MenuProps = {
   label: string;
   /** Actions listed in the menu, in order. */
   items: MenuItem[];
-  /** Content of the trigger button. */
-  children: ReactNode;
+  /** Content of the trigger button. Ignored when `overflow` is set. */
+  children?: ReactNode;
+  /** Shows the trigger as three dots, for an overflow menu of row actions. */
+  overflow?: boolean;
   /** Extra class name for the trigger button. */
   triggerClassName?: string;
+  /** Size of the trigger button. */
+  triggerSize?: ButtonSize;
   /** Which edge of the trigger the menu lines up with. */
   align?: "start" | "end";
   /** Optional line of text shown above the items. */
@@ -36,7 +40,7 @@ export type MenuProps = {
 type Placement = { top: number; left?: number; right?: number };
 
 /** A button that opens a popup list of actions, with arrow-key navigation and focus return on close. */
-export function Menu({ label, items, children, triggerClassName, align = "end", heading }: MenuProps) {
+export function Menu({ label, items, children, overflow, triggerClassName, triggerSize, align = "end", heading }: MenuProps) {
   const reduce = useReducedMotion();
   const id = useId();
   const trigger = useRef<HTMLButtonElement>(null);
@@ -130,7 +134,8 @@ export function Menu({ label, items, children, triggerClassName, align = "end", 
     <>
       <Button
         ref={trigger}
-        className={triggerClassName}
+        className={[overflow && "menu-overflow", triggerClassName].filter(Boolean).join(" ") || undefined}
+        size={triggerSize}
         aria-label={label}
         aria-haspopup="menu"
         aria-expanded={open}
@@ -138,7 +143,15 @@ export function Menu({ label, items, children, triggerClassName, align = "end", 
         onClick={() => (open ? close() : openMenu("first"))}
         onKeyDown={onTriggerKeyDown}
       >
-        {children}
+        {overflow ? (
+          <>
+            <span className="menu-dot" />
+            <span className="menu-dot" />
+            <span className="menu-dot" />
+          </>
+        ) : (
+          children
+        )}
       </Button>
       {createPortal(
         <AnimatePresence custom={instant}>
