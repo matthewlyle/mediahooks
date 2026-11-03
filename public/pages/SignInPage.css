@@ -7,7 +7,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
   width: min(360px, 100%);
   padding: 40px 24px;
 }
@@ -25,7 +24,7 @@ button.signin-btn {
   border-top-color: transparent;
 }
 .signin-note {
-  margin: 0;
+  margin: 12px 0 0;
   font-size: 13px;
   color: var(--muted);
   text-align: center;

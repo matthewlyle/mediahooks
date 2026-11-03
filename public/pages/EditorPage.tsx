@@ -173,15 +173,17 @@ function resultLine(r: SendResult): { text: string; full: string } {
 
 function FieldError({ id, error }: { id: string; error: string | undefined }) {
   return (
-    <AnimatePresence initial={false}>
-      {error && (
-        <Reveal key="error">
-          <p id={id} className="field-error">
-            {error}
-          </p>
-        </Reveal>
-      )}
-    </AnimatePresence>
+    <div className="reveal-region" role="status">
+      <AnimatePresence initial={false}>
+        {error && (
+          <Reveal key="error">
+            <p id={id} className="field-error">
+              {error}
+            </p>
+          </Reveal>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
@@ -454,26 +456,37 @@ function EditorForm({ id, w, meta, back, onSaved, heading }: EditorFormProps) {
             </span>
             <Switch checked={form.enabled} onChange={(on) => set("enabled", on)} label="Enabled" />
           </span>
-          <Button ref={sendButton} className="test-btn send-test" disabled={sending} onClick={onSendTest}>
-            <span className="send-test-label" aria-hidden={sending}>
-              Send test
-            </span>
-            {sending && <span className="send-test-busy">{reduce ? "Sending…" : <Spinner />}</span>}
+          <Button
+            ref={sendButton}
+            className="test-btn send-test"
+            disabled={sending}
+            aria-busy={sending || undefined}
+            onClick={onSendTest}
+          >
+            <span className="send-test-label">Send test</span>
+            {sending && (
+              <span className="send-test-busy" aria-hidden="true">
+                {reduce ? "Sending…" : <Spinner />}
+              </span>
+            )}
           </Button>
           <Button onClick={() => navigate(back)}>Cancel</Button>
           <Button type="submit" form={formId} variant="primary" disabled={saving}>
             Save
           </Button>
         </motion.div>
+        <p className="sr-only" role="status">
+          {sending ? "Sending test…" : result && line ? `${result.ok ? "Test delivered" : "Test failed"}: ${line.full}` : ""}
+        </p>
         <AnimatePresence initial={false}>
           {result && line && (
             <Reveal key="result">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.p
                   key={result.n}
-                  role="status"
                   className={`send-result ${result.ok ? "ok" : "fail"}`}
                   title={line.full}
+                  aria-hidden="true"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1, transition: { duration: 0.15, ease: EASE.css } }}
                   exit={{ opacity: 0, transition: { duration: 0.08, ease: EASE.css } }}

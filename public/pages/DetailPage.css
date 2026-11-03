@@ -107,9 +107,6 @@
     scale: none;
   }
 }
-.d-row .d-summary:focus-visible {
-  box-shadow: var(--glow);
-}
 .d-detail-clip {
   grid-column: 1 / -1;
   min-width: 0;
@@ -172,15 +169,6 @@
   text-align: center;
 }
 
-.page-detail .sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
 @media (max-width: 640px) {
   .detail-head {
     grid-template-columns: 1fr;
@@ -192,6 +180,15 @@
     margin-right: auto;
   }
 
+  .deliveries-head .refresh-status {
+    white-space: normal;
+    text-align: right;
+  }
+  .deliveries-head .refresh-label {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    row-gap: 0;
+  }
   .deliveries-list {
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 4px;

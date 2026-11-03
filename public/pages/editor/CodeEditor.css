@@ -4,11 +4,12 @@
 .code-editor .cm-editor {
   transition:
     background-color 150ms ease,
+    border-color 150ms ease,
     box-shadow 150ms ease;
 }
 .code-editor .cm-editor.cm-focused {
-  outline: none;
-  box-shadow: var(--glow);
+  outline: var(--focus-ring);
+  outline-offset: 2px;
 }
 .code-editor .cm-scroller {
   min-height: 240px;
@@ -21,15 +22,10 @@
   max-height: 240px;
 }
 .code-editor.is-invalid .cm-editor {
-  box-shadow: inset 0 0 0 1px rgba(255, 92, 92, 0.55);
+  border-color: rgba(255, 92, 92, 0.8);
 }
 .code-editor.is-invalid .cm-editor.cm-focused {
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 92, 92, 0.8),
-    0 0 12px rgba(255, 92, 92, 0.25);
-}
-.code-editor .cm-content[aria-invalid] {
-  box-shadow: none;
+  box-shadow: 0 0 12px rgba(255, 92, 92, 0.25);
 }
 .code-editor .cm-template-var,
 .code-editor .cm-template-var * {

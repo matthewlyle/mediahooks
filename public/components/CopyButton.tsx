@@ -7,7 +7,7 @@ export async function copyText(text: string): Promise<boolean> {
     try {
       await navigator.clipboard.writeText(text);
       return true;
-    } catch {}
+    } catch { }
   }
   const scratch = document.createElement("textarea");
   scratch.value = text;
@@ -32,39 +32,47 @@ export type CopyButtonProps = {
 export function CopyButton({ text, className, onFail }: CopyButtonProps) {
   // A counter, not a boolean: each copy remounts the check so it redraws.
   const [copied, setCopied] = useState(0);
+  const [failed, setFailed] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => () => clearTimeout(timer.current), []);
 
   async function onClick() {
-    if (!(await copyText(text))) {
-      onFail?.();
-      return;
-    }
+    const ok = await copyText(text);
     clearTimeout(timer.current);
-    setCopied((n) => n + 1);
-    timer.current = setTimeout(() => setCopied(0), COPIED_MS);
+    setFailed(!ok);
+    setCopied((n) => (ok ? n + 1 : 0));
+    if (!ok) onFail?.();
+    timer.current = setTimeout(() => {
+      setCopied(0);
+      setFailed(false);
+    }, COPIED_MS);
   }
 
   return (
-    <Button className={["copy-btn", className].filter(Boolean).join(" ")} onClick={onClick}>
-      {copied ? (
-        <>
-          <svg key={copied} className="copy-check" viewBox="0 0 10 10" aria-hidden="true">
-            <path
-              d="M1.5 5.5 L4 8 L8.5 2"
-              pathLength={1}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={1.6}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          Copied
-        </>
-      ) : (
-        "Copy"
-      )}
-    </Button>
+    <>
+      <Button className={["copy-btn", className].filter(Boolean).join(" ")} onClick={onClick}>
+        {copied ? (
+          <>
+            <svg key={copied} className="copy-check" viewBox="0 0 10 10" aria-hidden="true">
+              <path
+                d="M1.5 5.5 L4 8 L8.5 2"
+                pathLength={1}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.6}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            Copied
+          </>
+        ) : (
+          "Copy"
+        )}
+      </Button>
+      <span className="sr-only" role="status">
+        {copied ? "Copied" : failed ? "Couldn't copy" : ""}
+      </span>
+    </>
   );
 }
