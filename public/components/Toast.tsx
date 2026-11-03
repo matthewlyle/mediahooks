@@ -12,10 +12,12 @@ export type Toaster = { show(text: string, opts?: ToastOptions): void };
 const TOAST_MS = 4000;
 
 const ToastContext = createContext<Toaster | null>(null);
+const ToastInertContext = createContext<(inert: boolean) => void>(() => { });
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const reduce = useReducedMotion();
   const [toasts, setToasts] = useState<{ id: number; text: string; undo: boolean; sticky: boolean; subject?: string }[]>([]);
+  const [inert, setInert] = useState(false);
   const pending = useRef(new Map<number, ToastOptions>());
   const nextId = useRef(0);
 
@@ -53,8 +55,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
   return (
     <ToastContext.Provider value={value}>
-      {children}
-      <div role="status" className="toast-region">
+      <ToastInertContext.Provider value={setInert}>{children}</ToastInertContext.Provider>
+      <div role="status" className="toast-region" inert={inert || undefined}>
         <AnimatePresence>
           {toasts.map((t) => (
             <motion.div
@@ -92,4 +94,12 @@ export function useToast(): Toaster {
   const toaster = useContext(ToastContext);
   if (!toaster) throw new Error("useToast outside <ToastProvider>");
   return toaster;
+}
+
+export function useInertToasts() {
+  const setInert = useContext(ToastInertContext);
+  useEffect(() => {
+    setInert(true);
+    return () => setInert(false);
+  }, [setInert]);
 }

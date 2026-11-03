@@ -8,7 +8,7 @@ import { Modal } from "./components/Modal.tsx";
 import { ToastProvider } from "./components/Toast.tsx";
 import { api, setUnauthorizedHandler } from "./lib/api.ts";
 import { EASE, SPRING, TAP, ids, routeDirection, useFinePointer } from "./lib/motion.ts";
-import { useLinkProps, useNav } from "./lib/nav.ts";
+import { PendingHeadingFocus, useLinkProps, useNav } from "./lib/nav.ts";
 import { StoreProvider, useStore } from "./lib/store.tsx";
 import { DetailPage } from "./pages/DetailPage.tsx";
 import { EditorPage } from "./pages/EditorPage.tsx";
@@ -92,9 +92,11 @@ function Shell() {
   const [auth, setAuth] = useState<Auth>({ status: "checking" });
 
   const last = useRef({ key: current?.key, section: current?.section ?? "webhooks", dir: 0 });
+  const pendingHeadingFocus = useRef(false);
   if (current && current.key !== last.current.key) {
     const dir = Math.sign(SECTION_ORDER.indexOf(current.section) - SECTION_ORDER.indexOf(last.current.section));
     last.current = { key: current.key, section: current.section, dir };
+    pendingHeadingFocus.current = true;
   }
   routeDirection.current = last.current.dir;
 
@@ -141,21 +143,23 @@ function Shell() {
         <AnimatePresence mode="wait">
           {auth.status === "signed-in" ? (
             <motion.div key="app" exit={FADE.exit}>
-              <StoreProvider>
-                {current && <RouteTitle title={modal ? () => "New webhook" : current.title} />}
-                <div className="routes" inert={modal || undefined}>
-                  <AnimatePresence mode="popLayout" initial={false} custom={last.current.dir}>
-                    {current?.page}
+              <PendingHeadingFocus value={pendingHeadingFocus}>
+                <StoreProvider>
+                  {current && <RouteTitle title={modal ? () => "New webhook" : current.title} />}
+                  <div className="routes" inert={modal || undefined}>
+                    <AnimatePresence mode="popLayout" initial={false} custom={last.current.dir}>
+                      {current?.page}
+                    </AnimatePresence>
+                  </div>
+                  <AnimatePresence>
+                    {modal && (
+                      <Modal key="new" label="New webhook">
+                        <EditorPage id={null} back={behind.current} />
+                      </Modal>
+                    )}
                   </AnimatePresence>
-                </div>
-                <AnimatePresence>
-                  {modal && (
-                    <Modal key="new" label="New webhook">
-                      <EditorPage id={null} back={behind.current} />
-                    </Modal>
-                  )}
-                </AnimatePresence>
-              </StoreProvider>
+                </StoreProvider>
+              </PendingHeadingFocus>
             </motion.div>
           ) : (
             <SignInPage key="sign-in" onSignedIn={(user) => setAuth({ status: "signed-in", user })} />
@@ -253,7 +257,9 @@ function NavLink({ to, label, active }: { to: string; label: string; active: boo
           aria-hidden="true"
         />
       )}
-      <span className="nav-label">{label}</span>
+      <span className="nav-label" data-label={label}>
+        <span>{label}</span>
+      </span>
     </motion.a>
   );
 }

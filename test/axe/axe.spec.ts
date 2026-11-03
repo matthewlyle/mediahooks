@@ -88,11 +88,40 @@ test("undo toast after a delete", async ({ page, request }) => {
   await scan(page, "undo toast after a delete");
 });
 
+test("new webhook dialog over an undo toast", async ({ page, request }) => {
+  const res = await request.post("/api/webhooks", {
+    data: { name: "Delete me too", url: "http://127.0.0.1:9/hook", events: ["media.play"], enabled: true },
+  });
+  expect(res.ok()).toBe(true);
+  await page.goto("/");
+  await page.getByRole("button", { name: "More actions for Delete me too" }).click();
+  await page.getByRole("menuitem", { name: "Delete" }).click();
+  await expect(page.getByRole("button", { name: "Undo deleting Delete me too" })).toBeVisible();
+  await page.locator("#new-hook").click();
+  const dialog = page.getByRole("dialog", { name: "New webhook" });
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole("button").last().focus();
+  for (const key of ["Tab", "Tab", "Shift+Tab", "Shift+Tab"]) {
+    await page.keyboard.press(key);
+    expect(await page.evaluate(() => document.activeElement?.closest(".toast-region") ?? null)).toBeNull();
+  }
+  await scan(page, "new webhook dialog over an undo toast");
+  await dialog.getByRole("button", { name: "Cancel" }).click();
+  await expect(page.getByRole("button", { name: "Undo deleting Delete me too" })).toBeVisible();
+});
+
 test("editor after a failed save", async ({ page }) => {
   await page.goto("/new");
   await page.getByRole("button", { name: "Save" }).click();
   await expect(page.locator(".field-error").first()).toBeVisible();
   await scan(page, "editor after a failed save");
+});
+
+test("detail page after opening a row", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("link", { name: /Living room alerts/ }).press("Enter");
+  await expect(page.getByRole("heading", { level: 2, name: "Living room alerts" })).toBeFocused();
+  await scan(page, "detail page after opening a row");
 });
 
 test("failure toast after a failed toggle", async ({ page, request }) => {

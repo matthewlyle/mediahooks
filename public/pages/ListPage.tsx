@@ -11,12 +11,13 @@ import { Switch } from "../components/Switch.tsx";
 import { useToast } from "../components/Toast.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING, flash, ids, pageTransition } from "../lib/motion.ts";
-import { useLinkProps, useNav } from "../lib/nav.ts";
+import { useLinkProps, useNav, useRouteHeading } from "../lib/nav.ts";
 import { useStore } from "../lib/store.tsx";
 
 type Enter = "stagger" | "pop";
 
 export function ListPage() {
+  const heading = useRouteHeading<HTMLHeadingElement>();
   const { webhooks, lastDelivery, loaded, error } = useStore();
   const reduce = useReducedMotion();
   const firstLoad = useRef(!loaded);
@@ -27,7 +28,7 @@ export function ListPage() {
 
   return (
     <motion.div className="page page-list" {...pageTransition}>
-      <h2 className="sr-only">Webhooks</h2>
+      <h2 ref={heading} tabIndex={-1} className="sr-only">Webhooks</h2>
       {error && !loaded ? (
         <p className="empty">Could not reach the mediahooks API.</p>
       ) : (
@@ -79,12 +80,30 @@ function Row({ w, last, index, enter }: RowProps) {
 
   const link = useLinkProps(`/webhooks/${w.id}`);
 
-  function onRowClick(event: MouseEvent<HTMLLIElement>) {
+  function rowLink(event: MouseEvent<HTMLLIElement>): HTMLAnchorElement | null {
     const target = event.target as Element;
     // Clicks inside the menu portal bubble here through React; only real descendants count.
-    if (!event.currentTarget.contains(target) || target.closest(".card-actions")) return;
-    if (getSelection()?.toString()) return;
+    if (!event.currentTarget.contains(target) || target.closest("button")) return null;
+    const anchor = event.currentTarget.querySelector<HTMLAnchorElement>(".card-main");
+    return anchor === target ? null : anchor;
+  }
+
+  function onRowClick(event: MouseEvent<HTMLLIElement>) {
+    const anchor = rowLink(event);
+    if (!anchor || getSelection()?.toString()) return;
+    const { metaKey, ctrlKey, shiftKey, altKey } = event;
+    if (metaKey || ctrlKey || shiftKey || altKey) {
+      anchor.dispatchEvent(new MouseEvent("click", { cancelable: true, view: window, metaKey, ctrlKey, shiftKey, altKey }));
+      return;
+    }
     link.onClick(event);
+  }
+
+  function onRowAuxClick(event: MouseEvent<HTMLLIElement>) {
+    const anchor = rowLink(event);
+    if (!anchor || event.button !== 1) return;
+    const mac = /Mac|iPhone|iPad/.test(navigator.userAgent);
+    anchor.dispatchEvent(new MouseEvent("click", { cancelable: true, view: window, metaKey: mac, ctrlKey: !mac }));
   }
 
   async function onToggle(enabled: boolean) {
@@ -188,8 +207,10 @@ function Row({ w, last, index, enter }: RowProps) {
         layout: SPRING.morph,
       }}
       onClick={onRowClick}
+      onAuxClick={onRowAuxClick}
     >
-      <a className="card-main" {...link}>
+      <div className="card-text">
+        <a className="card-main" aria-label={w.name} {...link} />
         <div className="card-title">
           <motion.span
             layoutId={ids.name(w.id)}
@@ -211,7 +232,7 @@ function Row({ w, last, index, enter }: RowProps) {
           {w.url}
         </motion.div>
         <SentenceSummary w={w} className="card-summary" />
-      </a>
+      </div>
       <div className="card-actions">
         <StatusBadge delivery={last} />
         <Switch checked={w.enabled} onChange={onToggle} label={`${w.enabled ? "Disable" : "Enable"} ${w.name}`} />
