@@ -330,11 +330,7 @@ form.editor {
 
 /* Touch screens: 16px fields (iOS zooms into smaller ones) and ~40px tap targets. */
 @media (pointer: coarse) {
-  .editor-bar .template-picker,
   .code-editor .cm-editor .cm-content {
     font-size: var(--text-16);
-  }
-  .editor-bar .template-picker {
-    min-height: 40px;
   }
 }
