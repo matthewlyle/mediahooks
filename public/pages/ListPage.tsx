@@ -4,7 +4,7 @@ import type { SendResult } from "../../src/send.ts";
 import type { Delivery, Webhook } from "../../src/types.ts";
 import { burst } from "../components/burst.ts";
 import { Menu } from "../ui/Menu.tsx";
-import { PausedBadge } from "../components/PausedBadge.tsx";
+import { PausedBadge } from "../ui/PausedBadge.tsx";
 import { SentenceSummary } from "../components/SentenceSummary.tsx";
 import { StatusBadge } from "../components/StatusBadge.tsx";
 import { Switch } from "../ui/Switch.tsx";
