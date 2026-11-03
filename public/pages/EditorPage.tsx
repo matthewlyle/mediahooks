@@ -32,6 +32,7 @@ import {
   type FieldErrors,
   type FormState,
 } from "./editor/form.ts";
+import { CodeEditor, type CodeEditorHandle, type CodeEditorProps } from "../ui/CodeEditor.tsx";
 import { DiscordPreview, isDiscordMessage } from "./editor/DiscordPreview.tsx";
 import { SlackPreview, isSlackMessage } from "./editor/SlackPreview.tsx";
 import { EventSentence } from "./editor/EventSentence.tsx";
