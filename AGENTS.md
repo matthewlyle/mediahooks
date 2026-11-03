@@ -16,6 +16,14 @@ Smoke runs: `AUTH=off` skips sign-in, a short `GROUP_QUIET_MS` shortens new-epis
 `PLEX_TV_URL` points plex.tv calls at a fake. The README documents only `PLEX_URL`, `PORT` and
 `PUBLIC_URL`; keep the rest out of it.
 
+Screen-reader tests: `test/screen-reader/*.spec.ts` drive real VoiceOver in WebKit with Playwright
+and `@guidepup/playwright`, and assert on `voiceOver.spokenPhraseLog()`. They run in the `voiceover`
+workflow on a macOS runner, on pull requests touching `public/**` or `test/screen-reader/**`, or by
+hand with `gh workflow run voiceover.yml -f ref=<branch>`; each run uploads the log as the
+`spoken-phrase-log` artifact. Running them on a Mac needs `npx @guidepup/setup` and takes over
+VoiceOver, so leave them to CI. `bun test` skips them (`bunfig.toml` roots it at `src/`). A fix with
+a "VoiceOver announces…" criterion adds a scenario there.
+
 Commit messages use Conventional Commits (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`,
 `ci:`; `!` for breaking). release-please turns `feat`/`fix` commits into a release PR; merging it
 tags, writes `CHANGELOG.md` and the GitHub Release, and publishes `ghcr.io/matthewlyle/mediahooks`.

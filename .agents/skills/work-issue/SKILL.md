@@ -55,6 +55,7 @@ Review pull request #{PR} in matthewlyle/mediahooks, which claims to fix issue #
 
 Check, and re-run what you can rather than trusting the PR body:
 - Every success criterion in the issue is met. Run the branch (`AUTH=off PORT={PORT} bun --hot src/server.ts`, port 89 + the issue number zero-padded) and check each criterion in a browser.
+- A criterion phrased "VoiceOver announces…" counts as checked when the `voiceover` job on the PR passed with the expected phrase in its `spoken-phrase-log` artifact (`gh run download <run> -n spoken-phrase-log`). A fix with a VoiceOver criterion should add a scenario for it in `test/screen-reader/`; if there's no scenario, or the run was flaky (Playwright reports it as flaky, or it passed only on a rerun), that criterion goes to a person.
 - The diff stays within the issue, follows AGENTS.md, and has no dead code, comments that aren't needed, or unrelated changes.
 - `bun test` and `bun run typecheck` pass.
 - The PR body follows the template in "Writing for GitHub" and has screenshots if anything visible changed.
