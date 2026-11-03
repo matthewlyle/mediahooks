@@ -9,7 +9,6 @@ export const test = voiceOverTest.extend<{ spokenPhraseLog: void }>({
       await use();
       const log = JSON.stringify(await voiceOver.spokenPhraseLog(), null, 2);
       await writeFile(testInfo.outputPath("spoken-phrase-log.json"), log);
-      await testInfo.attach("spoken-phrase-log", { body: log, contentType: "application/json" });
     },
     { auto: true },
   ],
