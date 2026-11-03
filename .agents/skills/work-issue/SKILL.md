@@ -1,9 +1,9 @@
 ---
 name: work-issue
-description: Fanning mediahooks GitHub issues out to herdr worker agents, one worktree and PR per issue.
+description: Fanning mediahooks GitHub issues out to omp worker agents in the Herdr desktop app (hc), one worktree and PR per issue.
 ---
 
-# Working issues with herdr workers
+# Working issues with hc workers
 
 One issue, one worktree, one omp agent, one PR. Follows AGENTS.md: branch `issue-<n>-<slug>`, PR
 title is a Conventional Commit, body says `Fixes #<n>`. Workers never merge; only the review step
@@ -11,11 +11,19 @@ below may queue a merge.
 
 ## Launch a worker
 
+Workers run in the Herdr desktop app through `hc` (herdr-core), so they show in its Agents list.
+Don't use the older `herdr` CLI; its agents don't appear in the app.
+
 ```sh
-herdr worktree create --cwd ~/src/mediahooks --branch issue-<n>-<slug> --base main --label "#<n> <short title>" --no-focus
-herdr agent start issue-<n> --kind omp --pane <root pane from the create response> -- --model <model>
-herdr agent prompt issue-<n> "<prompt below>"
+git -C ~/src/mediahooks fetch git@github.com:matthewlyle/mediahooks.git +main:refs/remotes/github/main
+git -C ~/src/mediahooks worktree add ~/.herdr/worktrees/mediahooks/issue-<n>-<slug> -b issue-<n>-<slug> refs/remotes/github/main
+hc run --bg --name issue-<n> --cwd ~/.herdr/worktrees/mediahooks/issue-<n>-<slug> omp --model <model> "<prompt below>"
+hc label issue-<n> issue=<n> title="<short title>"
 ```
+
+Check `first_message.sent` in the launch output; if false, `hc read issue-<n>` before sending
+anything. Collect results with `hc wait --children any`; reports arrive as `<hc from=…>` messages.
+Answer an agent's question with `hc read` then `hc keys` / `hc send`.
 
 Port: `88` + the issue number zero-padded to two digits (issue 4 → 8804). Never 8788 (dev) or 8787
 (production).
@@ -33,7 +41,7 @@ If a cheaper worker's PRs keep bouncing in review, move that kind of issue up a 
 
 ## Worker prompt
 
-Fill `{N}`, `{BRANCH}`, `{PORT}`:
+Fill `{N}`, `{BRANCH}`, `{PORT}`, and `{LEAD}` (the coordinator's `$HC_TERMINAL_ID`):
 
 ```
 Fix GitHub issue #{N} in matthewlyle/mediahooks: `gh issue view {N} -R matthewlyle/mediahooks`. The issue body is the spec; its success criteria are your acceptance test. Follow AGENTS.md.
@@ -46,21 +54,19 @@ Fix GitHub issue #{N} in matthewlyle/mediahooks: `gh issue view {N} -R matthewly
 - Stay within this issue. Don't touch other issues' code or `CHANGELOG.md`.
 - Commit with a Conventional Commit message whose scope matches the issue's topic (`fix(a11y): …` for `accessibility` issues), with `Fixes #{N}` in the body. The PR title is the same line; release-please puts the scope in the changelog.
 - You're explicitly asked to push `{BRANCH}` to origin and open a pull request: title is the Conventional Commit. Before pushing, merge the latest `main` (`git fetch git@github.com:matthewlyle/mediahooks.git main && git merge FETCH_HEAD`; force-pushes are blocked) and re-run the checks. Write the body yourself (never `gh pr create --fill`), using exactly the PR body template in `.agents/skills/work-issue/SKILL.md` under "Writing for GitHub". If anything visible changed or must look unchanged, add before/after screenshots: commit PNGs to the `issue-assets` branch under `pr/<issue>-<what>.png` (fetch and rebase it first; other agents push to it too) and link `https://raw.githubusercontent.com/matthewlyle/mediahooks/issue-assets/pr/<file>.png`. After pushing, confirm the PR's head commit equals your local HEAD. Never merge it.
-- Finish with a short report: what you changed, the PR URL, and how each success criterion was verified.
+- Finish with a short report: what you changed, the PR URL, and how each success criterion was verified. Send it with `hc send {LEAD} "<report>"`, and also send there if you're stuck or need a decision.
 ```
 
 ## Review each PR
 
-When a worker reports its PR, start a reviewer in a fresh pane in the same worktree (a different
-agent from the worker):
+When a worker reports its PR, start a reviewer (a different agent from the worker) in the same
+worktree:
 
 ```sh
-herdr pane split --pane <worker pane> --direction right --cwd <worktree> --no-focus
-herdr agent start review-<n> --kind omp --pane <new pane> -- --model claude-opus-5-5 --thinking low
-herdr agent prompt review-<n> "<reviewer prompt below>"
+hc run --bg --name review-<n> --cwd <worktree> omp --model claude-opus-5-5 --thinking low "<reviewer prompt below>"
 ```
 
-Reviewer prompt, fill `{N}` (issue) and `{PR}`:
+Reviewer prompt, fill `{N}` (issue), `{PR}` and `{LEAD}`:
 
 ```
 Review pull request #{PR} in matthewlyle/mediahooks, which claims to fix issue #{N}. Read `gh issue view {N}`, `gh pr view {PR}` and `gh pr diff {PR}`. Follow AGENTS.md. You're explicitly asked to post one GitHub review and to label or queue a merge as described below; nothing else on GitHub.
@@ -78,7 +84,7 @@ Then decide:
 - Human: anything else, including anything you couldn't check. Post a comment review using the human template, then `gh pr edit {PR} --add-label "review: human" --add-assignee matthewlyle`.
 - Never request changes from the worker, push to the branch, or merge directly.
 
-Write the review with the templates in `.agents/skills/work-issue/SKILL.md` under "Writing for GitHub". Also check the PR title still describes the change. Finish with a short report: the decision, why, and the review URL.
+Write the review with the templates in `.agents/skills/work-issue/SKILL.md` under "Writing for GitHub". Also check the PR title still describes the change. Finish with a short report (the decision, why, and the review URL) and send it with `hc send {LEAD} "<report>"`.
 ```
 
 ## Writing for GitHub
@@ -120,8 +126,8 @@ Checked: <criteria> ✓ · tests ✓ · CI ✓
 ```
 
 Releases stay manual: merging to `main` only adds a line to the release-please PR, and the user
-merges that. After merges, run `herdr-prune-merged` (`--dry-run` previews): it removes each herdr
-worktree whose branch has a merged PR and whose HEAD is that PR's head, then the local branch.
+merges that. After a PR merges, end its agents (`hc kill issue-<n> review-<n>`) and remove its
+worktree (`git -C ~/src/mediahooks worktree remove <path>`, then delete the local branch).
 
 ## Coordinator checklist
 
@@ -133,4 +139,4 @@ worktree whose branch has a merged PR and whose HEAD is that PR's head, then the
 - When a worker reports done, check `gh pr view <pr> --json headRefOid` against its local HEAD.
   Agents have reported pushes that never happened. Start a reviewer only on the pushed head.
 - After a merge, merge `main` into open PRs that touch the same files before their review.
-- When something needs the owner, also run `herdr notification show "<title>" --body "<one line>" --sound request`.
+- When something needs the owner, say so in your reply; the app already shows each agent's status.
