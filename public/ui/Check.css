@@ -1,0 +1,25 @@
+.menu .pop-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  width: 100%;
+  white-space: normal;
+}
+.pop-check {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-2);
+  box-shadow: inset 0 0 0 1.5px var(--muted);
+  transition:
+    background-color 150ms ease,
+    box-shadow 150ms ease;
+}
+.pop-option[aria-checked="true"] .pop-check {
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent-45);
+}
+.menu .pop-option[aria-disabled="true"] {
+  color: var(--muted);
+  cursor: default;
+}

@@ -17,6 +17,7 @@ import { api } from "../../lib/api.ts";
 import { EASE, SPRING, useNarrow } from "../../lib/motion.ts";
 import { eventGroups, sentenceParts, type Slot } from "../../lib/sentence.ts";
 import "./EventSentence.css";
+import { Check } from "../../ui/Check.tsx";
 
 const csv = (text: string) =>
   text
@@ -169,18 +170,18 @@ function Popover({ id, open, label, anchor, onClose, children }: PopoverProps) {
   const fade = (isInstant: boolean) => ({ opacity: 0, transition: { duration: isInstant ? 0 : 0.1, ease: EASE.css } });
   const motionProps = sheet
     ? {
-        initial: reduce ? { opacity: 0 } : { y: "100%" },
-        animate: { opacity: 1, y: 0, transition: reduce ? { duration: 0.12 } : SPRING.page },
-        variants: {
-          exit: (isInstant: boolean) =>
-            reduce || isInstant ? fade(isInstant) : { y: "100%", transition: { duration: 0.2, ease: EASE.outQuint } },
-        },
-      }
+      initial: reduce ? { opacity: 0 } : { y: "100%" },
+      animate: { opacity: 1, y: 0, transition: reduce ? { duration: 0.12 } : SPRING.page },
+      variants: {
+        exit: (isInstant: boolean) =>
+          reduce || isInstant ? fade(isInstant) : { y: "100%", transition: { duration: 0.2, ease: EASE.outQuint } },
+      },
+    }
     : {
-        initial: reduce ? { opacity: 0 } : { opacity: 0, y: -4, scale: 0.97 },
-        animate: { opacity: 1, y: 0, scale: 1, transition: { duration: reduce ? 0.12 : 0.15, ease: EASE.outQuint } },
-        variants: { exit: fade },
-      };
+      initial: reduce ? { opacity: 0 } : { opacity: 0, y: -4, scale: 0.97 },
+      animate: { opacity: 1, y: 0, scale: 1, transition: { duration: reduce ? 0.12 : 0.15, ease: EASE.outQuint } },
+      variants: { exit: fade },
+    };
 
   return createPortal(
     <AnimatePresence custom={instant}>
@@ -223,29 +224,6 @@ function Popover({ id, open, label, anchor, onClose, children }: PopoverProps) {
       )}
     </AnimatePresence>,
     document.body,
-  );
-}
-
-function Check({ checked, disabled, onToggle, title, children }: {
-  checked: boolean;
-  disabled?: boolean;
-  onToggle: () => void;
-  title?: string;
-  children: ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      role="checkbox"
-      aria-checked={checked}
-      aria-disabled={disabled || undefined}
-      className="pop-option"
-      title={title}
-      onClick={() => !disabled && onToggle()}
-    >
-      <span className="pop-check" aria-hidden="true" />
-      {children}
-    </button>
   );
 }
 
