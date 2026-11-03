@@ -5,7 +5,7 @@ about this repo. The process lives there; only what's specific to mediahooks liv
 
 ## Repo
 
-- GitHub `matthewlyle/mediahooks`; checkout `~/src/mediahooks`; worktrees under
+- GitHub `matthewlyle/mediahooks`, owned by `matthewlyle`; checkout `~/src/mediahooks`; worktrees under
   `~/.herdr/worktrees/mediahooks/`. Agents run on mini.
 
 ## Per issue
