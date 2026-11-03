@@ -15,28 +15,14 @@ export type ClickableCardProps = Omit<HTMLMotionProps<"li">, "children"> & {
 };
 
 /** A list card that opens a page when clicked anywhere, passing modified and middle clicks on to its link. */
-export function ClickableCard({
-  to,
-  label,
-  children,
-  actions,
-  className,
-  onClick,
-  onAuxClick,
-  ...rest
-}: ClickableCardProps) {
+export function ClickableCard({ to, label, children, actions, className, onClick, onAuxClick, ...rest }: ClickableCardProps) {
   const link = useLinkProps(to);
 
-  function cardLink(
-    event: MouseEvent<HTMLLIElement>,
-  ): HTMLAnchorElement | null {
+  function cardLink(event: MouseEvent<HTMLLIElement>): HTMLAnchorElement | null {
     const target = event.target as Element;
     // Clicks inside the menu portal bubble here through React; only real descendants count.
-    if (!event.currentTarget.contains(target) || target.closest("button"))
-      return null;
-    const anchor = event.currentTarget.querySelector<HTMLAnchorElement>(
-      ".clickable-card-link",
-    );
+    if (!event.currentTarget.contains(target) || target.closest("button")) return null;
+    const anchor = event.currentTarget.querySelector<HTMLAnchorElement>(".clickable-card-link");
     return anchor === target ? null : anchor;
   }
 
@@ -77,12 +63,7 @@ export function ClickableCard({
   }
 
   return (
-    <motion.li
-      className={["clickable-card", className].filter(Boolean).join(" ")}
-      onClick={handleClick}
-      onAuxClick={handleAuxClick}
-      {...rest}
-    >
+    <motion.li className={["clickable-card", className].filter(Boolean).join(" ")} onClick={handleClick} onAuxClick={handleAuxClick} {...rest}>
       <div className="clickable-card-content">
         <a className="clickable-card-link" aria-label={label} {...link} />
         {children}

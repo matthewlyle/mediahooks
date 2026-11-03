@@ -1,7 +1,4 @@
-import {
-  ClickableCard,
-  type ClickableCardProps,
-} from "../../public/ui/ClickableCard.tsx";
+import { ClickableCard, type ClickableCardProps } from "../../public/ui/ClickableCard.tsx";
 import type { Fixture } from "../fixture.ts";
 
 function ClickableCardDemo({ children, ...props }: ClickableCardProps) {
