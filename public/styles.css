@@ -362,18 +362,6 @@ form.editor {
   flex-direction: column;
   gap: var(--space-14);
 }
-.optional,
-.required {
-  font-size: var(--text-11);
-  font-weight: 400;
-  color: var(--muted);
-}
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-  min-width: 0;
-}
 .preview {
   border-radius: var(--radius-2);
   background: var(--bg);
@@ -418,19 +406,15 @@ form.editor {
     grid-template-columns: 1fr;
   }
 }
-.editor label {
+.editor label.inline {
   font-family: var(--mono);
   display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  font-size: var(--text-12);
-  font-weight: 400;
-  min-width: 0;
-}
-.editor label.inline {
   flex-direction: row;
   align-items: center;
   gap: var(--space-8);
+  font-size: var(--text-12);
+  font-weight: 400;
+  min-width: 0;
 }
 .editor input:not([type="checkbox"]),
 .editor select {

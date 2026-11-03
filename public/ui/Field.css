@@ -1,0 +1,22 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  min-width: 0;
+  --reveal-gap: var(--space-6);
+}
+.field > label {
+  font-family: var(--mono);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  font-size: var(--text-12);
+  font-weight: 400;
+  min-width: 0;
+  line-height: var(--label-line, inherit);
+}
+.field-hint {
+  font-size: var(--text-11);
+  font-weight: 400;
+  color: var(--muted);
+}

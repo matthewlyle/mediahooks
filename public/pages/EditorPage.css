@@ -105,9 +105,6 @@ form.editor {
 .editor .row-destination {
   grid-template-columns: 1fr 2fr;
 }
-.editor .field {
-  --reveal-gap: var(--space-6);
-}
 
 .reveal {
   overflow: hidden;
@@ -193,9 +190,6 @@ form.editor {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     --label-line: 18px;
   }
-  .message-grid > .field > label:first-child {
-    line-height: var(--label-line);
-  }
   .message-grid > .preview {
     margin-top: calc(var(--label-line) + var(--space-6));
   }
@@ -227,6 +221,11 @@ form.editor {
   flex-wrap: wrap;
   column-gap: var(--space-8);
   row-gap: var(--space-2);
+}
+.poster-hint {
+  font-size: var(--text-11);
+  font-weight: 400;
+  color: var(--muted);
 }
 .poster-label {
   white-space: nowrap;
@@ -272,7 +271,7 @@ form.editor {
     display: grid;
     grid-template-columns: auto 1fr;
   }
-  .poster-option .optional {
+  .poster-hint {
     grid-column: 2;
   }
 }
