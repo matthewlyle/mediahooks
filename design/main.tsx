@@ -1,6 +1,7 @@
 import "@fontsource-variable/space-grotesk";
 import "@fontsource/space-mono/400.css";
 import "@fontsource/space-mono/700.css";
+import "../public/ui/tokens.css";
 import "../public/styles.css";
 import "./playground.css";
 import { createRoot } from "react-dom/client";

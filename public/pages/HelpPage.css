@@ -1,19 +1,19 @@
 .help p {
-  margin: 0 0 10px;
+  margin: 0 0 var(--space-10);
 }
 .help-steps {
   margin: 0;
-  padding-left: 20px;
+  padding-left: var(--space-20);
   display: grid;
-  gap: 12px;
+  gap: var(--space-12);
 }
 .help-url {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin: 8px 0 0;
-  padding: 8px 10px;
-  border-radius: 2px;
+  gap: var(--space-8);
+  margin: var(--space-8) 0 0;
+  padding: var(--space-8) var(--space-10);
+  border-radius: var(--radius-2);
   background: var(--inset);
 }
 .help-url code {
@@ -23,12 +23,12 @@
   user-select: all;
 }
 .help .help-warning {
-  margin: 8px 0 0;
-  font-size: 12px;
+  margin: var(--space-8) 0 0;
+  font-size: var(--text-12);
 }
 .help .help-version {
-  margin: 16px 0 0;
-  font-size: 12px;
+  margin: var(--space-16) 0 0;
+  font-size: var(--text-12);
 }
 @media (max-width: 640px) {
   .help-url {
@@ -36,6 +36,6 @@
   }
   .help-url code {
     flex-basis: 100%;
-    margin-bottom: 2px;
+    margin-bottom: var(--space-2);
   }
 }

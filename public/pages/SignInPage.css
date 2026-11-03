@@ -8,24 +8,24 @@
   flex-direction: column;
   align-items: center;
   width: min(360px, 100%);
-  padding: 40px 24px;
+  padding: var(--space-40) var(--space-24);
 }
 button.signin-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--space-8);
   min-width: 200px;
-  padding: 8px 16px;
-  font-size: 13px;
+  padding: var(--space-8) var(--space-16);
+  font-size: var(--text-13);
 }
 .signin-btn .spinner {
-  border-color: #041016;
+  border-color: var(--on-accent);
   border-top-color: transparent;
 }
 .signin-note {
-  margin: 12px 0 0;
-  font-size: 13px;
+  margin: var(--space-12) 0 0;
+  font-size: var(--text-13);
   color: var(--muted);
   text-align: center;
 }
