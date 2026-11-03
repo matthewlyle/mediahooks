@@ -8,6 +8,7 @@ export function Reveal({ children }: { children: ReactNode }) {
   const reduce = useReducedMotion();
   const inner = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number | null>(null);
+  const [settled, setSettled] = useState(false);
 
   useLayoutEffect(() => {
     const el = inner.current!;
@@ -18,7 +19,9 @@ export function Reveal({ children }: { children: ReactNode }) {
 
   return (
     <motion.div
-      className="reveal"
+      className={settled ? "reveal settled" : "reveal"}
+      onAnimationStart={() => setSettled(false)}
+      onAnimationComplete={() => setSettled(true)}
       initial={{ height: 0, opacity: 0 }}
       animate={{ height: height ?? "auto", opacity: 1 }}
       exit={{

@@ -8,6 +8,9 @@
   display: inline-block;
   white-space: pre;
 }
+.sentence-token .sentence-word {
+  line-height: normal;
+}
 .sentence-token {
   padding: 1px 3px;
   border-radius: 2px;
@@ -42,7 +45,8 @@
   color: var(--fg);
 }
 .sentence-token:focus-visible {
-  box-shadow: var(--glow);
+  outline: var(--focus-ring);
+  outline-offset: 2px;
 }
 .sentence-token[aria-invalid="true"] {
   color: var(--error);

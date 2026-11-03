@@ -40,10 +40,6 @@
   cursor: pointer;
   transition: box-shadow 150ms ease;
 }
-.template-picker:focus-visible {
-  outline: none;
-  box-shadow: var(--glow);
-}
 @media (hover: hover) and (pointer: fine) {
   .template-picker:hover {
     box-shadow: var(--glow);
@@ -119,9 +115,18 @@ form.editor {
   overflow: hidden;
   margin-top: calc(-1 * var(--reveal-gap, 14px));
 }
+.reveal.settled {
+  overflow: visible;
+}
 .reveal-inner {
   display: flow-root; /* children's margins count in the measured height */
   padding-top: var(--reveal-gap, 14px);
+}
+.reveal-region {
+  margin-top: calc(-1 * var(--reveal-gap, 14px));
+}
+.reveal-region > .reveal {
+  margin-top: 0;
 }
 
 .field-error {
@@ -266,8 +271,8 @@ form.editor {
 .send-test > span {
   grid-area: 1 / 1;
 }
-.send-test-label[aria-hidden="true"] {
-  visibility: hidden;
+.send-test[aria-busy="true"] .send-test-label {
+  opacity: 0;
 }
 
 @media (max-width: 640px) {
