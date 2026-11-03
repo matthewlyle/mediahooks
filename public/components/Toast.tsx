@@ -66,12 +66,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             <motion.div
               key={t.id}
               className="toast"
-              role={t.sticky ? "alert" : undefined}
+              aria-live={t.sticky ? "off" : undefined}
               initial={reduce ? { opacity: 0 } : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0, transition: { duration: 0.2, ease: EASE.outQuint } }}
               exit={reduce ? { opacity: 0, transition: { duration: 0.15, ease: EASE.css } } : { opacity: 0, y: 8, transition: { duration: 0.15, ease: EASE.outQuint } }}
             >
-              <span className="toast-text">{t.text}</span>
+              <span className="toast-text" role={t.sticky ? "alert" : undefined}>{t.text}</span>
               {t.sticky && (
                 <Button className="toast-dismiss" aria-label={`Dismiss: ${t.text}`} onClick={() => close(t.id)}>
                   Dismiss

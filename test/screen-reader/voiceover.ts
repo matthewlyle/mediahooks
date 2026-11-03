@@ -28,4 +28,5 @@ export async function expectAnnounced(page: Page, voiceOver: VoiceOver, action: 
       { timeout: 15_000 },
     )
     .toContainEqual(expect.stringContaining(message));
+  expect(await voiceOver.spokenPhraseLog()).not.toContainEqual(expect.stringContaining("Dismiss"));
 }
