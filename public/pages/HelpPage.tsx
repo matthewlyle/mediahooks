@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/Button.tsx";
-import { CopyButton } from "../components/CopyButton.tsx";
+import { CopyButton } from "../ui/CopyButton.tsx";
 import { PlexConnection } from "../components/PlexStatus.tsx";
 import { useToast } from "../components/Toast.tsx";
 import { api } from "../lib/api.ts";
