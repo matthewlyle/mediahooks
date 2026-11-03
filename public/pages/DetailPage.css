@@ -167,7 +167,7 @@
 .d-time {
   white-space: nowrap;
 }
-.deliveries-list > .empty-state {
+.deliveries-empty {
   grid-column: 1 / -1;
 }
 

@@ -229,7 +229,7 @@ function Deliveries({ log, failed, updatedAt, refresh }: DeliveriesState) {
           {log ? (
             <ul className="deliveries-list">
               {/* Outside AnimatePresence: it must leave in the same render the first row arrives. */}
-              {log.items.length === 0 && <EmptyState as="li" size="small">No deliveries yet</EmptyState>}
+              {log.items.length === 0 && <EmptyState as="li" size="small" className="deliveries-empty">No deliveries yet</EmptyState>}
               <AnimatePresence initial={false}>
                 {log.items.map((d) => (
                   <DeliveryRow key={d.id} d={d} fresh={log.fresh.has(d.id)} />
