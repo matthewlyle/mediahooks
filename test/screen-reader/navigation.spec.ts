@@ -22,7 +22,7 @@ async function expectHeadingAnnounced(page: Page, voiceOver: VoiceOverPlaywright
 test("opening a webhook announces the detail heading", async ({ page, request, voiceOver }) => {
   await createWebhook(request, "Living room alerts");
   await page.goto("/");
-  const row = page.locator(".card-main").first();
+  const row = page.locator(".clickable-card-link").first();
   await expect(row).toBeVisible();
   await voiceOver.navigateToWebContent();
   await row.focus();
