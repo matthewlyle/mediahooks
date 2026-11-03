@@ -93,6 +93,7 @@ export function SignInPage({ onSignedIn }: { onSignedIn: (user: AuthUser) => voi
         <h2 className="sr-only">Sign in</h2>
         <Button
           variant="primary"
+          size="large"
           className="signin-btn"
           onClick={signIn}
           aria-disabled={(waiting && !link) || undefined}
