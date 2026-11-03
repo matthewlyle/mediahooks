@@ -99,26 +99,28 @@ export function SignInPage({ onSignedIn }: { onSignedIn: (user: AuthUser) => voi
           {waiting && !link && <Spinner />}
           {waiting && !link ? "Waiting for Plex…" : "Sign in with Plex"}
         </Button>
-        <AnimatePresence initial={false} mode="wait">
-          {(link || note) && (
-            <motion.p
-              key={link ? "link" : note!.text}
-              className={`signin-note${note?.error ? " error" : ""}`}
-              role="status"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1, transition: { duration: 0.2, ease: EASE.css } }}
-              exit={{ opacity: 0, transition: { duration: 0.12, ease: EASE.css } }}
-            >
-              {link ? (
-                <a href={link} target="_blank" rel="noopener">
-                  Open Plex sign-in
-                </a>
-              ) : (
-                note!.text
-              )}
-            </motion.p>
-          )}
-        </AnimatePresence>
+        <div role="status">
+          {waiting && !link && <span className="sr-only">Waiting for Plex…</span>}
+          <AnimatePresence initial={false} mode="wait">
+            {(link || note) && (
+              <motion.p
+                key={link ? "link" : note!.text}
+                className={`signin-note${note?.error ? " error" : ""}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1, transition: { duration: 0.2, ease: EASE.css } }}
+                exit={{ opacity: 0, transition: { duration: 0.12, ease: EASE.css } }}
+              >
+                {link ? (
+                  <a href={link} target="_blank" rel="noopener">
+                    Open Plex sign-in
+                  </a>
+                ) : (
+                  note!.text
+                )}
+              </motion.p>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </motion.div>
   );
