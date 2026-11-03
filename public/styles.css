@@ -42,12 +42,6 @@ code,
   font-size: var(--text-12);
 }
 
-.label {
-  font-family: var(--mono);
-  font-size: var(--text-12);
-  color: var(--muted);
-}
-
 .button.icon-reveal {
   position: relative;
   overflow: hidden;
@@ -331,15 +325,6 @@ form.editor {
   font-size: var(--text-11);
   color: var(--error);
   overflow-wrap: anywhere;
-}
-.preview-body {
-  margin: 0;
-  padding: var(--space-8) var(--space-10);
-  max-height: 200px;
-  overflow: auto;
-  font-size: var(--text-12);
-  white-space: pre-wrap;
-  word-break: break-word;
 }
 .editor .row {
   display: grid;

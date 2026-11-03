@@ -89,26 +89,6 @@
   margin: 0;
   font-size: var(--text-12);
 }
-.d-detail > p + .label {
-  margin-top: var(--space-10);
-}
-.d-message {
-  margin: var(--space-4) 0 var(--space-10);
-  padding: var(--space-8) var(--space-10);
-  max-height: 240px;
-  overflow: auto;
-  background: var(--bg);
-  border-radius: var(--radius-2);
-  font-size: var(--text-11);
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-.d-message:last-child {
-  margin-bottom: 0;
-}
-.d-message-head {
-  color: var(--muted);
-}
 .d-row .badge {
   justify-self: start;
   max-width: 100%;

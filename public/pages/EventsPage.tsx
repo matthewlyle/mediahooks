@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject } from "react";
 import type { IncomingEvent, RouteStatus } from "../../src/types.ts";
 import { EmptyState } from "../ui/EmptyState.tsx";
+import { CodeBlock } from "../ui/CodeBlock.tsx";
 import { templateVars } from "../../src/template.ts";
 import { Panel } from "../ui/Panel.tsx";
 import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
@@ -179,8 +180,7 @@ function EventDetail({ id, e }: { id: string; e: IncomingEvent }) {
         ) : (
           <p className="muted">No webhooks existed when this arrived.</p>
         )}
-        <span className="label">Payload</span>
-        <pre className="ev-payload mono">{JSON.stringify(e.payload, null, 2)}</pre>
+        <CodeBlock label="Payload">{JSON.stringify(e.payload, null, 2)}</CodeBlock>
       </div>
     </motion.div>
   );

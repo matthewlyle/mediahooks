@@ -45,9 +45,6 @@
     box-shadow: var(--glow);
   }
 }
-.preview-headers {
-  color: var(--muted);
-}
 .editor-title {
   margin: 0;
   font-size: var(--text-15);
