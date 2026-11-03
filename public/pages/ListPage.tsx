@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import type { SendResult } from "../../src/send.ts";
 import type { Delivery, Webhook } from "../../src/types.ts";
 import { burst } from "../components/burst.ts";
@@ -10,7 +10,7 @@ import { Switch } from "../components/Switch.tsx";
 import { useToast } from "../components/Toast.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING, flash, ids, pageTransition } from "../lib/motion.ts";
-import { useNav } from "../lib/nav.ts";
+import { useLinkProps, useNav } from "../lib/nav.ts";
 import { useStore } from "../lib/store.tsx";
 
 type Enter = "stagger" | "pop";
@@ -75,20 +75,14 @@ function Row({ w, last, index, enter }: RowProps) {
     if (highlight.focus) row.current?.querySelector<HTMLElement>(".card-main")?.focus({ preventScroll: true });
   }, [highlight, setHighlight, w.id]);
 
-  const open = () => navigate(`/webhooks/${w.id}`);
+  const link = useLinkProps(`/webhooks/${w.id}`);
 
   function onRowClick(event: MouseEvent<HTMLLIElement>) {
     const target = event.target as Element;
     // Clicks inside the menu portal bubble here through React; only real descendants count.
     if (!event.currentTarget.contains(target) || target.closest(".card-actions")) return;
     if (getSelection()?.toString()) return;
-    open();
-  }
-
-  function onMainKeyDown(event: KeyboardEvent) {
-    if (event.key !== "Enter") return;
-    event.preventDefault();
-    open();
+    link.onClick(event);
   }
 
   async function onToggle(enabled: boolean) {
@@ -190,7 +184,7 @@ function Row({ w, last, index, enter }: RowProps) {
       }}
       onClick={onRowClick}
     >
-      <div className="card-main" role="link" tabIndex={0} onKeyDown={onMainKeyDown}>
+      <a className="card-main" {...link}>
         <div className="card-title">
           <motion.span
             layoutId={ids.name(w.id)}
@@ -211,7 +205,7 @@ function Row({ w, last, index, enter }: RowProps) {
           {w.url}
         </motion.div>
         <SentenceSummary w={w} className="card-summary" />
-      </div>
+      </a>
       <div className="card-actions">
         <span className="card-status">
           <StatusBadge delivery={last} />
@@ -223,7 +217,7 @@ function Row({ w, last, index, enter }: RowProps) {
           items={[
             { label: "Edit", onSelect: () => navigate(`/webhooks/${w.id}/edit`) },
             { label: "Test", onSelect: () => void onSendTest() },
-            { label: "Deliveries", onSelect: open },
+            { label: "Deliveries", onSelect: () => navigate(link.href) },
             { label: "Duplicate", onSelect: () => void onDuplicate() },
             { label: "Delete", onSelect: onDelete, danger: true },
           ]}
