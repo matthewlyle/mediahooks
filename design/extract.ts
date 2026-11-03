@@ -15,6 +15,7 @@ export type Component = {
   name: string;
   file: string;
   doc?: string;
+  group?: string;
   props: Prop[];
   inherits: string[];
 };
@@ -148,6 +149,8 @@ function collectComponents(uiDir: string): Component[] {
       const c: Component = { name: exp.name, file: file.slice(file.indexOf("public/")), props, inherits: [...inherits].filter((l) => l !== "DOM" || inherits.size === 1).sort() };
       const d = doc(target, checker);
       if (d) c.doc = d;
+      const group = target.getJsDocTags(checker).find((t) => t.name === "group");
+      if (group?.text) c.group = ts.displayPartsToString(group.text).trim();
       out.push(c);
     }
   }

@@ -6,12 +6,12 @@ import "./Button.css";
 
 type Variant = "primary" | "danger";
 
-export type ButtonSize = "small" | "chip" | "large" | "avatar";
+export type ButtonSize = "small" | "large";
 
 export type ButtonProps = HTMLMotionProps<"button"> & {
   /** Emphasis: primary fills with the accent color, danger tints the label red. Omit for the default raised button. */
   variant?: Variant;
-  /** Dimensions: small is compact, chip is smaller still with a muted label, large is the sign-in size, avatar is a 28px circle. Omit for the default size. */
+  /** Dimensions: small is compact, large is the sign-in size. Omit for the default size. */
   size?: ButtonSize;
   /** Label or content shown inside the button. */
   children?: ReactNode;

@@ -12,7 +12,10 @@ export type NavLinkProps = {
   active: boolean;
 };
 
-/** A header navigation link whose active state is marked by an indicator that morphs between links. */
+/**
+ * A header navigation link whose active state is marked by an indicator that morphs between links.
+ * @group Navigation
+ */
 export function NavLink({ to, label, active }: NavLinkProps) {
   const link = useLinkProps(to);
   const reduce = useReducedMotion();
