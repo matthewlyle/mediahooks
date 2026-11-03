@@ -173,7 +173,7 @@ function Head({ w, direct }: HeadProps) {
       </div>
       <Toolbar className="detail-actions" {...fadeIn}>
         <StatusBadge delivery={store.lastDelivery[w.id] ?? null} />
-        <Switch checked={w.enabled} onChange={onToggle} label={`${w.enabled ? "Disable" : "Enable"} ${w.name}`} />
+        <Switch checked={w.enabled} onChange={onToggle} aria-label={`${w.enabled ? "Disable" : "Enable"} ${w.name}`} />
         <LinkButton to={`/webhooks/${w.id}/edit?from=detail`}>Edit</LinkButton>
         <Button variant="danger" onClick={onDelete}>
           Delete
