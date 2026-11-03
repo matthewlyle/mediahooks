@@ -511,6 +511,13 @@ button.avatar-btn {
   color: var(--error);
   background: rgba(255, 92, 92, 0.1);
 }
+.result-mark {
+  width: 9px;
+  height: 9px;
+  margin-right: 5px;
+  vertical-align: -1px;
+  overflow: visible;
+}
 
 .test-btn {
   min-width: 52px;
