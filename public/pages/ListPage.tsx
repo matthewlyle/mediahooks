@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import type { SendResult } from "../../src/send.ts";
 import type { Delivery, Webhook } from "../../src/types.ts";
 import { ClickableCard } from "../ui/ClickableCard.tsx";
+import { formatDuration } from "../ui/ResultLine.tsx";
 import { EmptyState } from "../ui/EmptyState.tsx";
 import { burst } from "../components/burst.ts";
 import { Menu } from "../ui/Menu.tsx";
@@ -124,7 +125,7 @@ function Row({ w, last, index, enter }: RowProps) {
       return;
     }
     const { ok, status, durationMs, error } = res.data;
-    toast.show(ok ? `Test to ${w.name}: ${status} · ${durationMs}ms` : `Test to ${w.name} failed: ${status ?? error ?? "error"}`, { sticky: !ok });
+    toast.show(ok ? `Test to ${w.name}: ${status} · ${formatDuration(durationMs)}` : `Test to ${w.name} failed: ${status ?? error ?? "error"}`, { sticky: !ok });
     if (ok) burst(row.current?.querySelector<HTMLElement>(".menu-overflow"));
     else flash(row.current, "error");
   }

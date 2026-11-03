@@ -1,5 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { forwardRef, useEffect, useId, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { ResultLine, resultText } from "../ui/ResultLine.tsx";
 import { EmptyState } from "../ui/EmptyState.tsx";
 import { CodeBlock } from "../ui/CodeBlock.tsx";
 import { matches, type Filters } from "../../src/filters.ts";
@@ -177,12 +178,6 @@ const FIELD_OF: Partial<Record<keyof FormState, Field>> = {
   events: "events",
   bodyTemplate: "bodyTemplate",
 };
-
-function resultLine(r: SendResult): { text: string; full: string } {
-  const detail = r.ok ? `${r.durationMs}ms` : r.error?.replace(/\s+/g, " ").trim() || `${r.durationMs}ms`;
-  const status = r.status ?? "ERR";
-  return { text: `${r.ok ? "✓" : "✗"} ${status} · ${detail}`, full: `${status} · ${detail}` };
-}
 
 function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFormProps) {
   const navigate = useNav();
@@ -387,7 +382,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
     if (res.data.ok) burst(sendButton.current);
   }
 
-  const line = result && resultLine(result);
+  const line = result && resultText(result);
 
   function onAllEvents(on: boolean) {
     set("allEvents", on);
@@ -424,7 +419,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
           </Button>
         </Toolbar>
         <p className="sr-only" role="status">
-          {sending ? (sendingAnnounced ? "Sending test…" : "") : result && line ? `${result.ok ? "Test delivered" : "Test failed"}: ${line.full}` : ""}
+          {sending ? (sendingAnnounced ? "Sending test…" : "") : result && line ? `${result.ok ? "Test delivered" : "Test failed"}: ${line.summary}` : ""}
         </p>
         <AnimatePresence initial={false}>
           {result && line && (
@@ -432,13 +427,13 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
               <AnimatePresence mode="wait" initial={false}>
                 <motion.p
                   key={result.n}
-                  className={`send-result ${result.ok ? "ok" : "fail"}`}
+                  className="send-result"
                   aria-hidden="true"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1, transition: { duration: 0.15, ease: EASE.css } }}
                   exit={{ opacity: 0, transition: { duration: 0.08, ease: EASE.css } }}
                 >
-                  {line.text}
+                  <ResultLine {...result} />
                 </motion.p>
               </AnimatePresence>
             </Reveal>

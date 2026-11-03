@@ -40,15 +40,6 @@
 }
 .send-result {
   margin: 0;
-  font-family: var(--mono);
-  font-size: var(--text-12);
-  overflow-wrap: anywhere;
-}
-.send-result.ok {
-  color: var(--success);
-}
-.send-result.fail {
-  color: var(--error);
 }
 
 form.editor {

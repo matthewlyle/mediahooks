@@ -4,6 +4,7 @@ import type { Delivery, DeliveryDetail, Webhook } from "../../src/types.ts";
 import { EmptyState } from "../ui/EmptyState.tsx";
 import { CodeBlock } from "../ui/CodeBlock.tsx";
 import { Button, LinkButton } from "../ui/Button.tsx";
+import { ResultLine } from "../ui/ResultLine.tsx";
 import { WebhookIdentity } from "../ui/WebhookIdentity.tsx";
 import { Panel } from "../ui/Panel.tsx";
 import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
@@ -11,7 +12,7 @@ import { SectionHeader } from "../ui/SectionHeader.tsx";
 import { RelativeTime } from "../ui/RelativeTime.tsx";
 import { HeightReveal } from "../ui/HeightReveal.tsx";
 import { Table, TableRow } from "../ui/Table.tsx";
-import { StatusBadge, StatusMark } from "../ui/StatusBadge.tsx";
+import { StatusBadge } from "../ui/StatusBadge.tsx";
 import { Switch } from "../ui/Switch.tsx";
 import { Toolbar } from "../ui/Toolbar.tsx";
 import { useToast } from "../ui/Toast.tsx";
@@ -224,8 +225,6 @@ function Deliveries({ log, failed, updatedAt, refresh }: DeliveriesState) {
 function DeliveryRow({ d, fresh }: { d: Delivery; fresh: boolean }) {
   const reduce = useReducedMotion();
   const [open, setOpen] = useState(false);
-  const error = cleanError(d.error);
-  const detail = d.ok || !error ? `${d.durationMs} ms` : error;
   const retries = d.attempts - 1;
 
   return (
@@ -244,9 +243,8 @@ function DeliveryRow({ d, fresh }: { d: Delivery; fresh: boolean }) {
       summary={
         <>
           <span>
-            <StatusMark status={d.ok ? "success" : "failure"} className="status-mark-inline" />
             <span className="sr-only">{d.ok ? "Delivered" : "Failed"}: </span>
-            {d.status ?? "ERR"} · {detail}
+            <ResultLine ok={d.ok} status={d.status} durationMs={d.durationMs} error={d.error} />
           </span>
           <span className="d-what">
             <span className="d-event">{eventWords(d.event)}</span>
