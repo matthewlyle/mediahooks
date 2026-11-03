@@ -7,8 +7,8 @@
     box-shadow 150ms ease;
 }
 .code-editor .cm-editor.cm-focused {
-  outline: none;
-  box-shadow: var(--glow);
+  outline: var(--focus-ring);
+  outline-offset: 2px;
 }
 .code-editor .cm-scroller {
   min-height: 240px;

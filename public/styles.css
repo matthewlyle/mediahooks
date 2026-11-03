@@ -5,6 +5,7 @@
   --inset: #0c0f16;
   --raised: #161b27;
   --glow: inset 0 0 0 1px rgba(34, 211, 238, 0.6), 0 0 12px rgba(34, 211, 238, 0.3);
+  --focus-ring: 2px solid var(--accent);
   --fg: #e3e9f2;
   --muted: #7a8396;
   --accent: #22d3ee;
@@ -119,8 +120,8 @@ a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: none;
-  box-shadow: var(--glow);
+  outline: var(--focus-ring);
+  outline-offset: 2px;
 }
 @media (hover: hover) and (pointer: fine) {
   button:not(:disabled):hover,
@@ -418,7 +419,7 @@ button.avatar-btn {
   border-radius: 2px;
 }
 .card-main:focus-visible {
-  outline: 1px solid var(--accent);
+  outline: var(--focus-ring);
   outline-offset: 4px;
 }
 .card.disabled .card-main,

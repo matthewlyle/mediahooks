@@ -60,9 +60,6 @@
     scale: none;
   }
 }
-.ev-row .ev-summary:focus-visible {
-  box-shadow: var(--glow);
-}
 
 .ev-time,
 .ev-user,

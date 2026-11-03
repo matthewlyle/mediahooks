@@ -107,9 +107,6 @@
     scale: none;
   }
 }
-.d-row .d-summary:focus-visible {
-  box-shadow: var(--glow);
-}
 .d-detail-clip {
   grid-column: 1 / -1;
   min-width: 0;
