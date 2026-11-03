@@ -6,7 +6,7 @@ import { PausedBadge } from "../ui/PausedBadge.tsx";
 import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
 import { RelativeTime } from "../ui/RelativeTime.tsx";
 import { SentenceSummary } from "../components/SentenceSummary.tsx";
-import { StatusBadge } from "../components/StatusBadge.tsx";
+import { StatusBadge, StatusMark } from "../ui/StatusBadge.tsx";
 import { Switch } from "../ui/Switch.tsx";
 import { useToast } from "../ui/Toast.tsx";
 import { api } from "../lib/api.ts";
@@ -273,7 +273,8 @@ function DeliveryRow({ d, fresh }: { d: Delivery; fresh: boolean }) {
         aria-controls={open ? detailId : undefined}
         onClick={() => setOpen((o) => !o)}
       >
-        <span className={`result ${d.ok ? "ok" : "fail"}`}>
+        <span>
+          <StatusMark status={d.ok ? "success" : "failure"} className="status-mark-inline" />
           <span className="sr-only">{d.ok ? "Delivered" : "Failed"}: </span>
           {d.status ?? "ERR"} · {detail}
         </span>

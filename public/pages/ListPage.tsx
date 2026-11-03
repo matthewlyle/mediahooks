@@ -6,7 +6,7 @@ import { burst } from "../components/burst.ts";
 import { Menu } from "../ui/Menu.tsx";
 import { PausedBadge } from "../ui/PausedBadge.tsx";
 import { SentenceSummary } from "../components/SentenceSummary.tsx";
-import { StatusBadge } from "../components/StatusBadge.tsx";
+import { StatusBadge } from "../ui/StatusBadge.tsx";
 import { Switch } from "../ui/Switch.tsx";
 import { useToast } from "../ui/Toast.tsx";
 import { api } from "../lib/api.ts";

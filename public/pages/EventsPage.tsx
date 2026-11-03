@@ -8,6 +8,7 @@ import { api } from "../lib/api.ts";
 import { EASE, SPRING, flash, pageTransition } from "../lib/motion.ts";
 import { useEscape, useNav, useRouteHeading } from "../lib/nav.ts";
 import { useRefetchOnReturn } from "../lib/refetch.ts";
+import { StatusMark } from "../ui/StatusBadge.tsx";
 import "./EventsPage.css";
 
 const HEIGHT_IN = { duration: 0.3, ease: [0.25, 1, 0.5, 1] } as const;
@@ -165,9 +166,9 @@ function EventDetail({ id, e }: { id: string; e: IncomingEvent }) {
         {e.routing.length ? (
           <ul className="ev-routing">
             {e.routing.map((r) => (
-              <li key={r.webhookId} className={MARKS[r.status].className}>
-                <span className="mark" aria-hidden="true">
-                  {MARKS[r.status].mark}
+              <li key={r.webhookId}>
+                <span className="mark">
+                  <StatusMark status={MARKS[r.status]} />
                 </span>
                 <strong>{r.name}</strong>
                 {r.reason === null ? " sent" : `: ${r.reason}`}
@@ -186,12 +187,7 @@ function EventDetail({ id, e }: { id: string; e: IncomingEvent }) {
 
 const text = (v: unknown): string => (v === undefined || v === null ? "" : String(v));
 
-const MARKS: Record<RouteStatus, { mark: string; className: string }> = {
-  sent: { mark: "✓", className: "ok" },
-  grouped: { mark: "✓", className: "ok" },
-  held: { mark: "◷", className: "pending" },
-  skipped: { mark: "✗", className: "skipped" },
-};
+const MARKS = { sent: "success", grouped: "success", held: "pending", skipped: "failure" } as const satisfies Record<RouteStatus, string>;
 
 function useHeight<T extends HTMLElement>(): [RefObject<T | null>, number | null] {
   const ref = useRef<T>(null);

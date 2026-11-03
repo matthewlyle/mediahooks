@@ -115,15 +115,6 @@
   display: inline-block;
   width: 16px;
 }
-.ev-routing .ok .mark {
-  color: var(--success);
-}
-.ev-routing .skipped .mark {
-  color: var(--error);
-}
-.ev-routing .pending .mark {
-  color: var(--accent);
-}
 .ev-routing strong {
   color: var(--fg);
   font-weight: 600;
