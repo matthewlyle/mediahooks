@@ -444,7 +444,7 @@ button.avatar-btn {
 }
 .card-name {
   font-weight: 600;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 .card-url {
   font-family: var(--mono);
