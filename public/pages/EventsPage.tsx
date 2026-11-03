@@ -118,16 +118,22 @@ function EventRow({ e, fresh }: { e: IncomingEvent; fresh: boolean }) {
         aria-controls={open ? detailId : undefined}
         onClick={() => setOpen((o) => !o)}
       >
+        <span className="sr-only">Time: </span>
         <span className="ev-time">
           <RelativeTime ms={e.receivedAt} />
         </span>
+        <span className="sr-only">Event: </span>
         <code className="ev-event">{e.event}</code>
+        {vars.user ? <span className="sr-only">User: </span> : null}
         <span className="ev-user">{text(vars.user)}</span>
+        {vars.display_title ? <span className="sr-only">Title: </span> : null}
         <span className="ev-title">
           {e.thumbKey && <img className="ev-poster" src={`/thumbs/${e.thumbKey}`} alt="" loading="lazy" />}
           <span className="ev-title-text">{text(vars.display_title)}</span>
         </span>
+        {vars.library ? <span className="sr-only">Library: </span> : null}
         <span className="ev-library">{text(vars.library)}</span>
+        <span className="sr-only">Sent to: </span>
         <span className={sent.length ? "ev-sent" : "ev-sent muted"}>
           {sent.length ? sent.join(", ") : held ? "Waiting to group" : "None"}
         </span>

@@ -182,11 +182,11 @@
     order: 5;
     color: var(--muted);
   }
-  .ev-user:not(:empty) + .ev-title + .ev-library:not(:empty) {
+  .ev-user:not(:empty) ~ .ev-library:not(:empty) {
     margin-left: -6px;
   }
-  .ev-user:not(:empty) + .ev-title + .ev-library:not(:empty)::before {
-    content: "· ";
+  .ev-user:not(:empty) ~ .ev-library:not(:empty)::before {
+    content: "· " / "";
   }
   .ev-user:empty,
   .ev-library:empty,
@@ -198,7 +198,7 @@
     flex-basis: 100%;
   }
   .ev-sent::before {
-    content: "Sent to ";
+    content: "Sent to " / "";
     color: var(--muted);
   }
 }
