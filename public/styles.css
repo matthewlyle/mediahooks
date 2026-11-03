@@ -87,7 +87,6 @@ textarea:focus-visible {
 
 /* Individual scale/translate properties so hovers stack with Motion's inline transform. */
 .card-url,
-.nav-link,
 .editor label.inline {
   transition:
     color 150ms ease,
@@ -104,7 +103,6 @@ textarea:focus-visible {
   .card:hover .card-url {
     opacity: 1;
   }
-  .nav-link:not([aria-current="page"]):hover,
   .editor label.inline:hover {
     color: var(--accent-hover);
   }
@@ -190,44 +188,6 @@ button.avatar-btn {
 .nav {
   display: flex;
   gap: var(--space-2);
-}
-.nav-link {
-  position: relative;
-  padding: var(--space-4) var(--space-10);
-  border-radius: var(--radius-2);
-  font-family: var(--mono);
-  font-size: var(--text-12);
-  color: var(--muted);
-  text-decoration: none;
-}
-.nav-link[aria-current="page"] {
-  color: var(--accent);
-  font-weight: 600;
-}
-.nav-indicator {
-  position: absolute;
-  inset: 0;
-  background: var(--accent-dim);
-}
-.nav-label {
-  position: relative;
-  display: inline-grid;
-}
-.nav-label::after {
-  content: attr(data-label);
-  grid-area: 1 / 1;
-  height: 0;
-  overflow: hidden;
-  font-weight: 600;
-  visibility: hidden;
-}
-.nav-label > span {
-  grid-area: 1 / 1;
-}
-@media (hover: hover) and (pointer: fine) {
-  .nav-link:not([aria-current="page"]):hover {
-    color: var(--accent-hover);
-  }
 }
 
 .ingest-btn {
@@ -759,12 +719,6 @@ form.editor {
   }
   .menu button {
     min-height: 44px;
-  }
-  .nav-link {
-    display: inline-flex;
-    align-items: center;
-    min-height: 40px;
-    padding: 0 var(--space-12);
   }
   .more-btn {
     min-width: 40px;
