@@ -11,6 +11,7 @@ export { expect };
 const START_ATTEMPTS = 4;
 
 async function startVoiceOver(voiceOver: VoiceOver, options: Parameters<VoiceOver["start"]>[0]) {
+  await voiceOver.stop().catch(() => {});
   for (let attempt = 1; ; attempt++) {
     try {
       await voiceOver.start(options);
