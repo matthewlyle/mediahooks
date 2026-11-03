@@ -2,13 +2,6 @@ name: axe
 
 on:
   pull_request:
-    paths:
-      - "public/**"
-      - "src/app.ts"
-      - "test/axe/**"
-      - "package.json"
-      - "bun.lock"
-      - ".github/workflows/axe.yml"
   workflow_dispatch:
     inputs:
       ref:
@@ -26,9 +19,22 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref }}
-      - uses: oven-sh/setup-bun@v2
+          fetch-depth: 2
+      # axe is a required check: skip steps here, never filter the trigger with paths:
+      - id: changes
+        run: |
+          if [ "$GITHUB_EVENT_NAME" != pull_request ] ||
+            git diff --name-only HEAD^1 HEAD |
+              grep -qE '^(public/|src/app\.ts$|test/axe/|package\.json$|bun\.lock$|\.github/workflows/axe\.yml$)'; then
+            echo ui=true >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.changes.outputs.ui
+        uses: oven-sh/setup-bun@v2
         with:
           bun-version: "1.4"
-      - run: bun install --frozen-lockfile
-      - run: bun x playwright install --with-deps chromium
-      - run: bun x playwright test -c test/axe
+      - if: steps.changes.outputs.ui
+        run: bun install --frozen-lockfile
+      - if: steps.changes.outputs.ui
+        run: bun x playwright install --with-deps chromium
+      - if: steps.changes.outputs.ui
+        run: bun x playwright test -c test/axe

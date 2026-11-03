@@ -25,10 +25,11 @@ VoiceOver, so leave them to CI. `bun test` skips them (`bunfig.toml` roots it at
 a "VoiceOver announces…" criterion adds a scenario there.
 
 Axe tests: `test/axe/axe.spec.ts` scans every route and key states with `@axe-core/playwright` in
-Chromium (WCAG 2.2 A/AA tags, reduced motion, after animations finish). They run in the `axe`
-workflow on pull requests touching `public/**`, `src/app.ts`, `test/axe/**` or dependencies, by hand
-with `gh workflow run axe.yml -f ref=<branch>`, or locally with `bun x playwright test -c test/axe`.
-A new route or state adds a scan there.
+Chromium (WCAG 2.2 A/AA tags, reduced motion, after animations finish). The `axe` workflow runs on
+every PR but only scans when `public/**`, `src/app.ts`, `test/axe/**` or dependencies change; `axe`
+is a required check, so filter inside the job, never with `paths:`. Run it by hand with
+`gh workflow run axe.yml -f ref=<branch>`, or locally with `bun x playwright test -c test/axe`. A
+new route or state adds a scan there.
 
 Commit messages use Conventional Commits (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`,
 `ci:`; `!` for breaking). release-please turns `feat`/`fix` commits into a release PR; merging it
