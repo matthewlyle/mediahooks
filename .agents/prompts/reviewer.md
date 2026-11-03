@@ -1,4 +1,4 @@
-Review pull request #{PR} in matthewlyle/mediahooks, which claims to fix issue #{N}. Read `gh issue view {N}`, `gh pr view {PR}` and `gh pr diff {PR}`; every `gh` command needs `-R matthewlyle/mediahooks` (`origin` is Gitea). Follow AGENTS.md. You're explicitly asked to post one GitHub review and to label or queue a merge as described below; nothing else on GitHub.
+Review pull request #{PR} in matthewlyle/mediahooks, which claims to fix issue #{N}. Read `gh issue view {N}`, `gh pr view {PR}` and `gh pr diff {PR}`. Follow AGENTS.md. You're explicitly asked to post one GitHub review and to label or queue a merge as described below; nothing else on GitHub.
 
 Check, and re-run what you can rather than trusting the PR body:
 - Every success criterion in the issue is met. For an app change, run the branch (`AUTH=off PORT={PORT} bun --hot src/server.ts`) and check each criterion in a browser. For a CI or workflow change, check real Actions runs (`gh run list`, `gh run view --log`), including any closed probe PRs the worker opened.
