@@ -5,13 +5,14 @@ import type { Delivery, Webhook } from "../../src/types.ts";
 import { burst } from "../components/burst.ts";
 import { Menu } from "../ui/Menu.tsx";
 import { PausedBadge } from "../components/PausedBadge.tsx";
-import { SentenceSummary } from "../components/SentenceSummary.tsx";
+import { Sentence } from "../ui/Sentence.tsx";
 import { StatusBadge } from "../components/StatusBadge.tsx";
 import { Switch } from "../ui/Switch.tsx";
 import { useToast } from "../ui/Toast.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING, flash, ids, pageTransition } from "../lib/motion.ts";
 import { useLinkProps, useNav, useRouteHeading } from "../lib/nav.ts";
+import { webhookParts } from "../lib/sentence.ts";
 import { useStore } from "../lib/store.tsx";
 
 type Enter = "stagger" | "pop";
@@ -230,7 +231,7 @@ function Row({ w, last, index, enter }: RowProps) {
         >
           {w.url}
         </motion.div>
-        <SentenceSummary w={w} className="card-summary" />
+        <Sentence parts={webhookParts(w)} className="card-summary" />
       </div>
       <div className="card-actions">
         <StatusBadge delivery={last} />
