@@ -114,8 +114,7 @@ textarea:focus-visible {
   }
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .menu button:not(:disabled):hover,
-  .switch:not(:disabled):hover {
+  .menu button:not(:disabled):hover {
     scale: none;
   }
   .more-btn:not(:disabled):hover .dot:first-child {
@@ -138,8 +137,7 @@ textarea:focus-visible {
   .test-btn::before,
   .more-btn::before,
   .toast-undo::before,
-  .toast-dismiss::before,
-  .switch::before {
+  .toast-dismiss::before {
     content: "";
     position: absolute;
     inset: -9px;
@@ -602,49 +600,6 @@ button.avatar-btn {
   }
 }
 
-.switch {
-  width: 40px;
-  height: 22px;
-  padding: 0;
-  border-radius: var(--radius-3);
-  position: relative;
-  background: var(--raised);
-  border-color: var(--border-strong);
-  transition:
-    background-color 150ms ease,
-    border-color 150ms ease,
-    box-shadow 150ms ease;
-}
-.switch[aria-checked="true"] {
-  background: var(--accent);
-  border-color: var(--accent);
-  box-shadow: 0 0 10px var(--accent-45);
-}
-@media (hover: hover) and (pointer: fine) {
-  .switch:not(:disabled):hover {
-    background: var(--border-strong);
-    box-shadow: none;
-  }
-  .switch[aria-checked="true"]:not(:disabled):hover {
-    background: var(--accent-hover);
-    border-color: var(--accent-hover);
-    box-shadow: 0 0 14px var(--accent-55);
-  }
-}
-.knob {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 16px;
-  height: 16px;
-  border-radius: var(--radius-2);
-  background: var(--fg);
-  transition: background-color 150ms ease;
-}
-.switch[aria-checked="true"] .knob {
-  background: var(--on-accent);
-}
-
 .empty {
   color: var(--muted);
   text-align: center;
@@ -934,10 +889,5 @@ form.editor {
   .more-btn {
     min-width: 40px;
     justify-content: center;
-  }
-  .switch::after {
-    content: "";
-    position: absolute;
-    inset: -9px -4px;
   }
 }
