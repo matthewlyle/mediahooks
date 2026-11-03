@@ -4,6 +4,7 @@ import { Button, LinkButton } from "../public/ui/Button.tsx";
 import { Check } from "../public/ui/Check.tsx";
 import { CopyButton } from "../public/ui/CopyButton.tsx";
 import { FieldError } from "../public/ui/FieldError.tsx";
+import { Menu } from "../public/ui/Menu.tsx";
 import { NavLink } from "../public/ui/NavLink.tsx";
 import { Popover, type PopoverProps } from "../public/ui/Popover.tsx";
 import { Segmented } from "../public/ui/Segmented.tsx";
@@ -32,6 +33,19 @@ export const fixtures: Record<string, Fixture> = {
   Button: { component: Button, props: { children: "Save" } },
   LinkButton: { component: LinkButton, props: { to: "/", children: "Back" } },
   NavLink: { component: NavLink, props: { to: "/", label: "Webhooks", active: true } },
+  Menu: {
+    component: Menu,
+    props: {
+      label: "Actions",
+      children: "Actions",
+      heading: "Webhook",
+      items: [
+        { label: "Edit", onSelect: () => {} },
+        { label: "Duplicate", onSelect: () => {}, disabled: true },
+        { label: "Delete", onSelect: () => {}, danger: true },
+      ],
+    },
+  },
   CopyButton: { component: CopyButton, props: { text: "Copied text" } },
   Check: { component: Check, props: { checked: true, children: "Option" } },
   FieldError: { component: FieldError, props: { id: "field-error", error: "Enter a name" } },
