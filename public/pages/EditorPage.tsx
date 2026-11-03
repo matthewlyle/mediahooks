@@ -1,5 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useId, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { EmptyState } from "../ui/EmptyState.tsx";
 import { matches, type Filters } from "../../src/filters.ts";
 import type { SendResult } from "../../src/send.ts";
 import type { IncomingEvent, PlexPayload, Webhook } from "../../src/types.ts";
@@ -140,10 +141,9 @@ export function EditorPage({ id, back: closeTo }: { id: number | null; back?: st
 
 function Missing({ text }: { text: string }) {
   return (
-    <div className="editor-missing">
-      <p className="muted">{text}</p>
-      <LinkButton to="/">Back to webhooks</LinkButton>
-    </div>
+    <EmptyState as="div" action={<LinkButton to="/">Back to webhooks</LinkButton>}>
+      {text}
+    </EmptyState>
   );
 }
 

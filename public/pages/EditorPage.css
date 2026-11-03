@@ -81,16 +81,6 @@
   color: var(--error);
 }
 
-.editor-missing {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-8);
-}
-.editor-missing p {
-  margin: 0;
-}
-
 form.editor {
   container: editor / inline-size;
   gap: var(--space-28);
