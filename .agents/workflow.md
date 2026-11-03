@@ -12,8 +12,8 @@ about this repo. The process lives there; only what's specific to mediahooks liv
 
 - Each agent gets a port: `88` + the issue number zero-padded to two digits for the worker
   (issue 4 → 8804), `89` + it for the reviewer. From 100 up, `9` + the three-digit number for
-  the worker (135 → 9135) and `19` + it for the reviewer (135 → 19135). Never 8787 (production),
-  8788 (dev) or the check ports 8837–8840.
+  the worker (135 → 9135) and `19` + it for the reviewer (135 → 19135). Never 8787 (production)
+  or 8788 (dev).
 - Worker task: `Issue <n>, port <port>.` Reviewer task: `PR <pr>, issue <n>, port <port>.`
 - Worktree setup: `bun install`.
 - Lite fits a one-line CSS or copy fix, not a long browser session.
