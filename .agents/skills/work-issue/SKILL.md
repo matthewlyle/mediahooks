@@ -17,11 +17,17 @@ Don't use the older `herdr` CLI; its agents don't appear in the app.
 ```sh
 git -C ~/src/mediahooks fetch git@github.com:matthewlyle/mediahooks.git +main:refs/remotes/github/main
 git -C ~/src/mediahooks worktree add ~/.herdr/worktrees/mediahooks/issue-<n>-<slug> -b issue-<n>-<slug> refs/remotes/github/main
-hc run --bg --name issue-<n> --cwd ~/.herdr/worktrees/mediahooks/issue-<n>-<slug> omp --model <model> "<prompt below>"
-hc label issue-<n> issue=<n> title="<short title>"
+hc run --bg --name <n>-<slug> --cwd ~/.herdr/worktrees/mediahooks/issue-<n>-<slug> omp --model <model> "<prompt below>"
 ```
 
-Check `first_message.sent` in the launch output; if false, `hc read issue-<n>` before sending
+The name is what the Herdr sidebar shows: `<n>-<what it fixes>`, up to 32 of `a-z 0-9 - _`
+(`9-wrap-truncated-text`, not `issue-9`). Reviewers: `<n>-review`.
+
+```sh
+hc label <n>-<slug> issue=<n>
+```
+
+Check `first_message.sent` in the launch output; if false, `hc read <name>` before sending
 anything. Collect results with `hc wait --children any`; reports arrive as `<hc from=…>` messages.
 Answer an agent's question with `hc read` then `hc keys` / `hc send`.
 
@@ -63,7 +69,7 @@ When a worker reports its PR, start a reviewer (a different agent from the worke
 worktree:
 
 ```sh
-hc run --bg --name review-<n> --cwd <worktree> omp --model claude-opus-5-5 --thinking low "<reviewer prompt below>"
+hc run --bg --name <n>-review --cwd <worktree> omp --model claude-opus-5-5 --thinking low "<reviewer prompt below>"
 ```
 
 Reviewer prompt, fill `{N}` (issue), `{PR}` and `{LEAD}`:
@@ -101,32 +107,45 @@ Fixes #N
 <One or two sentences: what changed, in user terms.>
 
 **Review:** <what to look at or decide, one line; "nothing visible changed" if so>
+
 **Try it:** <one line>
 
 <before/after screenshot table, if visible>
 
 **Checked:** <criterion 1> ✓ · <criterion 2> ✓ · tests ✓ · typecheck ✓
+
 **Not checked:** <one line, or omit>
 ```
 
-Review comment, merge (at most 3 lines):
+Review comments: one bold label per paragraph, a blank line between paragraphs, and a blank
+line before and after any list (otherwise GitHub folds the next line into the last bullet).
+
+Merge:
 
 ```markdown
-Agent review: merge
-Checked: <criteria> ✓ · diff in scope ✓ · tests ✓ · CI ✓
+**Agent review: merge**
+
+**Checked:** <criteria> ✓ · diff in scope ✓ · tests ✓ · CI ✓
 ```
 
-Review comment, needs a person (at most about 60 words):
+Needs a person (at most about 60 words):
 
 ```markdown
-Agent review: needs a person
-Decide: <the one question for the owner; add one bullet per extra question, max 3>
-Fix first: <bugs found, one bullet each, with numbers; omit if none>
-Checked: <criteria> ✓ · tests ✓ · CI ✓
+**Agent review: needs a person**
+
+**Decide:** <the one question for the owner>
+
+**Fix first:**
+
+- <bug, with numbers>
+
+**Checked:** <criteria> ✓ · tests ✓ · CI ✓
 ```
+
+Omit **Fix first** when there's nothing to fix. More than one question: make **Decide** a list.
 
 Releases stay manual: merging to `main` only adds a line to the release-please PR, and the user
-merges that. After a PR merges, end its agents (`hc kill issue-<n> review-<n>`) and remove its
+merges that. After a PR merges, end its agents (`hc kill <n>-<slug> <n>-review`) and remove its
 worktree (`git -C ~/src/mediahooks worktree remove <path>`, then delete the local branch).
 
 ## Coordinator checklist
