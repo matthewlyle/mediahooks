@@ -149,7 +149,7 @@
 .d-message-head {
   color: var(--muted);
 }
-.d-row .result {
+.d-row .badge {
   justify-self: start;
   max-width: 100%;
   overflow-wrap: anywhere;
@@ -184,7 +184,7 @@
   .detail-actions {
     flex-wrap: wrap;
   }
-  .detail-actions .result {
+  .detail-actions .badge {
     margin-right: auto;
   }
 

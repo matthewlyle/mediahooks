@@ -1,0 +1,32 @@
+.badge {
+  font-family: var(--mono);
+  font-size: var(--text-11);
+  font-weight: 600;
+  border-radius: var(--radius-2);
+}
+.badge-neutral {
+  flex-shrink: 0;
+  padding: 0 var(--space-6);
+  color: var(--fg);
+  background: var(--muted-18);
+}
+.badge-success,
+.badge-error {
+  display: inline-block;
+  padding: var(--space-2) var(--space-8);
+}
+.badge-success {
+  color: var(--success);
+  background: var(--success-10);
+}
+.badge-error {
+  color: var(--error);
+  background: var(--error-10);
+}
+.result-mark {
+  width: 9px;
+  height: 9px;
+  margin-right: var(--space-5);
+  vertical-align: -1px;
+  overflow: visible;
+}
