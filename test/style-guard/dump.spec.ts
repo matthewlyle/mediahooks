@@ -237,7 +237,7 @@ const STATES: State[] = [
 ];
 
 test("dump computed styles", async ({ browser }) => {
-  test.setTimeout(600_000);
+  test.setTimeout(120_000);
   const out: Record<string, Dump> = {};
   for (const [profile, opts] of Object.entries(PROFILES)) {
     for (const [name, setup] of STATES) {
