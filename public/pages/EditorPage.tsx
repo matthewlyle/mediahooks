@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useId, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { EmptyState } from "../ui/EmptyState.tsx";
+import { CodeBlock } from "../ui/CodeBlock.tsx";
 import { matches, type Filters } from "../../src/filters.ts";
 import type { SendResult } from "../../src/send.ts";
 import type { IncomingEvent, PlexPayload, Webhook } from "../../src/types.ts";
@@ -690,10 +691,9 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
                   ) : richShown === "slack" && slack ? (
                     <SlackPreview message={slack} />
                   ) : (
-                    <pre className="preview-body mono">
-                      {preview.headers && <span className="preview-headers">{`${preview.headers}\n\n`}</span>}
+                    <CodeBlock inset={false} className="preview-body" head={preview.headers ? `${preview.headers}\n\n` : undefined}>
                       {preview.text}
-                    </pre>
+                    </CodeBlock>
                   )}
                 </motion.div>
               </AnimatePresence>

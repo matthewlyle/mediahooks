@@ -122,17 +122,6 @@
   color: var(--fg);
   font-weight: 600;
 }
-.ev-payload {
-  margin: var(--space-4) 0 0;
-  padding: var(--space-8) var(--space-10);
-  max-height: 240px;
-  overflow: auto;
-  background: var(--bg);
-  border-radius: var(--radius-2);
-  font-size: var(--text-11);
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
 
 @media (max-width: 640px) {
   .ev-cols {

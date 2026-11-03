@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useIsPresent, useReducedMotion } from "motion/
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import type { Delivery, DeliveryDetail, Webhook } from "../../src/types.ts";
 import { EmptyState } from "../ui/EmptyState.tsx";
+import { CodeBlock, CodeLabel } from "../ui/CodeBlock.tsx";
 import { Button, LinkButton } from "../ui/Button.tsx";
 import { PausedBadge } from "../ui/PausedBadge.tsx";
 import { Panel } from "../ui/Panel.tsx";
@@ -327,21 +328,20 @@ function DeliveryExchange({ id, d }: { id: string; d: Delivery }) {
           <p className="muted">{detail.error ?? "Not recorded"}</p>
         ) : (
           <>
-            <span className="label">Request</span>
-            <pre className="d-message mono">
-              <span className="d-message-head">{`POST ${detail.request.url}\n${headerLines(detail.request.headers)}\n\n`}</span>
+            <CodeBlock label="Request" head={`POST ${detail.request.url}\n${headerLines(detail.request.headers)}\n\n`}>
               {detail.request.body}
               {detail.request.truncated && <span className="muted">{"\n… cut at 8 KB"}</span>}
-            </pre>
-            <span className="label">Response</span>
+            </CodeBlock>
             {detail.response === null ? (
-              <p className="muted">No response: {detail.error}</p>
+              <>
+                <CodeLabel>Response</CodeLabel>
+                <p className="muted">No response: {detail.error}</p>
+              </>
             ) : (
-              <pre className="d-message mono">
-                <span className="d-message-head">{`HTTP ${detail.status}\n${headerLines(detail.response.headers)}\n\n`}</span>
+              <CodeBlock label="Response" head={`HTTP ${detail.status}\n${headerLines(detail.response.headers)}\n\n`}>
                 {detail.response.body}
                 {detail.response.truncated && <span className="muted">{"\n… cut at 8 KB"}</span>}
-              </pre>
+              </CodeBlock>
             )}
           </>
         )}
