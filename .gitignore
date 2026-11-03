@@ -5,3 +5,4 @@ test-results/
 .env.*
 !.env.example
 AGENTS.local.md
+test/style-guard/current.json

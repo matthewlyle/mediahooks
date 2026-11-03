@@ -8,7 +8,10 @@
     "start": "bun src/server.ts",
     "dev": "PORT=8788 bun --hot src/server.ts",
     "test": "bun test",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "style:dump": "playwright test -c test/style-guard",
+    "style:baseline": "OUT=test/style-guard/baseline.json.gz playwright test -c test/style-guard",
+    "style:diff": "bun test/style-guard/compare.ts"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.20.4",
