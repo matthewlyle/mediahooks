@@ -14,10 +14,6 @@
 }
 .detail-main {
   min-width: 0;
-  transition: opacity 150ms ease;
-}
-.detail-head.disabled .detail-main {
-  opacity: 0.5;
 }
 .detail-title {
   display: flex;
