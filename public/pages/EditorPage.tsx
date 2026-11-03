@@ -512,7 +512,11 @@ function EditorForm({ id, w, meta, back, onSaved, heading }: EditorFormProps) {
         <div className="editor-section">
           <div className="row row-destination">
             <div className="field">
-              <label htmlFor={`${uid}-name`}>Name</label>
+              <label htmlFor={`${uid}-name`}>
+                <span className="field-name">
+                  Name <span className="required">required</span>
+                </span>
+              </label>
               <input
                 ref={nameField}
                 id={`${uid}-name`}
@@ -528,7 +532,11 @@ function EditorForm({ id, w, meta, back, onSaved, heading }: EditorFormProps) {
               <FieldError id={errId("name")} error={shown("name")} />
             </div>
             <div className="field">
-              <label htmlFor={`${uid}-url`}>URL</label>
+              <label htmlFor={`${uid}-url`}>
+                <span className="field-name">
+                  URL <span className="required">required</span>
+                </span>
+              </label>
               <input
                 ref={urlField}
                 id={`${uid}-url`}

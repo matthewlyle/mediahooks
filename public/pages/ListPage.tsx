@@ -4,6 +4,7 @@ import type { SendResult } from "../../src/send.ts";
 import type { Delivery, Webhook } from "../../src/types.ts";
 import { burst } from "../components/burst.ts";
 import { Menu } from "../components/Menu.tsx";
+import { PausedBadge } from "../components/PausedBadge.tsx";
 import { SentenceSummary } from "../components/SentenceSummary.tsx";
 import { StatusBadge } from "../components/StatusBadge.tsx";
 import { Switch } from "../components/Switch.tsx";
@@ -26,6 +27,7 @@ export function ListPage() {
 
   return (
     <motion.div className="page page-list" {...pageTransition}>
+      <h2 className="sr-only">Webhooks</h2>
       {error && !loaded ? (
         <p className="empty">Could not reach the mediahooks API.</p>
       ) : (
@@ -155,6 +157,7 @@ function Row({ w, last, index, enter }: RowProps) {
       (next ?? document.getElementById("new-hook"))?.focus({ preventScroll: true });
     });
     toast.show(`Deleted ${w.name}`, {
+      subject: w.name,
       undo: () => {
         store.restore(w, index);
         store.setHighlight({ id: w.id, tone: "accent", focus: true });
@@ -214,6 +217,7 @@ function Row({ w, last, index, enter }: RowProps) {
           >
             {w.name}
           </motion.span>
+          <PausedBadge paused={!w.enabled} />
         </div>
         <motion.div
           layoutId={ids.url(w.id)}
@@ -227,9 +231,7 @@ function Row({ w, last, index, enter }: RowProps) {
         <SentenceSummary w={w} className="card-summary" />
       </div>
       <div className="card-actions">
-        <span className="card-status">
-          <StatusBadge delivery={last} />
-        </span>
+        <StatusBadge delivery={last} />
         <Switch checked={w.enabled} onChange={onToggle} label={`${w.enabled ? "Disable" : "Enable"} ${w.name}`} />
         <Menu
           label={`More actions for ${w.name}`}

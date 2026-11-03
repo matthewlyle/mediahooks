@@ -128,7 +128,7 @@ function Shell() {
   }
 
   return (
-    <main>
+    <div className="shell">
       <Header
         path={path}
         section={current?.section ?? "webhooks"}
@@ -137,31 +137,33 @@ function Shell() {
         onSignOut={signOut}
         inert={modal}
       />
-      <AnimatePresence mode="wait">
-        {auth.status === "signed-in" ? (
-          <motion.div key="app" exit={FADE.exit}>
-            <StoreProvider>
-              {current && <RouteTitle title={modal ? () => "New webhook" : current.title} />}
-              <div className="routes" inert={modal || undefined}>
-                <AnimatePresence mode="popLayout" initial={false} custom={last.current.dir}>
-                  {current?.page}
+      <main>
+        <AnimatePresence mode="wait">
+          {auth.status === "signed-in" ? (
+            <motion.div key="app" exit={FADE.exit}>
+              <StoreProvider>
+                {current && <RouteTitle title={modal ? () => "New webhook" : current.title} />}
+                <div className="routes" inert={modal || undefined}>
+                  <AnimatePresence mode="popLayout" initial={false} custom={last.current.dir}>
+                    {current?.page}
+                  </AnimatePresence>
+                </div>
+                <AnimatePresence>
+                  {modal && (
+                    <Modal key="new" label="New webhook">
+                      <EditorPage id={null} back={behind.current} />
+                    </Modal>
+                  )}
                 </AnimatePresence>
-              </div>
-              <AnimatePresence>
-                {modal && (
-                  <Modal key="new" label="New webhook">
-                    <EditorPage id={null} back={behind.current} />
-                  </Modal>
-                )}
-              </AnimatePresence>
-            </StoreProvider>
-          </motion.div>
-        ) : (
-          <SignInPage key="sign-in" onSignedIn={(user) => setAuth({ status: "signed-in", user })} />
-        )}
-      </AnimatePresence>
+              </StoreProvider>
+            </motion.div>
+          ) : (
+            <SignInPage key="sign-in" onSignedIn={(user) => setAuth({ status: "signed-in", user })} />
+          )}
+        </AnimatePresence>
+      </main>
       {auth.status === "signed-out" && <DocumentTitle title="Sign in" />}
-    </main>
+    </div>
   );
 }
 
@@ -251,7 +253,9 @@ function NavLink({ to, label, active }: { to: string; label: string; active: boo
           aria-hidden="true"
         />
       )}
-      <span className="nav-label">{label}</span>
+      <span className="nav-label" data-label={label}>
+        <span>{label}</span>
+      </span>
     </motion.a>
   );
 }

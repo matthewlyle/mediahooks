@@ -15,21 +15,10 @@ async function settle(page: Page) {
   });
 }
 
-const PAUSED = ".disabled";
-
-async function violations(page: Page, configure: (axe: AxeBuilder) => AxeBuilder) {
-  const { violations } = await configure(new AxeBuilder({ page }).withTags(TAGS)).analyze();
-  return violations;
-}
-
 async function scan(page: Page, name: string) {
   await settle(page);
-  const found = await violations(page, (axe) => axe.exclude(PAUSED));
-  // Paused rows fail color-contrast until #10 is fixed; everything else in them is still scanned.
-  if (await page.locator(PAUSED).count()) {
-    found.push(...(await violations(page, (axe) => axe.include(PAUSED).disableRules(["color-contrast"]))));
-  }
-  const report = found.flatMap((v) =>
+  const { violations } = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+  const report = violations.flatMap((v) =>
     v.nodes.map((n) => `${name}: ${v.id} (${v.impact}) ${n.target.join(" ")}\n    ${v.help}\n    ${v.helpUrl}`),
   );
   expect(report, `axe violations on ${name}`).toEqual([]);
@@ -54,18 +43,20 @@ test.beforeAll(async ({ request }) => {
   await expect.poll(async () => (await (await request.get("/api/events")).json()).length).toBeGreaterThan(0);
 });
 
-for (const [name, path] of [
-  ["/", () => "/"],
-  ["/events", () => "/events"],
-  ["/help", () => "/help"],
-  ["/new", () => "/new"],
-  ["/webhooks/<id>", () => `/webhooks/${active}`],
-  ["/webhooks/<id>/edit", () => `/webhooks/${active}/edit`],
-  ["a paused webhook", () => `/webhooks/${paused}`],
+for (const [name, path, heading] of [
+  ["/", () => "/", "Webhooks"],
+  ["/events", () => "/events", "Events"],
+  ["/help", () => "/help", "Help"],
+  ["/new", () => "/new", "New webhook"],
+  ["/webhooks/<id>", () => `/webhooks/${active}`, "Living room alerts"],
+  ["/webhooks/<id>/edit", () => `/webhooks/${active}/edit`, "Edit Living room alerts"],
+  ["a paused webhook", () => `/webhooks/${paused}`, "Paused webhook"],
 ] as const) {
   test(name, async ({ page }) => {
     await page.goto(path());
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(page.getByRole("banner")).toContainText("mediahooks");
+    await expect(page.getByRole("main").getByRole("heading", { level: 2, name: heading })).toBeAttached();
     await scan(page, name);
   });
 }
@@ -73,6 +64,8 @@ for (const [name, path] of [
 test("signed-out sign-in", async ({ page }) => {
   await page.goto(SIGNED_OUT_URL);
   await expect(page.getByRole("button", { name: /sign in/i })).toBeVisible();
+  await expect(page.getByRole("banner")).toContainText("mediahooks");
+  await expect(page.getByRole("main").getByRole("heading", { level: 2, name: "Sign in" })).toBeAttached();
   await scan(page, "signed-out sign-in");
 });
 
@@ -81,6 +74,40 @@ test("open row menu", async ({ page }) => {
   await page.getByRole("button", { name: "More actions for Living room alerts" }).click();
   await expect(page.getByRole("menu")).toBeVisible();
   await scan(page, "open row menu");
+});
+
+test("undo toast after a delete", async ({ page, request }) => {
+  const res = await request.post("/api/webhooks", {
+    data: { name: "Delete me", url: "http://127.0.0.1:9/hook", events: ["media.play"], enabled: true },
+  });
+  expect(res.ok()).toBe(true);
+  await page.goto("/");
+  await page.getByRole("button", { name: "More actions for Delete me" }).click();
+  await page.getByRole("menuitem", { name: "Delete" }).click();
+  await expect(page.getByRole("button", { name: "Undo" })).toBeVisible();
+  await scan(page, "undo toast after a delete");
+});
+
+test("new webhook dialog over an undo toast", async ({ page, request }) => {
+  const res = await request.post("/api/webhooks", {
+    data: { name: "Delete me too", url: "http://127.0.0.1:9/hook", events: ["media.play"], enabled: true },
+  });
+  expect(res.ok()).toBe(true);
+  await page.goto("/");
+  await page.getByRole("button", { name: "More actions for Delete me too" }).click();
+  await page.getByRole("menuitem", { name: "Delete" }).click();
+  await expect(page.getByRole("button", { name: "Undo deleting Delete me too" })).toBeVisible();
+  await page.locator("#new-hook").click();
+  const dialog = page.getByRole("dialog", { name: "New webhook" });
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole("button").last().focus();
+  for (const key of ["Tab", "Tab", "Shift+Tab", "Shift+Tab"]) {
+    await page.keyboard.press(key);
+    expect(await page.evaluate(() => document.activeElement?.closest(".toast-region") ?? null)).toBeNull();
+  }
+  await scan(page, "new webhook dialog over an undo toast");
+  await dialog.getByRole("button", { name: "Cancel" }).click();
+  await expect(page.getByRole("button", { name: "Undo deleting Delete me too" })).toBeVisible();
 });
 
 test("editor after a failed save", async ({ page }) => {

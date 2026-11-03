@@ -12,7 +12,7 @@ below may queue a merge.
 ## Launch a worker
 
 ```sh
-herdr worktree create --cwd ~/src/mediahooks --branch issue-<n>-<slug> --base main --no-focus
+herdr worktree create --cwd ~/src/mediahooks --branch issue-<n>-<slug> --base main --label "#<n> <short title>" --no-focus
 herdr agent start issue-<n> --kind omp --pane <root pane from the create response> -- --model <model>
 herdr agent prompt issue-<n> "<prompt below>"
 ```
@@ -44,8 +44,8 @@ Fix GitHub issue #{N} in matthewlyle/mediahooks: `gh issue view {N} -R matthewly
 - Run `bun test` and `bun run typecheck`; both must pass.
 - If you changed anything under `public/`, run `bun x playwright test -c test/axe` (needs `bun x playwright install chromium` once) and fix what it reports before opening the PR. A new route or state gets a scan in `test/axe/axe.spec.ts`.
 - Stay within this issue. Don't touch other issues' code or `CHANGELOG.md`.
-- Commit with a Conventional Commit message, with `Fixes #{N}` in the body.
-- You're explicitly asked to push `{BRANCH}` to origin and open a pull request: title is the Conventional Commit. Write the body yourself (never `gh pr create --fill`), using exactly the PR body template in `~/src/mediahooks/.agents/skills/work-issue/SKILL.md` under "Writing for GitHub" (read it from that path, not your worktree). If anything visible changed or must look unchanged, add before/after screenshots: commit PNGs to the `issue-assets` branch under `pr/<issue>-<what>.png` and link `https://raw.githubusercontent.com/matthewlyle/mediahooks/issue-assets/pr/<file>.png`. Never merge it.
+- Commit with a Conventional Commit message whose scope matches the issue's topic (`fix(a11y): …` for `accessibility` issues), with `Fixes #{N}` in the body. The PR title is the same line; release-please puts the scope in the changelog.
+- You're explicitly asked to push `{BRANCH}` to origin and open a pull request: title is the Conventional Commit. Before pushing, merge the latest `main` (`git fetch git@github.com:matthewlyle/mediahooks.git main && git merge FETCH_HEAD`; force-pushes are blocked) and re-run the checks. Write the body yourself (never `gh pr create --fill`), using exactly the PR body template in `.agents/skills/work-issue/SKILL.md` under "Writing for GitHub". If anything visible changed or must look unchanged, add before/after screenshots: commit PNGs to the `issue-assets` branch under `pr/<issue>-<what>.png` (fetch and rebase it first; other agents push to it too) and link `https://raw.githubusercontent.com/matthewlyle/mediahooks/issue-assets/pr/<file>.png`. After pushing, confirm the PR's head commit equals your local HEAD. Never merge it.
 - Finish with a short report: what you changed, the PR URL, and how each success criterion was verified.
 ```
 
@@ -78,7 +78,7 @@ Then decide:
 - Human: anything else, including anything you couldn't check. Post a comment review using the human template, then `gh pr edit {PR} --add-label "review: human" --add-assignee matthewlyle`.
 - Never request changes from the worker, push to the branch, or merge directly.
 
-Write the review with the templates in `~/src/mediahooks/.agents/skills/work-issue/SKILL.md` under "Writing for GitHub" (read it from that path, not your worktree). Finish with a short report: the decision, why, and the review URL.
+Write the review with the templates in `.agents/skills/work-issue/SKILL.md` under "Writing for GitHub". Also check the PR title still describes the change. Finish with a short report: the decision, why, and the review URL.
 ```
 
 ## Writing for GitHub
@@ -122,3 +122,15 @@ Checked: <criteria> ✓ · tests ✓ · CI ✓
 Releases stay manual: merging to `main` only adds a line to the release-please PR, and the user
 merges that. After merges, run `herdr-prune-merged` (`--dry-run` previews): it removes each herdr
 worktree whose branch has a merged PR and whose HEAD is that PR's head, then the local branch.
+
+## Coordinator checklist
+
+- Before launching, read the issue's comments as well as its body: the owner answers design
+  questions there. Copy each answer into the issue as a `## Decision` section.
+- Wait on each agent separately and relay each result as it lands, not when a batch finishes.
+- When an agent stops at a question, read which option is selected before confirming; don't
+  press Enter blind. An agent that ends its turn asking in plain text is also waiting.
+- When a worker reports done, check `gh pr view <pr> --json headRefOid` against its local HEAD.
+  Agents have reported pushes that never happened. Start a reviewer only on the pushed head.
+- After a merge, merge `main` into open PRs that touch the same files before their review.
+- When something needs the owner, also run `herdr notification show "<title>" --body "<one line>" --sound request`.
