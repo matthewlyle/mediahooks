@@ -10,6 +10,7 @@ export type ToastOptions = { onCommit?: () => void; sticky?: boolean } & (
 export type Toaster = { show(text: string, opts?: ToastOptions): void };
 
 const TOAST_MS = 4000;
+const FOCUS_SETTLE_MS = 500;
 
 const ToastContext = createContext<Toaster | null>(null);
 const ToastInertContext = createContext<(inert: boolean) => void>(() => { });
@@ -26,7 +27,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const show = useCallback(
     (text: string, opts: ToastOptions = {}) => {
       const id = nextId.current++;
-      setToasts((list) => [...list, { id, text, undo: Boolean(opts.undo), sticky: Boolean(opts.sticky), subject: opts.subject }]);
+      const add = () =>
+        setToasts((list) => [...list, { id, text, undo: Boolean(opts.undo), sticky: Boolean(opts.sticky), subject: opts.subject }]);
+      if (opts.sticky) setTimeout(add, FOCUS_SETTLE_MS);
+      else add();
       if (opts.undo) pending.current.set(id, opts);
       else if (!opts.sticky) setTimeout(() => close(id), TOAST_MS);
     },
