@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
+import { freePorts } from "../free-ports";
 
-const PORT = 8839;
-const SIGNED_OUT_PORT = 8840;
+const [PORT, SIGNED_OUT_PORT] = freePorts("MEDIAHOOKS_STYLE_PORTS", 2);
 
 export default defineConfig({
   workers: 1,
