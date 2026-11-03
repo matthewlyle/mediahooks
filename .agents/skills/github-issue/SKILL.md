@@ -5,8 +5,7 @@ description: Writing and filing GitHub issues for mediahooks with gh, including 
 
 # Writing a GitHub issue
 
-Issues go to `matthewlyle/mediahooks` on GitHub. `origin` fetches from Gitea, so always pass
-`-R matthewlyle/mediahooks`.
+Issues go to `matthewlyle/mediahooks` on GitHub.
 
 ## Before filing
 

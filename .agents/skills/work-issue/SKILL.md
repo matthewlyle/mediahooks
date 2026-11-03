@@ -9,9 +9,6 @@ One issue, one worktree, one omp agent, one PR. Follows AGENTS.md: branch `issue
 title is a Conventional Commit, body says `Fixes #<n>`. Workers never merge; only the review step
 below may queue a merge.
 
-`origin` is Gitea, so `gh` can't infer the repo: every `gh` command takes
-`-R matthewlyle/mediahooks`.
-
 ## Check for existing work
 
 Before launching, look for an earlier attempt: `git -C ~/src/mediahooks worktree list` and
@@ -31,8 +28,8 @@ The templates are linked into hc as `mediahooks-<role>`, once per machine (see "
 checkout is on the new `main`; a brief changes with `.agents/prompts/` on the agent's own branch.
 
 ```sh
-git -C ~/src/mediahooks fetch git@github.com:matthewlyle/mediahooks.git +main:refs/remotes/github/main
-git -C ~/src/mediahooks worktree add ~/.herdr/worktrees/mediahooks/issue-<n>-<slug> -b issue-<n>-<slug> refs/remotes/github/main
+git -C ~/src/mediahooks fetch origin main
+git -C ~/src/mediahooks worktree add ~/.herdr/worktrees/mediahooks/issue-<n>-<slug> -b issue-<n>-<slug> --no-track origin/main
 ```
 
 Then start the worker with `herdr-workers`: name `<n>-<what it fixes>` (`9-wrap-truncated-text`,
