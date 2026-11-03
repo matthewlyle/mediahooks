@@ -12,7 +12,7 @@ below may queue a merge.
 ## Launch a worker
 
 ```sh
-herdr worktree create --cwd ~/src/mediahooks --branch issue-<n>-<slug> --base main --no-focus
+herdr worktree create --cwd ~/src/mediahooks --branch issue-<n>-<slug> --base main --label "#<n> <short title>" --no-focus
 herdr agent start issue-<n> --kind omp --pane <root pane from the create response> -- --model <model>
 herdr agent prompt issue-<n> "<prompt below>"
 ```
