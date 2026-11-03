@@ -26,7 +26,7 @@ export function HelpPage() {
     setConfirming(false);
     if (!res.ok) {
       const state = res.status === 0 ? "check the URL before relying on it" : "the old one still works";
-      toast.show(`Couldn't replace the token, ${state}: ${res.error}`);
+      toast.show(`Couldn't replace the token, ${state}: ${res.error}`, { sticky: true });
     }
     flash(row.current, res.ok ? "accent" : "error");
   }
