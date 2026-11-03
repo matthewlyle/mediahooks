@@ -1,6 +1,6 @@
 import type { ComponentType } from "react";
 
-export const GROUPS = ["Actions", "Inputs", "Overlays", "Status", "Layout", "Data"] as const;
+export const GROUPS = ["Actions", "Navigation", "Inputs", "Overlays", "Status", "Layout", "Data"] as const;
 export type Group = (typeof GROUPS)[number];
 
 export type Fixture = {

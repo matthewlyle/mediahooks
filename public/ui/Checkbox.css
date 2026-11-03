@@ -1,0 +1,34 @@
+.checkbox {
+  font-family: var(--mono);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--space-8);
+  row-gap: var(--space-8);
+  font-size: var(--text-12);
+  font-weight: 400;
+  min-width: 0;
+  transition:
+    color 150ms ease,
+    opacity 150ms ease;
+}
+.checkbox input {
+  accent-color: var(--accent);
+}
+.checkbox-label {
+  white-space: nowrap;
+}
+.checkbox-hint {
+  font-size: var(--text-11);
+  font-weight: 400;
+  color: var(--muted);
+}
+.checkbox:has(input:disabled) {
+  opacity: 0.5;
+}
+@media (hover: hover) and (pointer: fine) {
+  .checkbox:not(:has(input:disabled)):hover {
+    color: var(--accent-hover);
+  }
+}

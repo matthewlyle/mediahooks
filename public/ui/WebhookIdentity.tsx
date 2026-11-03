@@ -1,8 +1,8 @@
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import type { Ref } from "react";
-import { SPRING, fadeIn, ids } from "../lib/motion.ts";
+import { EASE, SPRING, fadeIn, ids } from "../lib/motion.ts";
 import type { Part } from "../lib/sentence.ts";
-import { PausedBadge } from "./PausedBadge.tsx";
+import { Badge } from "./Badge.tsx";
 import { Sentence } from "./Sentence.tsx";
 import "./WebhookIdentity.css";
 
@@ -43,7 +43,17 @@ export function WebhookIdentity({ id, name, url, paused, parts, variant, nameRef
         ) : (
           <motion.span {...nameProps}>{name}</motion.span>
         )}
-        <PausedBadge paused={paused} />
+        <AnimatePresence initial={false}>
+          {paused && (
+            <Badge
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, transition: { duration: 0.2, ease: EASE.css } }}
+              exit={{ opacity: 0, transition: { duration: 0.15, ease: EASE.css } }}
+            >
+              Paused
+            </Badge>
+          )}
+        </AnimatePresence>
       </div>
       <motion.div
         layoutId={ids.url(id)}

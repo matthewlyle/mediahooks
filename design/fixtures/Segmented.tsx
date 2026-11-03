@@ -3,7 +3,7 @@ import type { Fixture } from "../fixture.ts";
 
 export default {
   component: Segmented,
-  group: "Inputs",
+  group: "Navigation",
   props: {
     label: "Preview with",
     options: [

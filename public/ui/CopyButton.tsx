@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Button, type ButtonSize } from "./Button.tsx";
+import { LiveRegion } from "./LiveRegion.tsx";
 import "./CopyButton.css";
 
 // Plain-http LAN addresses have no Clipboard API; the execCommand fallback is needed.
@@ -78,9 +79,9 @@ export function CopyButton({ text, className, size, onFail }: CopyButtonProps) {
           "Copy"
         )}
       </Button>
-      <span className="sr-only" role="status">
+      <LiveRegion>
         {copied ? "Copied" : failed ? "Couldn't copy" : ""}
-      </span>
+      </LiveRegion>
     </>
   );
 }

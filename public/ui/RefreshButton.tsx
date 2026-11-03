@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { EASE } from "../lib/motion.ts";
 import { Button } from "./Button.tsx";
+import { LiveRegion } from "./LiveRegion.tsx";
 import { RelativeTime } from "./RelativeTime.tsx";
 import "./RefreshButton.css";
 
@@ -100,7 +101,7 @@ export function RefreshButton({ onRefresh, updatedAt, noun, disabled }: RefreshB
 
   return (
     <div className="refresh">
-      <span className="refresh-status" role="status" aria-live="polite">
+      <LiveRegion visible className="refresh-status">
         <AnimatePresence mode="popLayout" initial={false}>
           {label !== null && (
             <motion.span key={key} className={`refresh-label ${tone}`} {...MORPH}>
@@ -108,8 +109,8 @@ export function RefreshButton({ onRefresh, updatedAt, noun, disabled }: RefreshB
             </motion.span>
           )}
         </AnimatePresence>
-      </span>
-      <Button className="refresh-btn" onClick={() => void onClick()} disabled={disabled || busy} aria-busy={busy}>
+      </LiveRegion>
+      <Button className="refresh-btn" onClick={() => void onClick()} disabled={disabled} busy={busy} spinner={false}>
         <svg className={busy ? "refresh-icon spinning" : "refresh-icon"} viewBox="0 0 16 16" aria-hidden="true">
           <path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
           <path

@@ -23,10 +23,3 @@
   color: var(--error);
   background: var(--error-10);
 }
-.result-mark {
-  width: 9px;
-  height: 9px;
-  margin-right: var(--space-4);
-  vertical-align: -1px;
-  overflow: visible;
-}

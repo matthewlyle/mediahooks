@@ -24,7 +24,7 @@ function Showcase() {
       </div>
       <div className="stage-showcase-row">
         <span>Enabled</span>
-        <Switch checked={enabled} onChange={setEnabled} label="Enabled" />
+        <Switch checked={enabled} onChange={setEnabled} aria-label="Enabled" />
       </div>
       <Segmented label="Preview with" options={PREVIEWS} value={preview} onChange={setPreview} />
       <p className="muted">

@@ -1,4 +1,4 @@
-import { Field, FieldInput } from "../../public/ui/Field.tsx";
+import { Field } from "../../public/ui/Field.tsx";
 import type { Fixture } from "../fixture.ts";
 
 export default {
@@ -10,6 +10,6 @@ export default {
     hint: "required",
     error: "Enter a name",
     errorId: "field-name-error",
-    children: <FieldInput id="field-name" />,
+    input: { placeholder: "Webhook name" },
   },
 } satisfies Fixture;
