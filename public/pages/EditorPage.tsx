@@ -7,6 +7,7 @@ import { SAMPLE_MOVIE_PAYLOAD, SAMPLE_PAYLOAD, SAMPLE_TRACK_PAYLOAD } from "../.
 import { isJsonContentType, renderBody, renderHeaders, templateVars } from "../../src/template.ts";
 import { Button, LinkButton } from "../ui/Button.tsx";
 import { FieldError } from "../ui/FieldError.tsx";
+import { Segmented } from "../ui/Segmented.tsx";
 import { burst } from "../components/burst.ts";
 import { Spinner } from "../components/Spinner.tsx";
 import { Switch } from "../components/Switch.tsx";
@@ -169,40 +170,6 @@ function resultLine(r: SendResult): { text: string; full: string } {
   const detail = r.ok ? `${r.durationMs}ms` : r.error?.replace(/\s+/g, " ").trim() || `${r.durationMs}ms`;
   const status = r.status ?? "ERR";
   return { text: `${r.ok ? "✓" : "✗"} ${status} · ${detail}`, full: `${status} · ${detail}` };
-}
-
-function Segmented<T extends string>({
-  label,
-  options,
-  value,
-  onChange,
-  className,
-}: {
-  label: string;
-  options: readonly (readonly [T, string])[];
-  value: T;
-  onChange: (v: T) => void;
-  className?: string;
-}) {
-  const pill = useId();
-  return (
-    <span className={["preview-samples", className].filter(Boolean).join(" ")} role="group" aria-label={label}>
-      {options.map(([v, text]) => (
-        <button key={v} type="button" aria-pressed={value === v} onClick={() => onChange(v)}>
-          {value === v && (
-            <motion.span
-              layoutId={pill}
-              className="sample-pill"
-              style={{ borderRadius: 2 }}
-              transition={SPRING.morph}
-              aria-hidden="true"
-            />
-          )}
-          <span className="sample-label">{text}</span>
-        </button>
-      ))}
-    </span>
-  );
 }
 
 function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFormProps) {

@@ -1,6 +1,7 @@
 import type { ComponentType } from "react";
 import { Button, LinkButton } from "../public/ui/Button.tsx";
 import { FieldError } from "../public/ui/FieldError.tsx";
+import { Segmented } from "../public/ui/Segmented.tsx";
 
 export type Fixture = {
   component: ComponentType<any>;
@@ -13,4 +14,17 @@ export const fixtures: Record<string, Fixture> = {
   Button: { component: Button, props: { children: "Save" } },
   LinkButton: { component: LinkButton, props: { to: "/", children: "Back" } },
   FieldError: { component: FieldError, props: { id: "field-error", error: "Enter a name" } },
+  Segmented: {
+    component: Segmented,
+    props: {
+      label: "Preview with",
+      options: [
+        ["episode", "Episode"],
+        ["movie", "Movie"],
+        ["track", "Music"],
+      ],
+      value: "episode",
+    },
+    bind: { onChange: "value" },
+  },
 };

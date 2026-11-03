@@ -232,21 +232,6 @@ form.editor {
   white-space: nowrap;
 }
 
-.preview-samples button {
-  position: relative;
-}
-.editor .preview-samples button[aria-pressed="true"] {
-  background: transparent;
-}
-.sample-pill {
-  position: absolute;
-  inset: 0;
-  background: var(--accent-dim);
-}
-.sample-label {
-  position: relative;
-}
-
 .send-test {
   display: inline-grid;
   place-items: center;
