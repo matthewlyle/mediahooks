@@ -1,7 +1,7 @@
 import { writeFile } from "node:fs/promises";
 import type { VoiceOver } from "@guidepup/guidepup";
 import { voiceOverTest } from "@guidepup/playwright";
-import { expect } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 
 export { expect };
 
@@ -16,8 +16,9 @@ export const test = voiceOverTest.extend<{ spokenPhraseLog: void }>({
   ],
 });
 
-export async function expectAnnounced(voiceOver: VoiceOver, action: () => Promise<unknown>, message: string): Promise<void> {
+export async function expectAnnounced(page: Page, voiceOver: VoiceOver, action: () => Promise<unknown>, message: string): Promise<void> {
   await voiceOver.capture(action, { capture: true });
+  await expect(page.locator(".toast-region")).toContainText(message);
   await expect
     .poll(
       async () => {

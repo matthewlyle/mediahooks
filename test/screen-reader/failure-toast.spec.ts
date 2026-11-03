@@ -20,7 +20,7 @@ test("A failed toggle announces what failed and why", async ({ page, request, vo
   await expect(toggle).toBeVisible();
   await voiceOver.navigateToWebContent();
 
-  await expectAnnounced(voiceOver, () => toggle.press("Space"), `Couldn't pause ${name}: database is locked`);
+  await expectAnnounced(page, voiceOver, () => toggle.press("Space"), `Couldn't pause ${name}: database is locked`);
 });
 
 test("A failed duplicate announces what failed and why", async ({ page, request, voiceOver }) => {
@@ -41,7 +41,7 @@ test("A failed duplicate announces what failed and why", async ({ page, request,
   await expect(duplicate).toBeVisible();
   await voiceOver.navigateToWebContent();
 
-  await expectAnnounced(voiceOver, () => duplicate.press("Enter"), `Couldn't duplicate ${name}: database is locked`);
+  await expectAnnounced(page, voiceOver, () => duplicate.press("Enter"), `Couldn't duplicate ${name}: database is locked`);
 });
 
 test("A failed token replace announces what failed and why", async ({ page, voiceOver }) => {
@@ -56,5 +56,5 @@ test("A failed token replace announces what failed and why", async ({ page, voic
   await expect(replace).toBeVisible();
   await voiceOver.navigateToWebContent();
 
-  await expectAnnounced(voiceOver, () => replace.press("Enter"), "Couldn't replace the token, the old one still works: database is locked");
+  await expectAnnounced(page, voiceOver, () => replace.press("Enter"), "Couldn't replace the token, the old one still works: database is locked");
 });
