@@ -1,11 +1,24 @@
-import { Fragment, createElement, useState, type ComponentType } from "react";
+import { Fragment, createElement, useState, type ComponentType, type ReactNode } from "react";
+import { Badge } from "../public/ui/Badge.tsx";
 import { Button, LinkButton } from "../public/ui/Button.tsx";
 import { Check } from "../public/ui/Check.tsx";
+import { CopyButton } from "../public/ui/CopyButton.tsx";
 import { FieldError } from "../public/ui/FieldError.tsx";
 import { Menu } from "../public/ui/Menu.tsx";
 import { Popover, type PopoverProps } from "../public/ui/Popover.tsx";
 import { Segmented } from "../public/ui/Segmented.tsx";
+import { Spinner } from "../public/ui/Spinner.tsx";
 import { Switch } from "../public/ui/Switch.tsx";
+import { ToastProvider, useToast } from "../public/ui/Toast.tsx";
+
+function ToastDemo({ children }: { children?: ReactNode }) {
+  const toast = useToast();
+  return createElement(Button, { onClick: () => toast.show(String(children ?? "")) }, "Show toast");
+}
+
+function ToastPreview({ children }: { children?: ReactNode }) {
+  return createElement(ToastProvider, null, createElement(ToastDemo, null, children));
+}
 
 export type Fixture = {
   component: ComponentType<any>;
@@ -15,6 +28,7 @@ export type Fixture = {
 };
 
 export const fixtures: Record<string, Fixture> = {
+  Badge: { component: Badge, props: { children: "Paused" } },
   Button: { component: Button, props: { children: "Save" } },
   LinkButton: { component: LinkButton, props: { to: "/", children: "Back" } },
   Menu: {
@@ -30,9 +44,11 @@ export const fixtures: Record<string, Fixture> = {
       ],
     },
   },
+  CopyButton: { component: CopyButton, props: { text: "Copied text" } },
   Check: { component: Check, props: { checked: true, children: "Option" } },
   FieldError: { component: FieldError, props: { id: "field-error", error: "Enter a name" } },
   Switch: { component: Switch, props: { checked: false, label: "Enabled" }, bind: { onChange: "checked" } },
+  ToastProvider: { component: ToastPreview, props: { children: "Saved" } },
   Segmented: {
     component: Segmented,
     props: {
@@ -46,6 +62,7 @@ export const fixtures: Record<string, Fixture> = {
     },
     bind: { onChange: "value" },
   },
+  Spinner: { component: Spinner, props: { inverse: false } },
 };
 
 function PopoverDemo({ anchor: _anchor, ...props }: PopoverProps) {
