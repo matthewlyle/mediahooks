@@ -22,4 +22,4 @@ function TableDemo({ children, ...props }: TableProps) {
   );
 }
 
-export default { component: TableDemo, props: { head: "Result", children: "200 · 124 ms" } } satisfies Fixture;
+export default { component: TableDemo, group: "Data", props: { head: "Result", children: "200 · 124 ms" } } satisfies Fixture;

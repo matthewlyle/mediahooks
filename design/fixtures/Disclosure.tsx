@@ -3,6 +3,7 @@ import type { Fixture } from "../fixture.ts";
 
 export default {
   component: Disclosure,
+  group: "Layout",
   props: { label: "Headers", summary: "2 set", open: false, children: "Content that opens and closes with a height and opacity animation." },
   bind: { onOpenChange: "open" },
 } satisfies Fixture;

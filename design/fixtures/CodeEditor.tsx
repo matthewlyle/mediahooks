@@ -3,6 +3,7 @@ import type { Fixture } from "../fixture.ts";
 
 export default {
   component: CodeEditor,
+  group: "Inputs",
   props: {
     value: '{\n  "content": "{{user}} {{action}} {{display_title}}"\n}',
     language: "json",

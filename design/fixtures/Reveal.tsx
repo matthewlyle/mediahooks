@@ -13,4 +13,4 @@ function RevealDemo({ children }: { children: ReactNode }) {
   );
 }
 
-export default { component: RevealDemo, props: { children: "Content that opens and closes with a height and opacity animation." } } satisfies Fixture;
+export default { component: RevealDemo, group: "Layout", props: { children: "Content that opens and closes with a height and opacity animation." } } satisfies Fixture;

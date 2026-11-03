@@ -5,6 +5,7 @@ import type { Fixture } from "../fixture.ts";
 
 export default {
   component: Toolbar,
+  group: "Layout",
   props: {
     gap: "small",
     end: false,

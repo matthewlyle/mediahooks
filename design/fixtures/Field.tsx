@@ -3,6 +3,7 @@ import type { Fixture } from "../fixture.ts";
 
 export default {
   component: Field,
+  group: "Inputs",
   props: {
     id: "field-name",
     label: "Name",

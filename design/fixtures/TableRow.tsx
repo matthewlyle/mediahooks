@@ -14,5 +14,6 @@ function TableRowDemo({ open: controlled, ...props }: TableRowProps) {
 
 export default {
   component: TableRowDemo,
+  group: "Data",
   props: { open: false, detailId: "demo-row-detail", fresh: false, summary: "200 · 124 ms", detail: "Request and response details appear here." },
 } satisfies Fixture;

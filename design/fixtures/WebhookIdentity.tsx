@@ -14,6 +14,7 @@ const parts: Part[] = [
 
 export default {
   component: WebhookIdentity,
+  group: "Data",
   props: {
     id: 1,
     name: "Discord notifications",

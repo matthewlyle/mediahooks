@@ -14,6 +14,7 @@ const parts: Part[] = [
 
 export default {
   component: Sentence,
+  group: "Data",
   props: {
     parts,
     labels: { who: "Users", what: "Events", where: "Libraries" },
