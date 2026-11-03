@@ -8,6 +8,13 @@ Forward Plex Media Server webhooks to Discord, Slack, ntfy, Home Assistant or an
 
 ![The webhook editor: picking which Plex events send, with a live Discord preview of a new movie](docs/editor-preview.png)
 
+## Status
+
+Early release. Tested on macOS (Apple silicon) with Plex installed on the same machine. Linux, amd64,
+and Plex in a container or on another host (set `PLEX_URL`) should work but haven't been tried yet.
+If you run it on one of those, please [open an issue](https://github.com/matthewlyle/mediahooks/issues)
+either way, with your OS, CPU, and where Plex runs.
+
 ## Requirements
 
 - Plex Media Server with Plex Pass on the owner's account 
@@ -43,6 +50,9 @@ set `PLEX_URL` under `environment:`, e.g. `http://plex:32400` for a Plex contain
 
 The container runs as uid 1000. A bind-mounted `/data` folder must be writable by that user.
 
+If `8787` is already in use on the host, change the left side of the port mapping (e.g.
+`"8788:8787"`). Rename or remove `container_name` if another container already has that name.
+
 To run from source instead:
 
 ```sh
@@ -58,6 +68,10 @@ file if it's elsewhere.
 
 Open `http://<host>:8787` and sign in with the Plex account that owns the server. Copy the
 webhook URL from the Help page and add it in Plex Web under **Settings → Webhooks**.
+
+Hooks are sent from inside the container, where `localhost` is the container itself. To send to
+something on the same machine, such as a self-hosted ntfy or Home Assistant, use
+`http://host.docker.internal:<port>` or the machine's network name (e.g. `http://nas.local:8080`).
 
 ## Configuration
 
@@ -75,3 +89,6 @@ internet for that, expose only `/thumbs/*`.
 ```sh
 docker compose pull && docker compose up -d
 ```
+
+`:1` follows the latest 1.x release; a 2.0 with breaking changes won't install until you change the
+tag. The running version is shown on the Help page.
