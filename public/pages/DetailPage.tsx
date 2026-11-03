@@ -1,13 +1,17 @@
 import { AnimatePresence, motion, useIsPresent, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import type { Delivery, DeliveryDetail, Webhook } from "../../src/types.ts";
+import { EmptyState } from "../ui/EmptyState.tsx";
+import { CodeBlock, CodeLabel } from "../ui/CodeBlock.tsx";
 import { Button, LinkButton } from "../ui/Button.tsx";
-import { PausedBadge } from "../ui/PausedBadge.tsx";
+import { WebhookIdentity } from "../ui/WebhookIdentity.tsx";
+import { Panel } from "../ui/Panel.tsx";
 import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
+import { SectionHeader } from "../ui/SectionHeader.tsx";
 import { RelativeTime } from "../ui/RelativeTime.tsx";
-import { Sentence } from "../ui/Sentence.tsx";
 import { StatusBadge } from "../components/StatusBadge.tsx";
 import { Switch } from "../ui/Switch.tsx";
+import { Toolbar } from "../ui/Toolbar.tsx";
 import { useToast } from "../ui/Toast.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING, fadeIn, flash, ids, pageTransition } from "../lib/motion.ts";
@@ -42,9 +46,9 @@ export function DetailPage({ id }: { id: number }) {
         </>
       ) : (
         loaded && (
-          <motion.p className="panel muted detail-missing" {...fadeIn}>
+          <Panel as="p" className="muted detail-missing" {...fadeIn}>
             No such webhook
-          </motion.p>
+          </Panel>
         )
       )}
     </motion.div>
@@ -146,41 +150,18 @@ function Head({ w, direct }: HeadProps) {
   }
 
   return (
-    <motion.section
+    <Panel
       ref={panel}
       layoutId={ids.card(w.id)}
       layoutCrossfade={false}
-      className={w.enabled ? "panel detail-head" : "panel detail-head disabled"}
+      className="detail-head"
       style={{ borderRadius: 2 }}
       initial={direct ? { opacity: 0 } : undefined}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.25, ease: EASE.css, layout: SPRING.morph }}
     >
       <div className="detail-main">
-        <div className="detail-title">
-          <motion.h2
-            ref={heading}
-            tabIndex={-1}
-            layoutId={ids.name(w.id)}
-            layoutCrossfade={false}
-            className="detail-name"
-            transition={{ layout: SPRING.morph }}
-          >
-            {w.name}
-          </motion.h2>
-          <PausedBadge paused={!w.enabled} />
-        </div>
-        <motion.div
-          layoutId={ids.url(w.id)}
-          layoutCrossfade={false}
-          className="detail-url"
-          transition={{ layout: SPRING.morph }}
-        >
-          {w.url}
-        </motion.div>
-        <motion.div {...fadeIn}>
-          <Sentence parts={webhookParts(w)} className="detail-sentence" highlight />
-        </motion.div>
+        <WebhookIdentity id={w.id} name={w.name} url={w.url} paused={!w.enabled} parts={webhookParts(w)} variant="detail" nameRef={heading} />
         {failure && (
           <motion.p className="detail-error" {...fadeIn}>
             <span className="sr-only">Last delivery error: </span>
@@ -188,15 +169,15 @@ function Head({ w, direct }: HeadProps) {
           </motion.p>
         )}
       </div>
-      <motion.div className="detail-actions" {...fadeIn}>
+      <Toolbar className="detail-actions" {...fadeIn}>
         <StatusBadge delivery={store.lastDelivery[w.id] ?? null} />
         <Switch checked={w.enabled} onChange={onToggle} label={`${w.enabled ? "Disable" : "Enable"} ${w.name}`} />
         <LinkButton to={`/webhooks/${w.id}/edit?from=detail`}>Edit</LinkButton>
         <Button variant="danger" onClick={onDelete}>
           Delete
         </Button>
-      </motion.div>
-    </motion.section>
+      </Toolbar>
+    </Panel>
   );
 }
 
@@ -213,7 +194,7 @@ function Deliveries({ log, failed, updatedAt, refresh }: DeliveriesState) {
   }, [log, settled]);
 
   return (
-    <motion.section ref={panel} className="panel deliveries" aria-labelledby="deliveries-heading" {...fadeIn}>
+    <Panel ref={panel} className="deliveries" aria-labelledby="deliveries-heading" {...fadeIn}>
       <motion.div
         className="deliveries-size"
         initial={false}
@@ -221,14 +202,17 @@ function Deliveries({ log, failed, updatedAt, refresh }: DeliveriesState) {
         transition={settled && !reduce ? SPRING.morph : { duration: 0 }}
       >
         <div ref={inner} className="deliveries-inner">
-          <div className="deliveries-head">
-            <h3 id="deliveries-heading">Deliveries</h3>
-            <RefreshButton onRefresh={refresh} updatedAt={updatedAt} noun={["delivery", "deliveries"]} disabled={!log} />
-          </div>
+          <SectionHeader
+            className="deliveries-head"
+            level={3}
+            headingId="deliveries-heading"
+            title="Deliveries"
+            actions={<RefreshButton onRefresh={refresh} updatedAt={updatedAt} noun={["delivery", "deliveries"]} disabled={!log} />}
+          />
           {log ? (
             <ul className="deliveries-list">
               {/* Outside AnimatePresence: it must leave in the same render the first row arrives. */}
-              {log.items.length === 0 && <li className="deliveries-empty">No deliveries yet</li>}
+              {log.items.length === 0 && <EmptyState as="li" size="small" className="deliveries-empty">No deliveries yet</EmptyState>}
               <AnimatePresence initial={false}>
                 {log.items.map((d) => (
                   <DeliveryRow key={d.id} d={d} fresh={log.fresh.has(d.id)} />
@@ -240,7 +224,7 @@ function Deliveries({ log, failed, updatedAt, refresh }: DeliveriesState) {
           )}
         </div>
       </motion.div>
-    </motion.section>
+    </Panel>
   );
 }
 
@@ -325,21 +309,20 @@ function DeliveryExchange({ id, d }: { id: string; d: Delivery }) {
           <p className="muted">{detail.error ?? "Not recorded"}</p>
         ) : (
           <>
-            <span className="label">Request</span>
-            <pre className="d-message mono">
-              <span className="d-message-head">{`POST ${detail.request.url}\n${headerLines(detail.request.headers)}\n\n`}</span>
+            <CodeBlock label="Request" head={`POST ${detail.request.url}\n${headerLines(detail.request.headers)}\n\n`}>
               {detail.request.body}
               {detail.request.truncated && <span className="muted">{"\n… cut at 8 KB"}</span>}
-            </pre>
-            <span className="label">Response</span>
+            </CodeBlock>
             {detail.response === null ? (
-              <p className="muted">No response: {detail.error}</p>
+              <>
+                <CodeLabel>Response</CodeLabel>
+                <p className="muted">No response: {detail.error}</p>
+              </>
             ) : (
-              <pre className="d-message mono">
-                <span className="d-message-head">{`HTTP ${detail.status}\n${headerLines(detail.response.headers)}\n\n`}</span>
+              <CodeBlock label="Response" head={`HTTP ${detail.status}\n${headerLines(detail.response.headers)}\n\n`}>
                 {detail.response.body}
                 {detail.response.truncated && <span className="muted">{"\n… cut at 8 KB"}</span>}
-              </pre>
+              </CodeBlock>
             )}
           </>
         )}

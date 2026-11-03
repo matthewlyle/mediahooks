@@ -1,8 +1,12 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject } from "react";
 import type { IncomingEvent, RouteStatus } from "../../src/types.ts";
+import { EmptyState } from "../ui/EmptyState.tsx";
+import { CodeBlock } from "../ui/CodeBlock.tsx";
 import { templateVars } from "../../src/template.ts";
+import { Panel } from "../ui/Panel.tsx";
 import { RefreshButton, type RefreshOutcome } from "../ui/RefreshButton.tsx";
+import { SectionHeader } from "../ui/SectionHeader.tsx";
 import { RelativeTime } from "../ui/RelativeTime.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING, flash, pageTransition } from "../lib/motion.ts";
@@ -52,17 +56,18 @@ export function EventsPage() {
   return (
     <motion.div className="page page-events" {...pageTransition}>
       <h2 ref={heading} tabIndex={-1} className="sr-only">Events</h2>
-      <section className="panel events-panel" aria-label="Recent events">
-        <div className="ev-head">
-          <RefreshButton onRefresh={load} updatedAt={updatedAt} noun={["event", "events"]} disabled={!events && !error} />
-        </div>
+      <Panel className="events-panel" aria-label="Recent events">
+        <SectionHeader
+          className="ev-head"
+          actions={<RefreshButton onRefresh={load} updatedAt={updatedAt} noun={["event", "events"]} disabled={!events && !error} />}
+        />
         <AnimatePresence initial={false}>
           {(events || error) && (
             <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={FADE_IN}>
               {!events ? (
-                <p className="ev-empty">Couldn't load events: {error}</p>
+                <EmptyState size="medium">Couldn't load events: {error}</EmptyState>
               ) : events.length === 0 ? (
-                <p className="ev-empty">No Plex events yet</p>
+                <EmptyState size="medium">No Plex events yet</EmptyState>
               ) : (
                 <div className="ev-cols" aria-hidden="true">
                   <span>Time</span>
@@ -85,7 +90,7 @@ export function EventsPage() {
             </motion.div>
           )}
         </AnimatePresence>
-      </section>
+      </Panel>
     </motion.div>
   );
 }
@@ -177,8 +182,7 @@ function EventDetail({ id, e }: { id: string; e: IncomingEvent }) {
         ) : (
           <p className="muted">No webhooks existed when this arrived.</p>
         )}
-        <span className="label">Payload</span>
-        <pre className="ev-payload mono">{JSON.stringify(e.payload, null, 2)}</pre>
+        <CodeBlock label="Payload">{JSON.stringify(e.payload, null, 2)}</CodeBlock>
       </div>
     </motion.div>
   );

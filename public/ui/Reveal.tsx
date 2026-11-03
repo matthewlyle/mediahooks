@@ -1,10 +1,17 @@
 import { motion, useReducedMotion } from "motion/react";
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { EASE } from "../../lib/motion.ts";
+import { EASE } from "../lib/motion.ts";
+import "./Reveal.css";
 
 const HEIGHT_EASE = [0.25, 1, 0.5, 1] as const;
 
-export function Reveal({ children }: { children: ReactNode }) {
+/** A block whose height and opacity animate between hidden and shown as it mounts and unmounts. */
+export function Reveal({ children, className }: {
+  /** Content being disclosed. */
+  children: ReactNode;
+  /** Extra class name on the outer element, for layout in the parent. */
+  className?: string;
+}) {
   const reduce = useReducedMotion();
   const inner = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number | null>(null);
@@ -19,7 +26,7 @@ export function Reveal({ children }: { children: ReactNode }) {
 
   return (
     <motion.div
-      className={settled ? "reveal settled" : "reveal"}
+      className={["reveal", settled && "settled", className].filter(Boolean).join(" ")}
       onAnimationStart={() => setSettled(false)}
       onAnimationComplete={() => setSettled(true)}
       initial={{ height: 0, opacity: 0 }}
