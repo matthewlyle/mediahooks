@@ -6,8 +6,8 @@ description: Fanning mediahooks GitHub issues out to omp worker agents, one work
 # Working issues with worker agents
 
 One issue, one worktree, one omp agent, one PR. Follows AGENTS.md: branch `issue-<n>-<slug>`, PR
-title is a Conventional Commit, body says `Fixes #<n>`. Workers never merge; only the review step
-below may queue a merge.
+title is a Conventional Commit, body says `Fixes #<n>`. Workers never merge; only the reviewer, or
+the lead once the owner adds `approved`, may queue a merge.
 
 ## Check for existing work
 
@@ -56,6 +56,16 @@ When a worker reports its PR, start a reviewer (a different agent from the worke
 `herdr-workers` in the issue's tab: name `<n>-review`, folder the worktree, label `issue=<n>`,
 template `mediahooks-reviewer`, and the task `PR <pr>, issue <n>, port <port>.` The reviewer's
 port is `89` + the issue number zero-padded.
+
+The reviewer reports Merge, Fix or Human:
+
+- **Fix:** send the review's **Fix before merge** list to the worker (`hc send <n>-<slug> …`).
+  When it reports the new head, end the old `<n>-review` and start a fresh one on that head. A
+  third review that still finds fixes goes to the owner.
+- **Human:** the owner answers on the PR or issue, or adds `approved`, which means yes to every
+  **Your call** question. Have the worker make any listed fixes, then, once CI passes on the new
+  head, queue the merge yourself (`gh pr merge <pr> --auto --squash`), in dependency order when
+  PRs build on each other.
 
 ## Writing for GitHub
 
@@ -108,6 +118,24 @@ Review comment, merge:
 <sub>Agent review of <short sha></sub>
 ```
 
+Review comment, back to the worker (no label, no assignee):
+
+```markdown
+> [!WARNING]
+> **Fix before merge**
+> - <bug, with file and numbers>
+
+<details>
+<summary>Checked: <count> passed</summary>
+
+- <criterion>
+- Tests, typecheck, CI
+
+</details>
+
+<sub>Agent review of <short sha></sub>
+```
+
 Review comment, needs a person (at most about 60 words outside `<details>`):
 
 ```markdown
@@ -146,4 +174,6 @@ worktree (`git -C ~/src/mediahooks worktree remove <path>`, then delete the loca
 - When a worker reports done, check `gh pr view <pr> -R matthewlyle/mediahooks --json headRefOid` against its local HEAD.
   Agents have reported pushes that never happened. Start a reviewer only on the pushed head.
 - After a merge, merge `main` into open PRs that touch the same files before their review.
+- Before starting new work, check `gh pr list -R matthewlyle/mediahooks --label approved` and
+  queue the merges those are waiting on.
 - When a milestone has no open issues left, close it (`gh api -X PATCH repos/matthewlyle/mediahooks/milestones/<n> -f state=closed`) and tell the owner its release is ready.
