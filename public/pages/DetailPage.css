@@ -34,6 +34,13 @@
   margin-top: 2px;
   word-break: break-all;
 }
+.panel.disabled h2.detail-name,
+.panel.disabled .detail-url {
+  color: var(--muted);
+}
+.panel.disabled .detail-url {
+  opacity: 1;
+}
 .detail-sentence {
   margin: 12px 0 0;
   font-size: 14px;
@@ -102,9 +109,6 @@
     box-shadow: none;
     scale: none;
   }
-}
-.d-row .d-summary:focus-visible {
-  box-shadow: var(--glow);
 }
 .d-detail-clip {
   grid-column: 1 / -1;
@@ -179,6 +183,15 @@
     margin-right: auto;
   }
 
+  .deliveries-head .refresh-status {
+    white-space: normal;
+    text-align: right;
+  }
+  .deliveries-head .refresh-label {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    row-gap: 0;
+  }
   .deliveries-list {
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 4px;

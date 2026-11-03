@@ -192,7 +192,7 @@ const highlight = HighlightStyle.define([
 
 const theme = EditorView.theme(
   {
-    "&": { color: "var(--fg)", backgroundColor: "var(--bg)", borderRadius: "2px" },
+    "&": { color: "var(--fg)", backgroundColor: "var(--bg)", border: "1px solid var(--border-strong)", borderRadius: "2px" },
     ".cm-content": { fontFamily: "var(--mono)", fontSize: "12px", padding: "7px 0", caretColor: "var(--accent)" },
     ".cm-line": { padding: "0 10px" },
     ".cm-cursor, .cm-dropCursor": { borderLeftColor: "var(--accent)" },

@@ -4,7 +4,9 @@
   --surface-hover: #151a25;
   --inset: #0c0f16;
   --raised: #161b27;
+  --border-strong: #646d81;
   --glow: inset 0 0 0 1px rgba(34, 211, 238, 0.6), 0 0 12px rgba(34, 211, 238, 0.3);
+  --focus-ring: 2px solid var(--accent);
   --fg: #e3e9f2;
   --muted: #7a8396;
   --accent: #22d3ee;
@@ -127,8 +129,8 @@ a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: none;
-  box-shadow: var(--glow);
+  outline: var(--focus-ring);
+  outline-offset: 2px;
 }
 @media (hover: hover) and (pointer: fine) {
   button:not(:disabled):hover,
@@ -166,6 +168,7 @@ textarea:focus-visible {
 .editor select {
   transition:
     background-color 150ms ease,
+    border-color 150ms ease,
     box-shadow 150ms ease;
 }
 @media (hover: hover) and (pointer: fine) {
@@ -425,7 +428,7 @@ button.avatar-btn {
   border-radius: 2px;
 }
 .card-main:focus-visible {
-  outline: 1px solid var(--accent);
+  outline: var(--focus-ring);
   outline-offset: 4px;
 }
 .card-title {
@@ -447,6 +450,13 @@ button.avatar-btn {
   overflow: hidden;
   text-overflow: ellipsis;
   min-width: 0;
+}
+.card.disabled .card-name,
+.card.disabled .card-url {
+  color: var(--muted);
+}
+.card.disabled .card-url {
+  opacity: 1;
 }
 .card-summary {
   font-size: 12px;
@@ -511,6 +521,14 @@ button.avatar-btn {
   border-radius: 2px;
   color: var(--fg);
   background: rgba(122, 131, 150, 0.18);
+}
+
+.result-mark {
+  width: 9px;
+  height: 9px;
+  margin-right: 5px;
+  vertical-align: -1px;
+  overflow: visible;
 }
 
 .test-btn {
@@ -643,12 +661,15 @@ button.avatar-btn {
   border-radius: 3px;
   position: relative;
   background: var(--raised);
+  border-color: var(--border-strong);
   transition:
     background-color 150ms ease,
+    border-color 150ms ease,
     box-shadow 150ms ease;
 }
 .switch[aria-checked="true"] {
   background: var(--accent);
+  border-color: var(--accent);
   box-shadow: 0 0 10px rgba(34, 211, 238, 0.45);
 }
 @media (hover: hover) and (pointer: fine) {
@@ -658,6 +679,7 @@ button.avatar-btn {
   }
   .switch[aria-checked="true"]:not(:disabled):hover {
     background: var(--accent-hover);
+    border-color: var(--accent-hover);
     box-shadow: 0 0 14px rgba(34, 211, 238, 0.55);
   }
 }
@@ -780,7 +802,7 @@ form.editor {
   font-size: 12px;
   color: var(--fg);
   background: var(--bg);
-  border: 1px solid transparent;
+  border: 1px solid var(--border-strong);
   border-radius: 2px;
   padding: 7px 10px;
   width: 100%;
