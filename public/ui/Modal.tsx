@@ -1,9 +1,18 @@
 import { motion } from "motion/react";
 import { useEffect, type ReactNode } from "react";
 import { EASE, SPRING } from "../lib/motion.ts";
-import { useInertToasts } from "./Toast.tsx";
+import { useInertToasts } from "../components/Toast.tsx";
+import "./Modal.css";
 
-export function Modal({ label, children }: { label: string; children: ReactNode }) {
+export type ModalProps = {
+  /** Accessible name announced for the dialog. */
+  label: string;
+  /** Content shown inside the dialog panel. */
+  children: ReactNode;
+};
+
+/** A modal dialog over a dimmed backdrop that locks page scroll and makes toasts inert while open. */
+export function Modal({ label, children }: ModalProps) {
   useInertToasts();
   useEffect(() => {
     const root = document.documentElement;

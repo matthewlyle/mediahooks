@@ -1,5 +1,6 @@
 import { Fragment, createElement, useState, type ComponentType } from "react";
 import { Button, LinkButton } from "../public/ui/Button.tsx";
+import { Modal, type ModalProps } from "../public/ui/Modal.tsx";
 import { Popover, type PopoverProps } from "../public/ui/Popover.tsx";
 import { Segmented } from "../public/ui/Segmented.tsx";
 import { Switch } from "../public/ui/Switch.tsx";
@@ -45,3 +46,21 @@ fixtures.Popover = {
   props: { id: "demo-popover", open: true, label: "Pick one" },
   bind: { onClose: () => ({ open: false }) },
 };
+
+function ModalDemo(props: ModalProps) {
+  const [open, setOpen] = useState(true);
+  return createElement(
+    Fragment,
+    null,
+    createElement("button", { type: "button", onClick: () => setOpen(true) }, "Open modal"),
+    open &&
+      createElement(
+        Modal,
+        props,
+        createElement("p", null, "Dialog content"),
+        createElement("button", { type: "button", onClick: () => setOpen(false) }, "Close"),
+      ),
+  );
+}
+
+fixtures.Modal = { component: ModalDemo, props: { label: "Example dialog" } };

@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import type { AuthUser, Webhook } from "../src/types.ts";
 import { LinkButton } from "./ui/Button.tsx";
 import { Menu } from "./components/Menu.tsx";
-import { Modal } from "./components/Modal.tsx";
+import { Modal } from "./ui/Modal.tsx";
 import { ToastProvider } from "./components/Toast.tsx";
 import { api, setUnauthorizedHandler } from "./lib/api.ts";
 import { EASE, SPRING, TAP, ids, routeDirection, useFinePointer } from "./lib/motion.ts";
