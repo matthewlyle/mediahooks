@@ -100,11 +100,14 @@ form.editor {
 }
 
 @media (max-width: 640px) {
-  .editor-bar {
+  .editor-bar::before {
+    content: "";
+    position: fixed;
     top: 0;
-  }
-  .editor-bar[data-stuck] {
-    padding-top: calc(var(--space-10) + env(safe-area-inset-top));
+    left: 0;
+    right: 0;
+    height: env(safe-area-inset-top);
+    background: var(--bg);
   }
   .editor .row-destination {
     grid-template-columns: 1fr;
