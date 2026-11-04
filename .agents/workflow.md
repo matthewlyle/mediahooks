@@ -13,8 +13,7 @@ about this repo. The process lives there; only what's specific to mediahooks liv
 - Each agent gets a port: `88` + the issue number zero-padded to two digits for the worker
   (issue 4 → 8804), `89` + it for the reviewer. From 100 up, `9` + the three-digit number for
   the worker (135 → 9135) and `19` + it for the reviewer (135 → 19135). Never 8787 (production)
-  or 8788 (dev). The playground (`PORT=<port> bun run design`) takes the agent's port + 20000
-  (9135 → 29135, 19135 → 39135); start nothing on any other port.
+  or 8788 (dev); start nothing on any other port.
 - Worker task: `Issue <n>, port <port>.` Reviewer task: `PR <pr>, issue <n>, port <port>.`
 - Worktree setup: `bun install`.
 - Lite fits a one-line CSS or copy fix, not a long browser session.
@@ -40,15 +39,13 @@ about this repo. The process lives there; only what's specific to mediahooks liv
     the dump doesn't load, compare before/after screenshots of that state instead.
   - No page CSS (`public/pages/*.css`, `public/styles.css`) selects the component's classes; a
     page that needs placement passes its own `className`.
-  - Every control in the component's `design/fixtures/<Name>.tsx` changes the preview.
-  - The PR body has a screenshot of the component's playground page.
 
 ## Commits, PRs, merging
 
 - Commit: a Conventional Commit whose scope matches the issue's topic (`fix(a11y): …` for
   `accessibility` issues), `Fixes #<n>` in the body. The PR title is the same line: it becomes the
   squash commit, and release-please puts the scope in the changelog.
-- Type: `feat` only for a change app users can see or use. Refactors, the dev-only playground,
+- Type: `feat` only for a change app users can see or use. Refactors,
   tests, CI and tooling use `refactor`, `chore`, `test` or `ci`.
 - Merge: `gh pr merge <pr> -R matthewlyle/mediahooks --auto --squash`.
 - A PR that conflicts with `main` only because another PR touched the same lines (import lists,
