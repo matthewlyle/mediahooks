@@ -4,11 +4,19 @@ import type { AddressInfo } from "node:net";
 import { expect, test } from "./voiceover.ts";
 
 let receiver: Server;
+let release: () => void;
+let released: Promise<void>;
+
+test.beforeEach(() => {
+  released = new Promise((resolve) => (release = resolve));
+});
+
+test.afterEach(() => release());
 
 test.beforeAll(async () => {
   receiver = createServer((req, res) => {
     req.resume();
-    setTimeout(() => res.end("ok"), 5000);
+    void released.then(() => res.end("ok"));
   });
   receiver.listen(0, "127.0.0.1");
   await once(receiver, "listening");
