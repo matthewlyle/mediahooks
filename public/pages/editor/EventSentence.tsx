@@ -130,14 +130,13 @@ export function EventSentence(props: EventSentenceProps) {
       >
         {open?.kind === "what" && whatMenu}
         {open?.kind === "who" && (
-          <MultiSelect any="anyone" selected={users} known={known.users} placeholder="Add a name" onChange={(n) => props.onUsers(n.join(", "))} />
+          <MultiSelect any="anyone" selected={users} known={known.users} onChange={(n) => props.onUsers(n.join(", "))} />
         )}
         {open?.kind === "where" && (
           <MultiSelect
             any="any library"
             selected={libraries}
             known={known.libraries}
-            placeholder="Add a library"
             onChange={(n) => props.onLibraries(n.join(", "))}
           />
         )}
