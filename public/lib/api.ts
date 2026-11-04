@@ -1,4 +1,4 @@
-export type Meta = { version: string; events: string[]; templateVars: string[]; ingestToken: string };
+export type Meta = { version: string; events: string[]; ingestToken: string };
 export type PlexStatus = { lastEventAt: number | null };
 export type ApiResult<T> = { ok: true; status: number; data: T } | { ok: false; status: number; error: string };
 

@@ -6,7 +6,8 @@ import { matches, type Filters } from "../../src/filters.ts";
 import type { SendResult } from "../../src/send.ts";
 import type { IncomingEvent, PlexPayload, Webhook } from "../../src/types.ts";
 import { SAMPLE_MOVIE_PAYLOAD, SAMPLE_PAYLOAD, SAMPLE_TRACK_PAYLOAD } from "../../src/sample.ts";
-import { isJsonContentType, renderBody, renderHeaders, templateVars } from "../../src/template.ts";
+import { TEMPLATE_VAR_GROUPS, isJsonContentType, renderBody, renderHeaders, templateVars } from "../../src/template.ts";
+import { VariableReference } from "../ui/VariableReference.tsx";
 import { ErrorMessage } from "../ui/ErrorMessage.tsx";
 import { Button, LinkButton } from "../ui/Button.tsx";
 import { Field as FormField, useFieldControl } from "../ui/Field.tsx";
@@ -287,7 +288,10 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
     const parsed = parseHeaders(form.headers);
     return isJsonContentType(parsed.ok ? parsed.headers : {});
   }, [form.headers]);
-  const completionData = useMemo(() => ({ vars: templateVars(source.payload), payload: source.payload }), [source]);
+  const completionData = useMemo(() => ({ vars: templateVars(source.payload), groups: TEMPLATE_VAR_GROUPS, payload: source.payload }), [source]);
+  const emptyFor = ({ movie: "movies", episode: "episodes", track: "tracks" } as Record<string, string>)[
+    String(source.payload.Metadata?.type)
+  ] ?? "this type";
   const discord = isDiscordMessage(preview.json) ? preview.json : null;
   const slack = !discord && isSlackMessage(preview.json) ? preview.json : null;
   const rich = discord ? "discord" : slack ? "slack" : null;
@@ -547,18 +551,12 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
               footer={
                 <>
                   <Disclosure label="Template variables" open={varsOpen} onOpenChange={setVarsOpen}>
-                    <div className="var-chips" role="group" aria-label="Insert a variable">
-                      {meta.templateVars.map((v) => (
-                        <Button
-                          key={v}
-                          size="small"
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => insertVariable(v)}
-                        >
-                          {`{{${v}}}`}
-                        </Button>
-                      ))}
-                    </div>
+                    <VariableReference
+                      groups={TEMPLATE_VAR_GROUPS}
+                      values={completionData.vars}
+                      emptyFor={emptyFor}
+                      onInsert={insertVariable}
+                    />
                     <p className="vars-hint">
                       Payload paths work too, like <code>{"{{Metadata.summary}}"}</code>.
                     </p>

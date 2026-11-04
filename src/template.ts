@@ -79,9 +79,80 @@ export function episodeList(episodes: Metadata[]): string {
 
 export type TemplateContext = { thumbUrl?: string; now?: Date; group?: Metadata[] };
 
+const names = (v: unknown, key: string, limit: number): string =>
+  Array.isArray(v)
+    ? v
+      .map((e) => str((e as Record<string, unknown> | null)?.[key]))
+      .filter(Boolean)
+      .slice(0, limit)
+      .join(", ")
+    : "";
+
+function castRoles(v: unknown): string {
+  if (!Array.isArray(v)) return "";
+  return v
+    .slice(0, 5)
+    .map((e) => {
+      const r = e as Record<string, unknown> | null;
+      return [str(r?.tag), str(r?.role)].filter(Boolean).join(" as ");
+    })
+    .filter(Boolean)
+    .join(", ");
+}
+
+const num = (v: unknown): number | undefined => (typeof v === "number" && Number.isFinite(v) ? v : undefined);
+const score = (v: unknown): string => (num(v) === undefined ? "" : (v as number).toFixed(1));
+
+function externalId(m: Metadata | undefined, scheme: string): string {
+  if (!Array.isArray(m?.Guid)) return "";
+  const prefix = `${scheme}://`;
+  for (const g of m.Guid) {
+    const id = str((g as Record<string, unknown> | null)?.id);
+    if (id.startsWith(prefix)) return id.slice(prefix.length);
+  }
+  return "";
+}
+
+function externalRating(m: Metadata | undefined, scheme: string): string {
+  if (!Array.isArray(m?.Rating)) return "";
+  for (const r of m.Rating) {
+    const e = r as Record<string, unknown> | null;
+    if (str(e?.image).startsWith(`${scheme}://`)) return score(e?.value);
+  }
+  return "";
+}
+
+function clock(ms: number | undefined): string {
+  if (ms === undefined) return "";
+  const minutes = Math.floor(ms / 60000);
+  const h = Math.floor(minutes / 60);
+  const min = minutes % 60;
+  if (h === 0) return `${min}m`;
+  return min === 0 ? `${h}h` : `${h}h ${min}m`;
+}
+
+function isoSeconds(v: unknown): string {
+  const s = num(v);
+  return s === undefined ? "" : new Date(s * 1000).toISOString();
+}
+
+function progress(m: Metadata | undefined) {
+  const duration = num(m?.duration);
+  const offset = num(m?.viewOffset);
+  const known = duration !== undefined && duration > 0 && offset !== undefined;
+  return {
+    duration: clock(duration),
+    position: clock(offset),
+    progress: known ? `${Math.min(100, Math.round((offset / duration) * 100))}%` : "",
+    remaining: known ? `${clock(Math.max(0, duration - offset))} left` : "",
+  };
+}
+
 export function templateVars(p: PlexPayload, ctx: TemplateContext = {}): Record<string, unknown> {
   const m = p.Metadata;
   const group = ctx.group && ctx.group.length > 1 ? ctx.group : undefined;
+  const tmdbId = externalId(m, "tmdb");
+  const imdbId = externalId(m, "imdb");
   return {
     event: p.event,
     action: ACTIONS[p.event] ?? p.event,
@@ -109,18 +180,74 @@ export function templateVars(p: PlexPayload, ctx: TemplateContext = {}): Record<
     plex_url: plexUrl(p),
     thumb_url: ctx.thumbUrl,
     timestamp: (ctx.now ?? new Date()).toISOString(),
+    summary: m?.summary,
+    tagline: m?.tagline,
+    genres: names(m?.Genre, "tag", Infinity),
+    countries: names(m?.Country, "tag", Infinity),
+    studio: m?.studio,
+    content_rating: m?.contentRating,
+    original_title: m?.originalTitle,
+    release_date: m?.originallyAvailableAt,
+    season_title: m?.type === "episode" ? m.parentTitle : "",
+    cast: names(m?.Role, "tag", 5),
+    cast_roles: castRoles(m?.Role),
+    directors: names(m?.Director, "tag", Infinity),
+    writers: names(m?.Writer, "tag", Infinity),
+    producers: names(m?.Producer, "tag", 3),
+    critic_rating: score(m?.rating),
+    audience_rating: score(m?.audienceRating),
+    imdb_rating: externalRating(m, "imdb"),
+    tmdb_rating: externalRating(m, "themoviedb"),
+    parent_guide: Array.isArray(m?.CommonSenseMedia) ? str((m.CommonSenseMedia[0] as Record<string, unknown> | undefined)?.oneLiner) : "",
+    imdb_id: imdbId,
+    imdb_url: imdbId ? `https://www.imdb.com/title/${imdbId}` : "",
+    tmdb_id: tmdbId,
+    tmdb_url: tmdbId ? `https://www.themoviedb.org/${m?.type === "movie" ? "movie" : "tv"}/${tmdbId}` : "",
+    tvdb_id: externalId(m, "tvdb"),
+    ...progress(m),
+    added_at: isoSeconds(m?.addedAt),
+    last_watched_at: isoSeconds(m?.lastViewedAt),
+    view_count: m?.viewCount,
+    user_thumb: p.Account?.thumb,
+    is_owner: p.owner,
   };
 }
 
-export const TEMPLATE_VARS_HELP = Object.keys(templateVars({ event: "" }));
+export const TEMPLATE_VAR_GROUPS: { name: string; vars: string[] }[] = [
+  { name: "Common", vars: ["display_title", "user", "action", "player", "plex_url", "thumb_url", "summary"] },
+  {
+    name: "Title",
+    vars: [
+      "title", "show", "season", "episode", "episode_code", "season_title", "count", "episodes", "artist", "album",
+      "year", "type", "library", "tagline", "genres", "countries", "studio", "content_rating", "original_title",
+      "release_date",
+    ],
+  },
+  { name: "People", vars: ["cast", "cast_roles", "directors", "writers", "producers"] },
+  { name: "Ratings", vars: ["critic_rating", "audience_rating", "imdb_rating", "tmdb_rating", "parent_guide"] },
+  { name: "Links & IDs", vars: ["imdb_id", "imdb_url", "tmdb_id", "tmdb_url", "tvdb_id"] },
+  {
+    name: "Progress",
+    vars: ["duration", "position", "progress", "remaining", "added_at", "last_watched_at", "view_count"],
+  },
+  {
+    name: "User & server",
+    vars: ["user_id", "user_thumb", "is_owner", "server", "ip", "player_local", "event", "timestamp"],
+  },
+];
 
-function lookupPath(root: unknown, path: string): unknown {
-  let cur = root;
-  for (const key of path.split(".")) {
-    if (cur === null || typeof cur !== "object") return undefined;
-    cur = (cur as Record<string, unknown>)[key];
+export function isEmptyVar(v: unknown): boolean {
+  return v === undefined || v === null || v === "";
+}
+
+function lookupPath(root: unknown, keys: string[]): unknown {
+  if (keys.length === 0) return root;
+  if (Array.isArray(root) && Number.isNaN(Number(keys[0]))) {
+    const mapped = root.map((e) => lookupPath(e, keys)).filter((v) => v !== undefined);
+    return mapped.every((v) => v === null || typeof v !== "object") ? mapped.join(", ") : mapped;
   }
-  return cur;
+  if (root === null || typeof root !== "object") return undefined;
+  return lookupPath((root as Record<string, unknown>)[keys[0]!], keys.slice(1));
 }
 
 function renderValue(v: unknown, json: boolean): string {
@@ -143,7 +270,7 @@ export function renderTemplate(
   const vars = templateVars(p, opts);
   const json = opts.json ?? true;
   return template.replace(PLACEHOLDER, (_, name: string) =>
-    renderValue(Object.hasOwn(vars, name) ? vars[name] : lookupPath(p, name), json),
+    renderValue(Object.hasOwn(vars, name) ? vars[name] : lookupPath(p, name.split(".")), json),
   );
 }
 
