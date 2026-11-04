@@ -87,12 +87,6 @@ form.editor {
     max-height: 380px;
   }
 }
-.var-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-  padding-top: var(--space-8);
-}
 .vars-hint {
   margin: var(--space-6) 0 0;
   font-size: var(--text-12);

@@ -25,6 +25,7 @@ import {
 } from "@codemirror/view";
 import { tags } from "@lezer/highlight";
 import { forwardRef, useEffect, useImperativeHandle, useRef, type KeyboardEvent } from "react";
+import { isEmptyVar } from "../../src/template.ts";
 import "./CodeEditor.css";
 
 /** Imperative methods exposed through the editor's ref. */
@@ -43,6 +44,8 @@ export type CodeEditorHandle = {
 export type CompletionData = {
   /** Top-level variables, keyed by name. */
   vars: Record<string, unknown>;
+  /** Variable names by group, in display order; completions are sectioned by these. */
+  groups: { name: string; vars: string[] }[];
   /** Nested object whose dotted paths are offered as payload completions. */
   payload: unknown;
 };
@@ -80,7 +83,7 @@ const PLACEHOLDER = /\{\{[^{}\n]*\}\}/g;
 const External = Annotation.define<boolean>();
 
 function describe(v: unknown): string {
-  if (v === undefined || v === null || v === "") return "empty";
+  if (isEmptyVar(v)) return "empty";
   const text = typeof v === "string" ? v : JSON.stringify(v);
   return text.length > 40 ? `${text.slice(0, 39)}…` : text;
 }
@@ -112,22 +115,27 @@ function placeholderSource(data: () => CompletionData) {
     if (!match) return null;
     const from = match.from + /^\{\{\s*/.exec(match.text)![0].length;
     const typed = ctx.state.sliceDoc(from, ctx.pos);
-    const { vars, payload } = data();
+    const { vars, payload, groups } = data();
     const paths = flatten(payload, "", []);
     let options: Completion[];
     if (!typed.includes(".")) {
       const namespaces = [...new Set(paths.filter(([p]) => p.includes(".")).map(([p]) => p.split(".")[0]!))];
+      const section = (name: string, rank: number) => ({ name, rank });
+      const variable = (name: string, group: string, rank: number): Completion => ({
+        label: name,
+        detail: describe(vars[name]),
+        type: "variable",
+        section: section(group, rank),
+        boost: isEmptyVar(vars[name]) ? -10 : 0,
+        apply: applyName(name),
+      });
       options = [
-        ...Object.entries(vars).map(([name, v]) => ({
-          label: name,
-          detail: describe(v),
-          type: "variable",
-          apply: applyName(name),
-        })),
+        ...groups.flatMap((g, i) => g.vars.map((name) => variable(name, g.name, i))),
         ...namespaces.map((ns) => ({
           label: `${ns}.`,
           detail: "payload",
           type: "namespace",
+          section: section("Payload", groups.length + 1),
           boost: -1,
           apply: (view: EditorView, _c: Completion, f: number, t: number) => {
             view.dispatch({ changes: { from: f, to: t, insert: `${ns}.` }, selection: { anchor: f + ns.length + 1 } });

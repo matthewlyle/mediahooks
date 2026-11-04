@@ -10,7 +10,6 @@ import { createPlexClient, plexErrors, posterPath } from "./plex.ts";
 import { SAMPLE_PAYLOAD } from "./sample.ts";
 import { maskWebhook, unmask } from "./secrets.ts";
 import { posterUrl, send, type SendContext } from "./send.ts";
-import { TEMPLATE_VARS_HELP } from "./template.ts";
 import { PLEX_EVENTS, type PlexPayload, type Webhook, type WebhookListItem } from "./types.ts";
 import { validateWebhook } from "./validate.ts";
 
@@ -107,7 +106,6 @@ export function createApp(config: AppConfig): App {
           Response.json({
             version,
             events: PLEX_EVENTS,
-            templateVars: TEMPLATE_VARS_HELP,
             ingestToken: ingest.token(),
           }),
       },
