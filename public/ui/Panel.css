@@ -1,0 +1,20 @@
+.panel {
+  background: var(--surface);
+  border-radius: var(--radius-2);
+  padding: var(--space-16);
+}
+
+.panel h2 {
+  margin: 0 0 var(--space-8);
+  font-size: var(--text-16);
+  font-weight: 600;
+}
+
+.panel-dense {
+  padding: var(--space-16) var(--space-14);
+}
+@media (max-width: 640px) {
+  .panel-dense {
+    padding: var(--space-14) var(--space-12);
+  }
+}

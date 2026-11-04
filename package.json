@@ -1,6 +1,6 @@
 {
   "name": "mediahooks",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
   "license": "MIT",
   "type": "module",
@@ -9,7 +9,6 @@
     "dev": "PORT=8788 bun --hot src/server.ts",
     "test": "bun test",
     "typecheck": "tsc --noEmit",
-    "design": "PORT=${PORT:-8790} bun --hot design/server.ts",
     "style:dump": "playwright test -c test/style-guard",
     "style:baseline": "OUT=test/style-guard/baseline.json.gz playwright test -c test/style-guard",
     "style:diff": "bun test/style-guard/compare.ts"

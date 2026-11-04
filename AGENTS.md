@@ -84,3 +84,4 @@ Issues and worker agents follow the user-level `github-issue` and `work-issue` s
 - Copy: sentence case, no filler text, no uppercase letter-spaced labels, no left accent bars.
 - A `public/ui/` component keeps its rules and `@keyframes` in its own CSS file; nothing outside
   it relies on them.
+- Build UI from `public/ui/` (read the component's JSDoc first); a reusable piece becomes a new component, not page CSS.

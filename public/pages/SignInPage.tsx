@@ -1,8 +1,9 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import type { AuthUser } from "../../src/types.ts";
+import { ErrorMessage } from "../ui/ErrorMessage.tsx";
 import { Button } from "../ui/Button.tsx";
-import { Spinner } from "../ui/Spinner.tsx";
+import { LiveRegion } from "../ui/LiveRegion.tsx";
 import { api } from "../lib/api.ts";
 import { EASE, SPRING } from "../lib/motion.ts";
 import "./SignInPage.css";
@@ -82,6 +83,9 @@ export function SignInPage({ onSignedIn }: { onSignedIn: (user: AuthUser) => voi
     }
   }
 
+  const isError = !link && note?.error === true;
+  const Note = isError ? ErrorMessage : motion.p;
+
   return (
     <motion.div
       className="page page-signin"
@@ -93,21 +97,20 @@ export function SignInPage({ onSignedIn }: { onSignedIn: (user: AuthUser) => voi
         <h2 className="sr-only">Sign in</h2>
         <Button
           variant="primary"
+          size="large"
           className="signin-btn"
           onClick={signIn}
-          aria-disabled={(waiting && !link) || undefined}
-          aria-busy={waiting || undefined}
+          busy={waiting && !link}
         >
-          {waiting && !link && <Spinner inverse />}
-          {waiting && !link ? "Waiting for Plex…" : "Sign in with Plex"}
+          Sign in with Plex
         </Button>
-        <div role="status">
+        <LiveRegion visible as="div">
           {waiting && !link && <span className="sr-only">Waiting for Plex…</span>}
           <AnimatePresence initial={false} mode="wait">
             {(link || note) && (
-              <motion.p
+              <Note
                 key={link ? "link" : note!.text}
-                className={`signin-note${note?.error ? " error" : ""}`}
+                className={isError ? "signin-error" : "signin-note"}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1, transition: { duration: 0.2, ease: EASE.css } }}
                 exit={{ opacity: 0, transition: { duration: 0.12, ease: EASE.css } }}
@@ -119,10 +122,10 @@ export function SignInPage({ onSignedIn }: { onSignedIn: (user: AuthUser) => voi
                 ) : (
                   note!.text
                 )}
-              </motion.p>
+              </Note>
             )}
           </AnimatePresence>
-        </div>
+        </LiveRegion>
       </div>
     </motion.div>
   );

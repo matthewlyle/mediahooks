@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Button } from "./Button.tsx";
+import { Button, type ButtonSize } from "./Button.tsx";
+import { LiveRegion } from "./LiveRegion.tsx";
 import "./CopyButton.css";
 
 // Plain-http LAN addresses have no Clipboard API; the execCommand fallback is needed.
@@ -30,12 +31,14 @@ export type CopyButtonProps = {
   text: string;
   /** Extra class names added to the button, for layout by the caller. */
   className?: string;
+  /** Size of the button. */
+  size?: ButtonSize;
   /** Called when the copy fails, so the caller can select the text for manual copying. */
   onFail?: () => void;
 };
 
 /** A button that copies `text` and briefly shows a check mark and "Copied"; a failed copy is announced to screen readers. */
-export function CopyButton({ text, className, onFail }: CopyButtonProps) {
+export function CopyButton({ text, className, size, onFail }: CopyButtonProps) {
   // A counter, not a boolean: each copy remounts the check so it redraws.
   const [copied, setCopied] = useState(0);
   const [failed, setFailed] = useState(false);
@@ -56,7 +59,7 @@ export function CopyButton({ text, className, onFail }: CopyButtonProps) {
 
   return (
     <>
-      <Button className={["copy-btn", className].filter(Boolean).join(" ")} onClick={onClick}>
+      <Button size={size} className={["copy-btn", className].filter(Boolean).join(" ")} onClick={onClick}>
         {copied ? (
           <>
             <svg key={copied} className="copy-check" viewBox="0 0 10 10" aria-hidden="true">
@@ -76,9 +79,9 @@ export function CopyButton({ text, className, onFail }: CopyButtonProps) {
           "Copy"
         )}
       </Button>
-      <span className="sr-only" role="status">
+      <LiveRegion>
         {copied ? "Copied" : failed ? "Couldn't copy" : ""}
-      </span>
+      </LiveRegion>
     </>
   );
 }

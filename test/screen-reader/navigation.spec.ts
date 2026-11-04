@@ -22,7 +22,7 @@ async function expectHeadingAnnounced(page: Page, voiceOver: VoiceOverPlaywright
 test("opening a webhook announces the detail heading", async ({ page, request, voiceOver }) => {
   await createWebhook(request, "Living room alerts");
   await page.goto("/");
-  const row = page.locator(".card-main").first();
+  const row = page.locator(".clickable-card-link").first();
   await expect(row).toBeVisible();
   await voiceOver.navigateToWebContent();
   await row.focus();
@@ -60,4 +60,19 @@ test("Edit and Save announce the editor and detail headings", async ({ page, req
   await voiceOver.clearSpokenPhraseLog();
   await voiceOver.capture(() => save.press("Enter"), { capture: true });
   await expectHeadingAnnounced(page, voiceOver, "Kitchen alerts");
+});
+
+test("the editor's Enabled switch is announced once with its state", async ({ page, voiceOver }) => {
+  await page.goto("/new");
+  const toggle = page.getByRole("switch", { name: "Enabled" });
+  await expect(toggle).toBeVisible();
+  await voiceOver.navigateToWebContent();
+
+  await voiceOver.capture(() => toggle.focus(), { capture: true });
+
+  await expect
+    .poll(async () => (await voiceOver.spokenPhraseLog()).filter((p) => p.includes("Enabled")).length, { timeout: 15_000 })
+    .toBeGreaterThan(0);
+  const phrase = (await voiceOver.spokenPhraseLog()).find((p) => p.includes("Enabled"))!;
+  expect(phrase.match(/Enabled/g)).toHaveLength(1);
 });

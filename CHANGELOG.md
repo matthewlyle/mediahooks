@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.0](https://github.com/matthewlyle/mediahooks/compare/v1.3.0...v1.4.0) (2026-11-04)
+
+
+### Features
+
+* **templates:** add Plex metadata variables and a grouped variable reference ([#215](https://github.com/matthewlyle/mediahooks/issues/215)) ([922bd53](https://github.com/matthewlyle/mediahooks/commit/922bd530145ee7ba0d8934c6db5fcdfb8b093828))
+
+
+### Bug Fixes
+
+* **design:** MultiSelect spacing and sticky add row ([#205](https://github.com/matthewlyle/mediahooks/issues/205)) ([a87851c](https://github.com/matthewlyle/mediahooks/commit/a87851cf4bab56171940ebe2ace4da7516d30e81))
+
 ## [1.3.0](https://github.com/matthewlyle/mediahooks/compare/v1.2.1...v1.3.0) (2026-11-03)
 
 

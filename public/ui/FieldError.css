@@ -1,7 +1,7 @@
 .reveal-region {
   margin-top: calc(-1 * var(--reveal-gap, var(--space-14)));
 }
-.reveal-region > .reveal {
+.reveal-region > .field-error-reveal {
   margin-top: 0;
 }
 

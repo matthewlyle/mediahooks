@@ -30,8 +30,30 @@ a.button.primary {
   font-weight: 600;
   box-shadow: 0 0 16px var(--accent-30);
 }
+button[data-size="small"] {
+  font-size: var(--text-11);
+  padding: var(--space-2) var(--space-8);
+}
+button[data-size="large"] {
+  font-size: var(--text-13);
+  padding: var(--space-8) var(--space-16);
+}
 button.danger {
   color: var(--error);
+}
+button[data-cover] {
+  display: inline-grid;
+  place-items: center;
+}
+button[data-cover] > span {
+  grid-area: 1 / 1;
+}
+button[data-cover] .button-label {
+  opacity: 0;
+}
+button[data-busy] {
+  opacity: 0.6;
+  cursor: progress;
 }
 button:disabled,
 button[aria-disabled="true"] {

@@ -1,0 +1,11 @@
+.reveal {
+  overflow: hidden;
+  margin-top: calc(-1 * var(--reveal-gap, var(--space-14)));
+}
+.reveal.settled {
+  overflow: visible;
+}
+.reveal-inner {
+  display: flow-root; /* children's margins count in the measured height */
+  padding-top: var(--reveal-gap, var(--space-14));
+}
