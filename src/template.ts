@@ -236,6 +236,26 @@ export const TEMPLATE_VAR_GROUPS: { name: string; vars: string[] }[] = [
   },
 ];
 
+export function dropEmptyEmbedFields(body: string): string {
+  let json: unknown;
+  try {
+    json = JSON.parse(body);
+  } catch {
+    return body;
+  }
+  const embeds = (json as { embeds?: unknown } | null)?.embeds;
+  if (!Array.isArray(embeds)) return body;
+  for (const e of embeds) {
+    const fields = (e as { fields?: unknown } | null)?.fields;
+    if (!Array.isArray(fields)) continue;
+    (e as { fields: unknown[] }).fields = fields.filter((f) => {
+      const { name, value } = (f ?? {}) as Record<string, unknown>;
+      return !isEmptyVar(typeof name === "string" ? name.trim() : name) && !isEmptyVar(typeof value === "string" ? value.trim() : value);
+    });
+  }
+  return JSON.stringify(json);
+}
+
 export function isEmptyVar(v: unknown): boolean {
   return v === undefined || v === null || v === "";
 }

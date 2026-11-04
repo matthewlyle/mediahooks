@@ -6,7 +6,7 @@ import { matches, type Filters } from "../../src/filters.ts";
 import type { SendResult } from "../../src/send.ts";
 import type { IncomingEvent, PlexPayload, Webhook } from "../../src/types.ts";
 import { SAMPLE_MOVIE_PAYLOAD, SAMPLE_PAYLOAD, SAMPLE_TRACK_PAYLOAD } from "../../src/sample.ts";
-import { TEMPLATE_VAR_GROUPS, isJsonContentType, renderBody, renderHeaders, templateVars } from "../../src/template.ts";
+import { TEMPLATE_VAR_GROUPS, dropEmptyEmbedFields, isJsonContentType, renderBody, renderHeaders, templateVars } from "../../src/template.ts";
 import { VariableReference } from "../ui/VariableReference.tsx";
 import { ErrorMessage } from "../ui/ErrorMessage.tsx";
 import { Button, LinkButton } from "../ui/Button.tsx";
@@ -275,7 +275,7 @@ function EditorForm({ id, w, meta, back, onSaved, heading, focusName }: EditorFo
     const headersText = Object.entries(renderHeaders(headers, source.payload))
       .map(([k, v]) => `${k}: ${v}`)
       .join("\n");
-    const rendered = renderBody(form.bodyTemplate, source.payload, headers);
+    const rendered = dropEmptyEmbedFields(renderBody(form.bodyTemplate, source.payload, headers));
     if (!rendered || !isJsonContentType(headers)) return { text: rendered, headers: headersText, invalid: null };
     try {
       const json: unknown = JSON.parse(rendered);

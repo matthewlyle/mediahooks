@@ -68,3 +68,9 @@ test("non-ASCII header values arrive RFC 2047-encoded instead of failing the sen
   expect(raw).toStartWith("=?UTF-8?B?");
   expect(Buffer.from(raw.slice("=?UTF-8?B?".length, -2), "base64").toString("utf8")).toBe("Amélie");
 });
+
+test("embed fields with an empty name or value are dropped before sending", async () => {
+  const body = JSON.stringify({ embeds: [{ fields: [{ name: "Cast", value: "{{nope}}" }, { name: "Title", value: "{{title}}" }] }] });
+  await send({ ...target(false), bodyTemplate: body }, play);
+  expect(JSON.parse(lastReceived().body).embeds[0].fields).toEqual([{ name: "Title", value: "Pilot" }]);
+});

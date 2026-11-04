@@ -25,6 +25,7 @@ import {
 } from "@codemirror/view";
 import { tags } from "@lezer/highlight";
 import { forwardRef, useEffect, useImperativeHandle, useRef, type KeyboardEvent } from "react";
+import { isEmptyVar } from "../../src/template.ts";
 import "./CodeEditor.css";
 
 /** Imperative methods exposed through the editor's ref. */
@@ -81,10 +82,8 @@ export type CodeEditorProps = {
 const PLACEHOLDER = /\{\{[^{}\n]*\}\}/g;
 const External = Annotation.define<boolean>();
 
-const isEmpty = (v: unknown): boolean => v === undefined || v === null || v === "";
-
 function describe(v: unknown): string {
-  if (isEmpty(v)) return "empty";
+  if (isEmptyVar(v)) return "empty";
   const text = typeof v === "string" ? v : JSON.stringify(v);
   return text.length > 40 ? `${text.slice(0, 39)}…` : text;
 }
@@ -127,7 +126,7 @@ function placeholderSource(data: () => CompletionData) {
         detail: describe(vars[name]),
         type: "variable",
         section: section(group, rank),
-        boost: isEmpty(vars[name]) ? -10 : 0,
+        boost: isEmptyVar(vars[name]) ? -10 : 0,
         apply: applyName(name),
       });
       options = [

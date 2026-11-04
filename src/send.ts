@@ -1,5 +1,5 @@
 import { maskBody, maskHeaders, maskUrl } from "./secrets.ts";
-import { renderBody, renderHeaders, type Metadata, type TemplateContext } from "./template.ts";
+import { dropEmptyEmbedFields, renderBody, renderHeaders, type Metadata, type TemplateContext } from "./template.ts";
 import type { CapturedBody, Delivery, PlexPayload, Poster, SentRequest, Webhook } from "./types.ts";
 
 export type SendResult = Pick<Delivery, "status" | "ok" | "error" | "durationMs">;
@@ -22,7 +22,7 @@ type SendTarget = Pick<Webhook, "url" | "headers" | "bodyTemplate" | "attachPost
 export function prepare(w: SendTarget, p: PlexPayload, ctx: SendContext): Prepared {
   const vars: TemplateContext = { thumbUrl: ctx.thumbUrl, group: ctx.group };
   const userHeaders = renderHeaders(w.headers, p, vars);
-  const rendered = renderBody(w.bodyTemplate, p, userHeaders, vars);
+  const rendered = dropEmptyEmbedFields(renderBody(w.bodyTemplate, p, userHeaders, vars));
   const headers = new Headers(rendered ? { "content-type": "application/json" } : {});
   for (const [k, v] of Object.entries(userHeaders)) headers.set(k, headerValue(v));
   let body: string | FormData | undefined = rendered || undefined;

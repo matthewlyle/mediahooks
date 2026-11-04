@@ -1,4 +1,5 @@
 import { useId, useState } from "react";
+import { isEmptyVar } from "../../src/template.ts";
 import { Disclosure } from "./Disclosure.tsx";
 import { Field } from "./Field.tsx";
 import "./VariableReference.css";
@@ -16,7 +17,6 @@ export type VariableReferenceProps = {
   onInsert: (name: string) => void;
 };
 
-const isEmpty = (v: unknown): boolean => v === undefined || v === null || v === "";
 const text = (v: unknown): string => (typeof v === "string" ? v : JSON.stringify(v));
 
 /** A searchable list of template variables in collapsible groups, each row showing its current value. */
@@ -30,10 +30,10 @@ export function VariableReference({ groups, values, emptyFor, onInsert }: Variab
   const filled = groups.map((g) => ({
     name: g.name,
     vars: g.vars.filter(
-      (v) => !isEmpty(values[v]) && (!searching || v.includes(needle) || text(values[v]).toLowerCase().includes(needle)),
+      (v) => !isEmptyVar(values[v]) && (!searching || v.includes(needle) || text(values[v]).toLowerCase().includes(needle)),
     ),
   }));
-  const missing = groups.flatMap((g) => g.vars.filter((v) => isEmpty(values[v]) && (!searching || v.includes(needle))));
+  const missing = groups.flatMap((g) => g.vars.filter((v) => isEmptyVar(values[v]) && (!searching || v.includes(needle))));
   const visible = filled.filter((g) => g.vars.length > 0);
 
   function toggle(name: string, on: boolean) {
