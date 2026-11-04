@@ -63,6 +63,7 @@ export function VariableReference({ groups, values, emptyFor, onInsert }: Variab
       {visible.map((g) => (
         <Disclosure
           key={g.name}
+          className="var-toggle"
           label={g.name}
           summary={g.vars.length}
           open={searching || open.has(g.name)}

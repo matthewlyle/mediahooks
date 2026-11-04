@@ -56,3 +56,6 @@
     align-items: center;
   }
 }
+.var-toggle {
+  min-height: 24px;
+}

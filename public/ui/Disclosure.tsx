@@ -14,19 +14,21 @@ export type DisclosureProps = {
   onOpenChange: (open: boolean) => void;
   /** Id for the toggle button, so other elements can reference it as a label. */
   id?: string;
+  /** Extra class names for the toggle button, for placement by the caller. */
+  className?: string;
   /** Content revealed when open. */
   children: ReactNode;
 };
 
 /** A chevron toggle that shows and hides a block of content with a height animation. */
-export function Disclosure({ label, summary, open, onOpenChange, id, children }: DisclosureProps) {
+export function Disclosure({ label, summary, open, onOpenChange, id, className, children }: DisclosureProps) {
   const contentId = useId();
   return (
     <div className="disclosure-group">
       <button
         type="button"
         id={id}
-        className="disclosure"
+        className={["disclosure", className].filter(Boolean).join(" ")}
         aria-expanded={open}
         aria-controls={contentId}
         onClick={() => onOpenChange(!open)}
