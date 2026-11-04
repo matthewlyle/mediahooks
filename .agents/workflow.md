@@ -28,11 +28,8 @@ about this repo. The process lives there; only what's specific to mediahooks liv
   `bun x playwright test -c test/axe` (`bun x playwright install chromium` once) with its findings
   fixed; a new route or state gets a scan in `test/axe/axe.spec.ts`. The `axe` job passing is one
   check, not proof of accessibility: still check each criterion by hand.
-- A "VoiceOver announces…" criterion counts as checked when the `voiceover` job on the PR passed
-  with the expected phrase in its `spoken-phrase-log` artifact
-  (`gh run download <run> -n spoken-phrase-log`). The fix adds a scenario in `test/screen-reader/`;
-  a missing scenario is a fix. Agents can't check a VoiceOver criterion whose run was flaky
-  (Playwright reports it as flaky, or it passed only on a rerun).
+- A "VoiceOver announces…" criterion can't be checked while the `voiceover` workflow is disabled:
+  put it under **Not checked:** with steps for the owner.
 - Checks line: `Tests, typecheck, axe`.
 - A design-system change (a component in `public/ui/`) also passes this checklist:
   - `bun run style:dump` then `bun run style:diff` prints nothing. When the change touches a state
