@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.4.1](https://github.com/matthewlyle/mediahooks/compare/v1.4.0...v1.4.1) (2026-11-04)
+
+
+### Bug Fixes
+
+* **a11y:** retry VoiceOver start and setup in CI ([#136](https://github.com/matthewlyle/mediahooks/issues/136)) ([3582b60](https://github.com/matthewlyle/mediahooks/commit/3582b603e8cdce1531ef9f8b71243ad05e4d1b17))
+* **editor:** drop the free-text add field from user and library pickers ([#219](https://github.com/matthewlyle/mediahooks/issues/219)) ([79e0e30](https://github.com/matthewlyle/mediahooks/commit/79e0e306d22be8ed304b9f4ef3b2b12886757bc4))
+* **editor:** pin editor header to top of viewport on phones ([#220](https://github.com/matthewlyle/mediahooks/issues/220)) ([74921c8](https://github.com/matthewlyle/mediahooks/commit/74921c8a551afb381a8e338dc12b3b51e7fd4146))
+
 ## [1.4.0](https://github.com/matthewlyle/mediahooks/compare/v1.3.0...v1.4.0) (2026-11-04)
 
 
