@@ -41,9 +41,9 @@ test("Send test announces that it is sending", async ({ page, request, voiceOver
   await expect(send).toBeVisible();
   await voiceOver.navigateToWebContent();
 
+  const busy = expect(send).toHaveAttribute("aria-busy", "true", { timeout: 30_000 });
   await voiceOver.capture(() => send.press("Enter"), { capture: true });
-
-  await expect(send).toHaveAttribute("aria-busy", "true");
+  await busy;
 
   expect(await voiceOver.spokenPhraseLog()).toContainEqual(expect.stringContaining("Sending test…"));
 });
