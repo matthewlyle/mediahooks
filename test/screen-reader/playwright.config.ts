@@ -5,7 +5,7 @@ const PORT = 8831;
 
 export default withGuidepup({
   reportSlowTests: null,
-  timeout: 3 * 60 * 1000,
+  timeout: 90 * 1000,
   retries: process.env.CI ? 2 : 0,
   reporter: [["list"]],
   use: { baseURL: `http://localhost:${PORT}` },

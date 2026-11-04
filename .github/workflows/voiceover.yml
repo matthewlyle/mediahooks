@@ -49,8 +49,13 @@ jobs:
         with:
           bun-version: "1.4"
       - run: bun install --frozen-lockfile
-      - run: npx @guidepup/setup setup --ci
-      - run: npx @guidepup/setup install
+      - name: Set up VoiceOver
+        run: |
+          for attempt in 1 2 3; do
+            npx @guidepup/setup setup --ci && npx @guidepup/setup install && exit 0
+            echo "VoiceOver setup failed (attempt $attempt)"; sleep 15
+          done
+          exit 1
       - run: bun x playwright install webkit
       - run: bun x playwright test -c test/screen-reader
       - if: always()

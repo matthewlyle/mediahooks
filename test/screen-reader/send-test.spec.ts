@@ -4,11 +4,19 @@ import type { AddressInfo } from "node:net";
 import { expect, test } from "./voiceover.ts";
 
 let receiver: Server;
+let release: () => void;
+let released: Promise<void>;
+
+test.beforeEach(() => {
+  released = new Promise((resolve) => (release = resolve));
+});
+
+test.afterEach(() => release());
 
 test.beforeAll(async () => {
   receiver = createServer((req, res) => {
     req.resume();
-    setTimeout(() => res.end("ok"), 5000);
+    void released.then(() => res.end("ok"));
   });
   receiver.listen(0, "127.0.0.1");
   await once(receiver, "listening");
@@ -33,9 +41,9 @@ test("Send test announces that it is sending", async ({ page, request, voiceOver
   await expect(send).toBeVisible();
   await voiceOver.navigateToWebContent();
 
+  const busy = expect(send).toHaveAttribute("aria-busy", "true", { timeout: 30_000 });
   await voiceOver.capture(() => send.press("Enter"), { capture: true });
-
-  await expect(send).toHaveAttribute("aria-busy", "true");
+  await busy;
 
   expect(await voiceOver.spokenPhraseLog()).toContainEqual(expect.stringContaining("Sending test…"));
 });

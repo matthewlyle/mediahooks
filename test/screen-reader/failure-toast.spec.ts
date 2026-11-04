@@ -73,6 +73,7 @@ test("A failed token replace announces what failed and why", async ({ page, voic
   await page.getByRole("button", { name: "New token" }).press("Enter");
   const replace = page.getByRole("button", { name: "Replace token" });
   await expect(replace).toBeVisible();
+  await replace.focus();
   await voiceOver.navigateToWebContent();
 
   await expectAnnounced(
