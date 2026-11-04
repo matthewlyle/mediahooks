@@ -69,7 +69,7 @@ export function Popover({ id, open, label, anchor, onClose, children }: PopoverP
     };
     const onScroll = () => close.current({});
     document.addEventListener("pointerdown", onPointerDown, true);
-    // A sheet stays put; resizing is the phone keyboard opening for "Add a name".
+    // A sheet stays put; resizing is the phone keyboard or toolbar moving.
     if (!sheet) {
       addEventListener("scroll", onScroll, { passive: true });
       addEventListener("resize", onScroll);
