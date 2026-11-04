@@ -13,8 +13,9 @@ bun run typecheck
 ```
 
 Smoke runs: `AUTH=off` skips sign-in, a short `GROUP_QUIET_MS` shortens new-episode grouping,
-`PLEX_TV_URL` points plex.tv calls at a fake. The README documents only `PLEX_URL`, `PORT` and
-`PUBLIC_URL`; keep the rest out of it.
+`PLEX_TV_URL` points plex.tv calls at a fake. The README documents only `PLEX_URL` and
+`PUBLIC_URL`, for technical server admins: keep the rest, and anything Docker users already know,
+out of it.
 
 Screen-reader tests: `test/screen-reader/*.spec.ts` drive real VoiceOver in WebKit with Playwright
 and `@guidepup/playwright`, and assert on `voiceOver.spokenPhraseLog()`. The `voiceover` workflow
