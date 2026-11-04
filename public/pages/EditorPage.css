@@ -100,6 +100,15 @@ form.editor {
 }
 
 @media (max-width: 640px) {
+  .editor-bar::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: env(safe-area-inset-top);
+    background: var(--bg);
+  }
   .editor .row-destination {
     grid-template-columns: 1fr;
   }
