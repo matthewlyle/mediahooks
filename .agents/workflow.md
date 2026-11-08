@@ -1,6 +1,6 @@
 # mediahooks: agent workflow
 
-What the shared `work-issue` and `github-issue` skills (`matthewlyle/agent-skills`) need to know
+What the shared `work-issue` (`skills/` in `matthewlyle/tracker`) and `github-issue` (`matthewlyle/agent-skills`) skills need to know
 about this repo. The process lives there; only what's specific to mediahooks lives here.
 
 ## Repo
@@ -45,6 +45,8 @@ about this repo. The process lives there; only what's specific to mediahooks liv
 - Type: `feat` only for a change app users can see or use. Refactors,
   tests, CI and tooling use `refactor`, `chore`, `test` or `ci`.
 - Merge: `gh pr merge <pr> -R matthewlyle/mediahooks --auto --squash`.
+- No milestone PRs: rebase and merge commits are off, and a squash would fold every issue into
+  one commit. Each issue in a milestone gets its own PR.
 - A PR that conflicts with `main` only because another PR touched the same lines (import lists,
   moved rules) is the reviewer's to fix: merge `origin/main` into the branch, keep both sides,
   re-run the verify steps and push. Any other conflict is a Fix.
