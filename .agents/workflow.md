@@ -1,12 +1,14 @@
 # mediahooks: agent workflow
 
-What the shared `work-issue` (`skills/` in `matthewlyle/tracker`) and `github-issue` (`matthewlyle/agent-skills`) skills need to know
-about this repo. The process lives there; only what's specific to mediahooks lives here.
+What the shared `work-issue` and `github-issue` skills (`skills/` in `matthewlyle/tracker`) need
+to know about this repo. The process lives there; only what's specific to mediahooks lives here.
 
 ## Repo
 
 - GitHub `matthewlyle/mediahooks`, owned by `matthewlyle`; checkout `~/src/mediahooks`; worktrees under
   `~/.herdr/worktrees/mediahooks/`. Agents run on mini.
+- `~/src/mediahooks` is the owner's checkout: agents only `git fetch` and `git worktree add` there,
+  and never check out, pull, commit or edit it. Work happens in their own worktree.
 
 ## Per issue
 
@@ -17,7 +19,18 @@ about this repo. The process lives there; only what's specific to mediahooks liv
 - Worker task: `Issue <n>, port <port>.` Reviewer task: `PR <pr>, issue <n>, port <port>.`
 - Worktree setup: `bun install`.
 - Lite fits a one-line CSS or copy fix, not a long browser session.
-- Cleanup after a merge: nothing beyond the worktree.
+- A change to `AGENTS.md` or `.agents/` is never lite: it goes to the owner as Human.
+
+## Milestone
+
+- One PR per milestone, as `work-issue`'s `milestones.md` describes. Each issue's worker keeps its
+  own port; the PR's reviewer takes the first issue's reviewer port, with task
+  `PR <pr>, issues <a>, <b>, port <port>.`
+- Milestone merge: `gh pr merge <pr> -R matthewlyle/mediahooks --auto --rebase` (keeps one commit
+  per issue). Never squash a milestone PR: release-please needs each issue's commit.
+- A milestone is named for the release it ships in. When it has no open issues left, close it
+  (`gh api -X PATCH repos/matthewlyle/mediahooks/milestones/<n> -f state=closed`) and tell the
+  owner its release is ready.
 
 ## Build, check, look
 
@@ -45,16 +58,22 @@ about this repo. The process lives there; only what's specific to mediahooks liv
 - Type: `feat` only for a change app users can see or use. Refactors,
   tests, CI and tooling use `refactor`, `chore`, `test` or `ci`.
 - Merge: `gh pr merge <pr> -R matthewlyle/mediahooks --auto --squash`.
-- No milestone PRs: rebase and merge commits are off, and a squash would fold every issue into
-  one commit. Each issue in a milestone gets its own PR.
 - A PR that conflicts with `main` only because another PR touched the same lines (import lists,
   moved rules) is the reviewer's to fix: merge `origin/main` into the branch, keep both sides,
   re-run the verify steps and push. Any other conflict is a Fix.
 - Off limits: `CHANGELOG.md`.
-- Releases: merging only adds a line to the release-please PR, which the owner merges. When a
-  milestone has no open issues left, close it
-  (`gh api -X PATCH repos/matthewlyle/mediahooks/milestones/<n> -f state=closed`) and tell the owner
-  its release is ready.
+
+## Deploy
+
+- Merging only updates the release-please PR. When the owner merges that PR, CI tags, writes
+  `CHANGELOG.md`, publishes the GitHub Release and pushes the image to
+  `ghcr.io/matthewlyle/mediahooks`. Production then pulls it
+  (`docker compose pull mediahooks && docker compose up -d mediahooks`); a new major version needs
+  the compose tag changed from `:1`.
+
+## Cleanup
+
+- Nothing beyond the worktree and its branch.
 
 ## Issues
 
