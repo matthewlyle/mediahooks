@@ -1,14 +1,14 @@
 # mediahooks: agent workflow
 
 What the shared `work-issue` and `github-issue` skills (`skills/` in `matthewlyle/tracker`) need
-to know about this repo. The process lives there; only what's specific to mediahooks lives here.
+to know about this repo. The process lives there (the milestone flow, merge method, commit style,
+lite tier and cleanup default in the work-issue skill's `defaults.md`); only what's specific to
+mediahooks lives here.
 
 ## Repo
 
 - GitHub `matthewlyle/mediahooks`, owned by `matthewlyle`; checkout `~/src/mediahooks`; worktrees under
   `~/.herdr/worktrees/mediahooks/`. Agents run on mini.
-- `~/src/mediahooks` is the owner's checkout: agents only `git fetch` and `git worktree add` there,
-  and never check out, pull, commit or edit it. Work happens in their own worktree.
 
 ## Per issue
 
@@ -23,11 +23,8 @@ to know about this repo. The process lives there; only what's specific to mediah
 
 ## Milestone
 
-- One PR per milestone, as `work-issue`'s `milestones.md` describes. Each issue's worker keeps its
-  own port; the PR's reviewer takes the first issue's reviewer port, with task
-  `PR <pr>, issues <a>, <b>, port <port>.`
-- Milestone merge: `gh pr merge <pr> -R matthewlyle/mediahooks --auto --rebase` (keeps one commit
-  per issue). Never squash a milestone PR: release-please needs each issue's commit.
+- Merge: `gh pr merge <pr> -R matthewlyle/mediahooks --auto --rebase`. The checks are required, so
+  auto-merge waits for them, and a rebase keeps one commit per issue, which release-please needs.
 - A milestone is named for the release it ships in. When it has no open issues left, close it
   (`gh api -X PATCH repos/matthewlyle/mediahooks/milestones/<n> -f state=closed`) and tell the
   owner its release is ready.
@@ -52,11 +49,8 @@ to know about this repo. The process lives there; only what's specific to mediah
 
 ## Commits, PRs, merging
 
-- Commit: a Conventional Commit whose scope matches the issue's topic (`fix(a11y): …` for
-  `accessibility` issues), `Fixes #<n>` in the body. The PR title is the same line: it becomes the
-  squash commit, and release-please puts the scope in the changelog.
-- Type: `feat` only for a change app users can see or use. Refactors,
-  tests, CI and tooling use `refactor`, `chore`, `test` or `ci`.
+- The commit scope matches the issue's topic (`fix(a11y): …` for `accessibility` issues);
+  release-please puts the scope in the changelog.
 - Merge: `gh pr merge <pr> -R matthewlyle/mediahooks --auto --squash`.
 - A PR that conflicts with `main` only because another PR touched the same lines (import lists,
   moved rules) is the reviewer's to fix: merge `origin/main` into the branch, keep both sides,
@@ -70,10 +64,6 @@ to know about this repo. The process lives there; only what's specific to mediah
   `ghcr.io/matthewlyle/mediahooks`. Production then pulls it
   (`docker compose pull mediahooks && docker compose up -d mediahooks`); a new major version needs
   the compose tag changed from `:1`.
-
-## Cleanup
-
-- Nothing beyond the worktree and its branch.
 
 ## Issues
 
