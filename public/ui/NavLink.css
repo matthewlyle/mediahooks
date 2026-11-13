@@ -10,14 +10,6 @@
   position: relative;
   display: inline-grid;
 }
-.nav-label::after {
-  content: attr(data-label);
-  grid-area: 1 / 1;
-  height: 0;
-  overflow: hidden;
-  font-weight: 600;
-  visibility: hidden;
-}
 .nav-label > span {
   grid-area: 1 / 1;
 }
