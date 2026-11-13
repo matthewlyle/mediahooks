@@ -6,7 +6,6 @@ import { Check } from "../../ui/Check.tsx";
 import { MultiSelect } from "../../ui/MultiSelect.tsx";
 import { Popover } from "../../ui/Popover.tsx";
 import { Sentence } from "../../ui/Sentence.tsx";
-import "./EventSentence.css";
 
 const csv = (text: string) =>
   text

@@ -6,15 +6,7 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: var(--space-8) var(--space-16);
-  --reveal-gap: var(--space-8);
-  padding: var(--space-10) 0;
-  margin-bottom: var(--space-2);
-  background: var(--bg);
-  transition: box-shadow 150ms ease;
-}
-.editor-bar[data-stuck] {
-  box-shadow: 0 10px 12px -10px var(--black-70);
+  background: Canvas;
 }
 .editor-bar > .bar-reveal {
   flex-basis: 100%;
@@ -23,82 +15,40 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--space-6) var(--space-16);
   min-width: 0;
 }
 .editor-title {
-  margin: 0;
-  font-size: var(--text-15);
-  font-weight: 600;
   overflow-wrap: anywhere;
 }
 .editor-title > span {
   display: inline-block;
 }
-.bar-enabled {
-  margin-right: var(--space-6);
-}
 .send-result {
-  margin: 0;
-  font-family: var(--mono);
-  font-size: var(--text-12);
   overflow-wrap: anywhere;
 }
-.send-result.ok {
-  color: var(--success);
-}
-.send-result.fail {
-  color: var(--error);
-}
-
 form.editor {
   container: editor / inline-size;
-  gap: var(--space-28);
 }
 .editor-section {
   display: flex;
   flex-direction: column;
-  gap: var(--space-12);
-  --reveal-gap: var(--space-12);
   min-width: 0;
 }
 .editor .row-destination {
   grid-template-columns: 1fr 2fr;
 }
-
-.options-body {
-  padding-top: var(--space-10);
-}
-
 .message-grid {
   display: grid;
-  gap: var(--space-12);
   align-items: start;
 }
 @container editor (min-width: 830px) {
   .message-grid {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    --label-line: 18px;
-  }
-  .message-grid > .preview {
-    margin-top: calc(var(--label-line) + var(--space-6));
   }
   .message-grid .preview-body {
     max-height: 380px;
   }
 }
-.vars-hint {
-  margin: var(--space-6) 0 0;
-  font-size: var(--text-12);
-  color: var(--muted);
-}
-.vars-hint code {
-  color: var(--fg);
-}
-.poster-option {
-  margin-top: var(--space-4);
-}
-
 @media (max-width: 640px) {
   .editor-bar::before {
     content: "";
@@ -107,7 +57,7 @@ form.editor {
     left: 0;
     right: 0;
     height: env(safe-area-inset-top);
-    background: var(--bg);
+    background: Canvas;
   }
   .editor .row-destination {
     grid-template-columns: 1fr;

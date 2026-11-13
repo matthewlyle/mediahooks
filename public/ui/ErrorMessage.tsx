@@ -1,6 +1,5 @@
 import { motion, type HTMLMotionProps } from "motion/react";
 import type { ReactNode } from "react";
-import "./ErrorMessage.css";
 
 export type ErrorMessageProps = HTMLMotionProps<"p"> & {
   /** The error text. */

@@ -3,58 +3,26 @@
   z-index: 20;
   display: flex;
   flex-direction: column;
-  padding: var(--space-4);
   min-width: 176px;
-  color: var(--fg);
-  background: var(--surface);
-  border-radius: var(--radius-2);
-  box-shadow: 0 8px 24px var(--black-45);
+  background: Canvas;
+  color: CanvasText;
 }
 .menu-heading {
-  padding: var(--space-6) var(--space-10) var(--space-4);
-  font-size: var(--text-12);
-  color: var(--muted);
   overflow-wrap: anywhere;
 }
 .menu button {
+  min-height: 24px;
   text-align: left;
-  border: none;
-  border-radius: var(--radius-2);
-  padding: var(--space-6) var(--space-10);
-  background: transparent;
 }
-@media (hover: hover) and (pointer: fine) {
-  .menu button:not(:disabled):hover {
-    background: var(--surface-hover);
-    color: var(--fg);
-    box-shadow: none;
-  }
-  .menu button.danger:not(:disabled):hover {
-    color: var(--error);
-  }
-}
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .menu button:not(:disabled):hover {
-    scale: none;
-  }
-}
-@media (pointer: coarse) {
-  .menu button {
-    min-height: 44px;
-  }
-}
-
 .menu-overflow {
   align-self: stretch;
   display: inline-flex;
   align-items: center;
-  gap: var(--space-4);
-  padding: 0 var(--space-10);
 }
 .menu-overflow .menu-dot {
   width: 3px;
   height: 3px;
-  border-radius: var(--radius-full);
+  border-radius: 50%;
   background: currentColor;
   transition: translate 150ms ease;
 }
@@ -69,7 +37,6 @@
 @media (pointer: coarse) {
   .menu-overflow {
     position: relative;
-    min-width: 40px;
     justify-content: center;
   }
   .menu-overflow::before {

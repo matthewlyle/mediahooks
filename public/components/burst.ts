@@ -1,7 +1,6 @@
 import { animate } from "motion/react";
 import { EASE, reduced } from "../lib/motion.ts";
 
-const CONFETTI_COLORS = ["--accent", "--success", "--fg"];
 const CONFETTI_COUNT = 14;
 
 export function burst(origin: HTMLElement | null | undefined): void {
@@ -14,7 +13,6 @@ export function burst(origin: HTMLElement | null | undefined): void {
     dot.className = "confetti";
     dot.style.left = `${cx - 3}px`;
     dot.style.top = `${cy - 3}px`;
-    dot.style.background = `var(${CONFETTI_COLORS[i % CONFETTI_COLORS.length]})`;
     document.body.append(dot);
 
     const angle = (i / CONFETTI_COUNT) * 2 * Math.PI + (Math.random() - 0.5) * 0.4;

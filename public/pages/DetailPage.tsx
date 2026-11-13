@@ -158,7 +158,6 @@ function Head({ w, direct }: HeadProps) {
       layoutId={ids.card(w.id)}
       layoutCrossfade={false}
       className="detail-head"
-      style={{ borderRadius: "var(--radius-2)" }}
       initial={direct ? { opacity: 0 } : undefined}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.25, ease: EASE.css, layout: SPRING.morph }}

@@ -1,38 +1,23 @@
-.ev-head {
-  margin-bottom: var(--space-12);
-}
-
 .ev-cols,
 .ev-summary {
   display: grid;
   grid-template-columns:
     64px 172px minmax(0, 0.8fr) minmax(0, 2fr) minmax(0, 1fr)
     minmax(0, 1fr);
-  gap: var(--space-12);
   align-items: center;
-  padding: var(--space-6) var(--space-8);
 }
-.ev-cols {
-  padding-block: 0 var(--space-6);
-}
-
 .ev-list {
   position: relative;
   list-style: none;
-  margin: 0;
   padding: 0;
   display: grid;
-  gap: var(--space-2);
 }
 .ev-row {
   min-width: 0;
 }
 .ev-summary {
   width: 100%;
-  font-size: var(--text-13);
-  color: var(--fg);
 }
-
 .ev-time,
 .ev-user,
 .ev-library,
@@ -44,15 +29,9 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.ev-time {
-  font-family: var(--mono);
-  font-size: var(--text-12);
-  color: var(--muted);
-}
 .ev-title {
   display: flex;
   align-items: center;
-  gap: var(--space-8);
   min-width: 0;
 }
 .ev-poster {
@@ -60,35 +39,16 @@
   width: 40px;
   height: 60px;
   object-fit: cover;
-  border-radius: var(--radius-2);
-  background: var(--surface-hover);
-}
-
-.ev-detail {
-  padding: var(--space-4) var(--space-8) var(--space-14);
 }
 .ev-routing {
   list-style: none;
-  margin: 0 0 var(--space-10);
   padding: 0;
   display: grid;
-  gap: var(--space-4);
-  font-size: var(--text-12);
-  color: var(--muted);
-}
-.ev-detail > p {
-  margin: 0 0 var(--space-10);
-  font-size: var(--text-12);
 }
 .ev-routing .mark {
   display: inline-block;
   width: 16px;
 }
-.ev-routing strong {
-  color: var(--fg);
-  font-weight: 600;
-}
-
 @media (max-width: 640px) {
   .ev-cols {
     display: none;
@@ -98,16 +58,14 @@
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    gap: var(--space-2) var(--space-10);
-    padding: var(--space-10) var(--space-8) var(--space-10) var(--space-76);
   }
   .ev-summary:has(.ev-poster) {
     min-height: 104px;
   }
   .ev-poster {
     position: absolute;
-    top: 10px;
-    left: 8px;
+    top: 0;
+    left: 0;
     width: 56px;
     height: 84px;
   }
@@ -121,18 +79,12 @@
   .ev-title {
     order: 3;
     flex-basis: 100%;
-    padding-block: var(--space-2);
   }
   .ev-user {
     order: 4;
-    color: var(--muted);
   }
   .ev-library {
     order: 5;
-    color: var(--muted);
-  }
-  .ev-user:not(:empty) ~ .ev-library:not(:empty) {
-    margin-left: calc(-1 * var(--space-6));
   }
   .ev-user:not(:empty) ~ .ev-library:not(:empty)::before {
     content: "· " / "";
@@ -148,6 +100,5 @@
   }
   .ev-sent::before {
     content: "Sent to " / "";
-    color: var(--muted);
   }
 }

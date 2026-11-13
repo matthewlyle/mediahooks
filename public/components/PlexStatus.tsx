@@ -3,7 +3,6 @@ import { fadeIn } from "../lib/motion.ts";
 import { usePlexStatus } from "../lib/store.tsx";
 import { RelativeTime } from "../ui/RelativeTime.tsx";
 import { StatusDot } from "../ui/StatusDot.tsx";
-import "./PlexStatus.css";
 
 export function PlexConnection() {
   const status = usePlexStatus();

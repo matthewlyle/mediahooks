@@ -8,16 +8,3 @@
   stroke-linejoin: round;
   overflow: visible;
 }
-.status-mark-success {
-  color: var(--success);
-}
-.status-mark-failure {
-  color: var(--error);
-}
-.status-mark-pending {
-  color: var(--accent);
-}
-.status-mark-inline {
-  margin-right: var(--space-4);
-  vertical-align: -1px;
-}

@@ -2,15 +2,6 @@
   display: flex;
   align-items: center;
 }
-.toolbar-small {
-  gap: var(--space-6);
-}
-.toolbar-medium {
-  gap: var(--space-8);
-}
-.toolbar-large {
-  gap: var(--space-12);
-}
 .toolbar-end {
   justify-content: flex-end;
 }

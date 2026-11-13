@@ -1,5 +1,4 @@
 import type { ChangeEvent } from "react";
-import "./Select.css";
 
 export type SelectProps = {
   /** Accessible name announced for the select, which has no visible label. */

@@ -4,12 +4,10 @@ button.copy-btn {
 .copy-check {
   width: 10px;
   height: 10px;
-  margin-right: var(--space-4);
-  vertical-align: -1px;
   overflow: visible;
 }
 .copy-check path {
-  stroke-dasharray: 1 1.1; /* gap slightly longer than the dash so the round caps stay hidden */
+  stroke-dasharray: 1 1.1;
   stroke-dashoffset: 1;
   animation: draw 300ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }

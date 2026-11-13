@@ -2,7 +2,6 @@
   position: fixed;
   inset: 0;
   z-index: 15;
-  background: var(--backdrop);
 }
 .modal-scroll {
   position: fixed;
@@ -10,17 +9,11 @@
   z-index: 15;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: var(--space-40) var(--space-20);
 }
 .modal {
   max-width: 960px;
-  margin: 0 auto;
-  padding: 0 var(--space-16) var(--space-16);
-  background: var(--bg);
-  border-radius: var(--radius-2);
-  box-shadow:
-    0 0 0 1px var(--raised),
-    0 24px 60px var(--black-60);
+  background: Canvas;
+  color: CanvasText;
 }
 @media (max-width: 640px) {
   .modal-scroll {
@@ -28,8 +21,5 @@
   }
   .modal {
     min-height: 100%;
-    padding: 0 var(--space-12) calc(var(--space-24) + env(safe-area-inset-bottom));
-    border-radius: 0;
-    box-shadow: none;
   }
 }
