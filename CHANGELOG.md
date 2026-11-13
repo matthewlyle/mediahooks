@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/matthewlyle/mediahooks/compare/v1.4.1...v1.5.0) (2026-11-13)
+
+
+### Features
+
+* **ui:** strip the UI to unstyled content, keep transitions ([#228](https://github.com/matthewlyle/mediahooks/issues/228)) ([408d629](https://github.com/matthewlyle/mediahooks/commit/408d62998419398e90d846ccf45bbe7f2d6a7091))
+
 ## [1.4.1](https://github.com/matthewlyle/mediahooks/compare/v1.4.0...v1.4.1) (2026-11-04)
 
 
