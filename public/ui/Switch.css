@@ -2,35 +2,7 @@
   width: 40px;
   height: 22px;
   padding: 0;
-  border-radius: var(--radius-4);
   position: relative;
-  background: var(--raised);
-  border-color: var(--border-strong);
-  transition:
-    background-color 150ms ease,
-    border-color 150ms ease,
-    box-shadow 150ms ease;
-}
-.switch[aria-checked="true"] {
-  background: var(--accent);
-  border-color: var(--accent);
-  box-shadow: 0 0 10px var(--accent-45);
-}
-@media (hover: hover) and (pointer: fine) {
-  .switch:not(:disabled):hover {
-    background: var(--border-strong);
-    box-shadow: none;
-  }
-  .switch[aria-checked="true"]:not(:disabled):hover {
-    background: var(--accent-hover);
-    border-color: var(--accent-hover);
-    box-shadow: 0 0 14px var(--accent-55);
-  }
-}
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .switch:not(:disabled):hover {
-    scale: none;
-  }
 }
 .knob {
   position: absolute;
@@ -38,12 +10,7 @@
   left: 2px;
   width: 16px;
   height: 16px;
-  border-radius: var(--radius-2);
-  background: var(--fg);
-  transition: background-color 150ms ease;
-}
-.switch[aria-checked="true"] .knob {
-  background: var(--on-accent);
+  background: currentColor;
 }
 @media (pointer: coarse) {
   .switch::before {
@@ -60,10 +27,5 @@
 .switch-label {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-8);
-  font-family: var(--mono);
-  font-size: var(--text-12);
-  color: var(--muted);
-  cursor: pointer;
   user-select: none;
 }

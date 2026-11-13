@@ -1,11 +1,6 @@
-.clickable-card {
-  cursor: pointer;
-}
 .clickable-card-content {
   position: relative;
   min-width: 0;
-
-  border-radius: var(--radius-2);
 }
 .clickable-card-content:has(.clickable-card-link:focus-visible) {
   outline: var(--focus-ring);
@@ -13,7 +8,7 @@
 }
 .clickable-card-link {
   position: absolute;
-  inset: -10px 0 -10px -14px;
+  inset: 0;
 }
 .clickable-card-link:focus-visible {
   outline: none;

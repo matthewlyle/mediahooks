@@ -1,33 +1,12 @@
-.code-label {
-  font-family: var(--mono);
-  font-size: var(--text-12);
-  color: var(--muted);
-}
-p + .code-label {
-  margin-top: var(--space-10);
-}
 .code-block {
-  padding: var(--space-8) var(--space-10);
   overflow: auto;
   white-space: pre-wrap;
 }
 .code-block-inset {
-  margin: var(--space-4) 0 var(--space-10);
   max-height: 240px;
-  background: var(--bg);
-  border-radius: var(--radius-2);
-  font-size: var(--text-11);
   overflow-wrap: anywhere;
 }
-.code-block-inset:last-child {
-  margin-bottom: 0;
-}
 .code-block-plain {
-  margin: 0;
   max-height: 200px;
-  font-size: var(--text-12);
   word-break: break-word;
-}
-.code-block-head {
-  color: var(--muted);
 }

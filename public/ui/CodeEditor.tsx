@@ -10,7 +10,7 @@ import {
 } from "@codemirror/autocomplete";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
 import { json, jsonLanguage } from "@codemirror/lang-json";
-import { HighlightStyle, bracketMatching, indentOnInput, syntaxHighlighting } from "@codemirror/language";
+import { bracketMatching, indentOnInput } from "@codemirror/language";
 import { linter, type Diagnostic } from "@codemirror/lint";
 import { Annotation, Compartment, EditorState, Prec, type Extension } from "@codemirror/state";
 import {
@@ -23,7 +23,6 @@ import {
   type DecorationSet,
   type ViewUpdate,
 } from "@codemirror/view";
-import { tags } from "@lezer/highlight";
 import { forwardRef, useEffect, useImperativeHandle, useRef, type KeyboardEvent } from "react";
 import { isEmptyVar } from "../../src/template.ts";
 import "./CodeEditor.css";
@@ -55,7 +54,7 @@ export type CodeEditorProps = {
   value: string;
   /** Called with the new text when the user edits it. */
   onChange: (value: string) => void;
-  /** Syntax mode; "json" adds highlighting and linting that ignores {{placeholders}}. */
+  /** Syntax mode; "json" adds linting that ignores {{placeholders}}. */
   language: "json" | "plain";
   /** Variables and payload paths suggested after typing {{. */
   completions: CompletionData;
@@ -216,34 +215,12 @@ const placeholderMarks = ViewPlugin.fromClass(
   { decorations: (v) => v.decorations },
 );
 
-const highlight = HighlightStyle.define([
-  { tag: tags.propertyName, color: "#67e8f9" },
-  { tag: tags.string, color: "#e3e9f2" },
-  { tag: [tags.number, tags.bool, tags.null], color: "#f5c46b" },
-  { tag: [tags.punctuation, tags.separator, tags.brace, tags.squareBracket], color: "#7a8396" },
-]);
-
-const theme = EditorView.theme(
-  {
-    "&": { color: "var(--fg)", backgroundColor: "var(--bg)", border: "1px solid var(--border-strong)", borderRadius: "2px" },
-    ".cm-content": { fontFamily: "var(--mono)", fontSize: "12px", padding: "7px 0", caretColor: "var(--accent)" },
-    ".cm-line": { padding: "0 10px" },
-    ".cm-cursor, .cm-dropCursor": { borderLeftColor: "var(--accent)" },
-    "&.cm-focused .cm-selectionBackground, .cm-selectionBackground, ::selection": {
-      backgroundColor: "rgba(34, 211, 238, 0.22) !important",
-    },
-    ".cm-placeholder": { color: "var(--muted)" },
-    ".cm-tooltip": { backgroundColor: "var(--surface)", border: "none", borderRadius: "2px", boxShadow: "0 8px 24px rgba(0, 0, 0, 0.45)" },
-    ".cm-tooltip-autocomplete > ul": { fontFamily: "var(--mono)", fontSize: "12px", maxHeight: "16em" },
-    ".cm-tooltip-autocomplete > ul > li": { padding: "3px 10px" },
-    ".cm-tooltip-autocomplete > ul > li[aria-selected]": { backgroundColor: "var(--accent-dim)", color: "var(--accent)" },
-    ".cm-completionDetail": { color: "var(--muted)", fontStyle: "normal", marginLeft: "12px" },
-    ".cm-completionIcon": { display: "none" },
-    ".cm-diagnostic": { fontFamily: "var(--mono)", fontSize: "12px", padding: "6px 10px" },
-    ".cm-diagnostic-error": { borderLeft: "none", color: "var(--error)" },
-  },
-  { dark: true },
-);
+const theme = EditorView.theme({
+  ".cm-completionIcon": { display: "none" },
+  ".cm-placeholder": { color: "color-mix(in srgb, CanvasText 70%, Canvas)" },
+  ".cm-tooltip": { backgroundColor: "Canvas", color: "CanvasText" },
+  ".cm-tooltip-autocomplete > ul": { maxHeight: "16em" },
+});
 
 function languageExtension(language: "json" | "plain"): Extension {
   return language === "json" ? [json(), jsonLint] : [];
@@ -259,7 +236,7 @@ function contentAttributes(p: CodeEditorProps): Record<string, string> {
   return attrs;
 }
 
-/** A multi-line code field with {{placeholder}} completion, highlighting and, for JSON, error linting. */
+/** A multi-line code field with {{placeholder}} completion and, for JSON, error linting. */
 export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(function CodeEditor(props, ref) {
   const host = useRef<HTMLDivElement>(null);
   const view = useRef<EditorView | null>(null);
@@ -286,7 +263,6 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(function
           }),
           keymap.of([...closeBracketsKeymap, ...completionKeymap, ...defaultKeymap, ...historyKeymap]),
           EditorView.lineWrapping,
-          syntaxHighlighting(highlight),
           placeholderMarks,
           theme,
           c.language.of(languageExtension(latest.current.language)),

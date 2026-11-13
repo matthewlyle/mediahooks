@@ -31,7 +31,6 @@ export function NavLink({ to, label, active }: NavLinkProps) {
         <motion.span
           layoutId={ids.nav}
           className="nav-indicator"
-          style={{ borderRadius: "var(--radius-2)" }}
           transition={SPRING.morph}
           aria-hidden="true"
         />

@@ -72,10 +72,9 @@ function EmbedCard({ embed, poster }: { embed: Embed; poster: string | null }) {
   const footer = str(embed.footer?.text);
   const stamp = str(embed.timestamp);
   const date = stamp && !Number.isNaN(Date.parse(stamp)) ? new Date(stamp) : null;
-  const color = typeof embed.color === "number" ? `#${embed.color.toString(16).padStart(6, "0")}` : undefined;
 
   return (
-    <div className="dc-embed" style={color ? { borderLeftColor: color } : undefined}>
+    <div className="dc-embed">
       <div className="dc-embed-grid">
         <div className="dc-embed-main">
           {title &&

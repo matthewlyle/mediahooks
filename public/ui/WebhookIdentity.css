@@ -1,7 +1,6 @@
 .webhook-identity-title {
   display: flex;
   align-items: baseline;
-  gap: var(--space-10);
   min-width: 0;
 }
 .webhook-identity-title.webhook-identity-card,
@@ -9,52 +8,14 @@
 .webhook-identity-sentence.webhook-identity-card {
   position: relative;
 }
-.webhook-identity-name {
-  font-weight: 600;
+.webhook-identity-name,
+.webhook-identity-sentence.webhook-identity-card {
   overflow-wrap: anywhere;
 }
-h2.webhook-identity-name.webhook-identity-detail {
-  margin: 0;
-  font-size: var(--text-18);
-}
-.webhook-identity-url {
-  font-family: var(--mono);
-  font-size: var(--text-12);
-  opacity: 0.85;
-}
 .webhook-identity-url.webhook-identity-card {
-  color: var(--fg);
-  transition:
-    color 150ms ease,
-    opacity 150ms ease;
   overflow-wrap: anywhere;
   min-width: 0;
 }
 .webhook-identity-url.webhook-identity-detail {
-  margin-top: var(--space-2);
   word-break: break-all;
-}
-@media (hover: hover) and (pointer: fine) {
-  .card:hover .webhook-identity-url {
-    opacity: 1;
-  }
-}
-.webhook-identity-name.webhook-identity-paused,
-.webhook-identity-url.webhook-identity-paused {
-  color: var(--muted);
-}
-.webhook-identity-url.webhook-identity-paused {
-  opacity: 1;
-}
-.webhook-identity-sentence.webhook-identity-card {
-  font-size: var(--text-12);
-  color: var(--muted);
-  margin: var(--space-2) 0 0;
-  overflow-wrap: anywhere;
-}
-.webhook-identity-sentence.webhook-identity-detail {
-  margin: var(--space-12) 0 0;
-  font-size: var(--text-14);
-  line-height: 1.5;
-  color: var(--muted);
 }

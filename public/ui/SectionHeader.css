@@ -1,16 +1,10 @@
 .section-header {
   display: flex;
   align-items: center;
-  gap: var(--space-8);
 }
 .section-header-split {
   justify-content: space-between;
 }
 .section-header-end {
   justify-content: flex-end;
-}
-.section-header-title {
-  margin: 0;
-  font-size: var(--text-15);
-  font-weight: 600;
 }

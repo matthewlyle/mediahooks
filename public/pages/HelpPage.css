@@ -1,20 +1,9 @@
-.help p {
-  margin: 0 0 var(--space-10);
-}
 .help-steps {
-  margin: 0;
-  padding-left: var(--space-20);
   display: grid;
-  gap: var(--space-12);
 }
 .help-url {
   display: flex;
   align-items: center;
-  gap: var(--space-8);
-  margin: var(--space-8) 0 0;
-  padding: var(--space-8) var(--space-10);
-  border-radius: var(--radius-2);
-  background: var(--inset);
 }
 .help-url code {
   min-width: 0;
@@ -22,20 +11,11 @@
   word-break: break-all;
   user-select: all;
 }
-.help .help-warning {
-  margin: var(--space-8) 0 0;
-  font-size: var(--text-12);
-}
-.help .help-version {
-  margin: var(--space-16) 0 0;
-  font-size: var(--text-12);
-}
 @media (max-width: 640px) {
   .help-url {
     flex-wrap: wrap;
   }
   .help-url code {
     flex-basis: 100%;
-    margin-bottom: var(--space-2);
   }
 }

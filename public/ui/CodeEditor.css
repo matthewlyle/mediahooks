@@ -1,12 +1,6 @@
 .code-editor {
   min-width: 0;
 }
-.code-editor .cm-editor {
-  transition:
-    background-color 150ms ease,
-    border-color 150ms ease,
-    box-shadow 150ms ease;
-}
 .code-editor .cm-editor.cm-focused {
   outline: var(--focus-ring);
   outline-offset: 2px;
@@ -15,36 +9,10 @@
   min-height: 240px;
   max-height: 520px;
   overflow: auto;
-  line-height: 1.55;
 }
 .code-editor.is-compact .cm-scroller {
   min-height: 96px;
   max-height: 240px;
-}
-.code-editor.is-invalid .cm-editor {
-  border-color: var(--error-80);
-}
-.code-editor.is-invalid .cm-editor.cm-focused {
-  box-shadow: 0 0 12px var(--error-25);
-}
-.code-editor .cm-template-var,
-.code-editor .cm-template-var * {
-  color: var(--accent) !important;
-}
-.code-editor .cm-template-var {
-  background: var(--accent-dim);
-  border-radius: var(--radius-2);
-}
-.code-editor .cm-lintRange-error {
-  background-image: none;
-  text-decoration: underline wavy var(--error);
-  text-decoration-skip-ink: none;
-  text-underline-offset: 3px;
-}
-@media (hover: hover) and (pointer: fine) {
-  .code-editor .cm-editor:not(.cm-focused):hover {
-    background-color: var(--inset);
-  }
 }
 @media (max-width: 640px) {
   .code-editor .cm-scroller {

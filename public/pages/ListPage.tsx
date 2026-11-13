@@ -159,7 +159,6 @@ function Row({ w, last, index, enter }: RowProps) {
       layoutCrossfade={false}
       data-id={w.id}
       className="card"
-      style={{ borderRadius: "var(--radius-2)" }}
       initial={
         reduce
           ? { opacity: 0 }

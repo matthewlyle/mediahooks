@@ -1,32 +1,3 @@
-:root {
-  color-scheme: dark;
-  font-family: var(--sans);
-  font-size: var(--text-14);
-  line-height: 1.45;
-  background: var(--bg);
-  color: var(--fg);
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.shell {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: calc(32px + env(safe-area-inset-top)) calc(20px + env(safe-area-inset-right)) calc(64px + env(safe-area-inset-bottom))
-    calc(20px + env(safe-area-inset-left));
-}
-
-.muted {
-  color: var(--muted);
-}
 .sr-only {
   position: absolute;
   width: 1px;
@@ -36,23 +7,15 @@ body {
   white-space: nowrap;
 }
 
-code,
-.mono {
-  font-family: var(--mono);
-  font-size: var(--text-12);
-}
-
 .button.icon-reveal {
   position: relative;
   overflow: hidden;
-  padding-left: var(--space-28);
-  padding-right: var(--space-28);
 }
 .icon-reveal-icon {
   position: absolute;
   left: 10px;
   top: 50%;
-  margin-top: calc(-1 * var(--space-6));
+  margin-top: -6px;
   opacity: 0;
   transform: translateY(22px);
 }
@@ -73,11 +36,6 @@ textarea:focus-visible {
   outline: var(--focus-ring);
   outline-offset: 2px;
 }
-@media (hover: hover) and (pointer: fine) {
-  .card:hover {
-    background-color: var(--surface-hover);
-  }
-}
 
 @media (pointer: coarse) {
   .ingest-btn,
@@ -96,21 +54,12 @@ textarea:focus-visible {
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
-  gap: var(--space-8) var(--space-16);
-  margin-bottom: var(--space-20);
 }
 .header-top {
   grid-column: 1;
   display: flex;
   align-items: center;
-  gap: var(--space-20);
   min-width: 0;
-}
-#header h1 {
-  margin: 0;
-  font-size: var(--text-20);
-  font-weight: 700;
-  letter-spacing: -0.02em;
 }
 .header-action {
   grid-column: 2;
@@ -119,11 +68,6 @@ textarea:focus-visible {
 
 .nav {
   display: flex;
-  gap: var(--space-2);
-}
-
-.ingest-btn {
-  min-width: 56px;
 }
 
 .routes {
@@ -148,43 +92,30 @@ textarea:focus-visible {
 }
 @keyframes flash-accent {
   from {
-    background-color: var(--accent-tint);
+    background-color: color-mix(in srgb, Highlight 25%, transparent);
   }
 }
 @keyframes flash-error {
   from {
-    background-color: var(--error-tint);
+    background-color: color-mix(in srgb, Mark 25%, transparent);
   }
 }
 
 .hooks {
   position: relative;
   list-style: none;
-  margin: 0;
   padding: 0;
   display: grid;
-  gap: var(--space-6);
 }
-:where(.hooks) > li {
-  background-color: var(--surface);
-  border-radius: var(--radius-2);
+.hooks > li {
   transition: background-color 150ms ease;
 }
 
 .card {
   position: relative;
-  padding: var(--space-10) var(--space-14);
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: var(--space-4) var(--space-16);
   align-items: center;
-}
-.card-actions {
-  cursor: auto;
-}
-
-.test-btn {
-  min-width: 52px;
 }
 
 .editor {
@@ -193,22 +124,12 @@ textarea:focus-visible {
 form.editor {
   display: flex;
   flex-direction: column;
-  gap: var(--space-14);
 }
 .preview {
-  border-radius: var(--radius-2);
-  background: var(--bg);
   min-width: 0;
-}
-.preview-head {
-  padding: var(--space-4) var(--space-10);
-  padding-bottom: var(--space-6);
 }
 .preview-view {
   margin-left: auto;
-}
-.preview-view + .preview-error {
-  margin-left: var(--space-8);
 }
 .preview-error {
   margin-left: auto;
@@ -216,7 +137,6 @@ form.editor {
 }
 .editor .row {
   display: grid;
-  gap: var(--space-12);
   align-items: start;
 }
 @media (max-width: 640px) {
@@ -228,59 +148,18 @@ form.editor {
   margin-left: auto;
 }
 
-.bg-floor {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 58%;
-  bottom: 0;
-  z-index: -1;
-  pointer-events: none;
-  overflow: hidden;
-  perspective: 420px;
-  perspective-origin: 50% 0%;
-  mask-image: linear-gradient(to bottom, transparent 0%, var(--black) 45%);
-}
-.bg-floor::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: -60px;
-  height: 120px;
-  background: radial-gradient(50% 50% at 50% 50%, var(--accent-dim), transparent 70%);
-}
-.bg-floor-grid {
-  position: absolute;
-  left: -50%;
-  right: -50%;
-  top: 0;
-  height: 250%;
-  background-image:
-    linear-gradient(var(--accent-28) 1px, transparent 1px),
-    linear-gradient(90deg, var(--accent-28) 1px, transparent 1px);
-  background-size: 48px 48px;
-  transform-origin: 50% 0%;
-  transform: rotateX(70deg);
-}
 .confetti {
   position: fixed;
   width: 6px;
   height: 6px;
-  border-radius: var(--radius-2);
+  background: currentColor;
   pointer-events: none;
   z-index: 2147483647;
 }
 
 @media (max-width: 640px) {
-  .shell {
-    padding: calc(20px + env(safe-area-inset-top)) calc(12px + env(safe-area-inset-right))
-      calc(48px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-left));
-  }
-
   #header {
     align-items: center;
-    gap: var(--space-12);
   }
   .header-top {
     display: contents;
@@ -300,7 +179,6 @@ form.editor {
 
   .card {
     grid-template-columns: 1fr;
-    gap: var(--space-8);
   }
   .card-actions {
     justify-content: flex-end;
@@ -311,15 +189,6 @@ form.editor {
 
   .form-actions {
     flex-wrap: wrap;
-  }
-  .form-actions {
     justify-content: flex-end;
-  }
-}
-
-/* Touch screens: 16px fields (iOS zooms into smaller ones) and ~40px tap targets. */
-@media (pointer: coarse) {
-  .code-editor .cm-editor .cm-content {
-    font-size: var(--text-16);
   }
 }

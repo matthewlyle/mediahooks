@@ -1,23 +1,10 @@
 .nav-link {
   position: relative;
-  padding: var(--space-4) var(--space-10);
-  border-radius: var(--radius-2);
-  font-family: var(--mono);
-  font-size: var(--text-12);
-  color: var(--muted);
-  text-decoration: none;
-  transition:
-    color 150ms ease,
-    opacity 150ms ease;
-}
-.nav-link[aria-current="page"] {
-  color: var(--accent);
-  font-weight: 600;
 }
 .nav-indicator {
   position: absolute;
   inset: 0;
-  background: var(--accent-dim);
+  background: color-mix(in srgb, currentColor 12%, transparent);
 }
 .nav-label {
   position: relative;
@@ -34,16 +21,9 @@
 .nav-label > span {
   grid-area: 1 / 1;
 }
-@media (hover: hover) and (pointer: fine) {
-  .nav-link:not([aria-current="page"]):hover {
-    color: var(--accent-hover);
-  }
-}
 @media (pointer: coarse) {
   .nav-link {
     display: inline-flex;
     align-items: center;
-    min-height: 40px;
-    padding: 0 var(--space-12);
   }
 }

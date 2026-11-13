@@ -1,26 +1,17 @@
 .segmented {
   display: flex;
-  gap: var(--space-4);
 }
 .segmented button {
   position: relative;
-  font-size: var(--text-12);
-  padding: var(--space-2) var(--space-8);
-  background: transparent;
-  color: var(--muted);
-}
-.segmented button[aria-pressed="true"] {
-  color: var(--accent);
 }
 .segmented-pill {
   position: absolute;
   inset: 0;
-  background: var(--accent-dim);
+  background: color-mix(in srgb, currentColor 12%, transparent);
 }
 .segmented-label {
   position: relative;
 }
-
 @media (pointer: coarse) {
   .segmented button::before {
     content: "";

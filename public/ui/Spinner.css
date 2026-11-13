@@ -2,15 +2,10 @@
   display: inline-block;
   width: 11px;
   height: 11px;
-  border: 2px solid var(--accent);
+  border: 2px solid currentColor;
   border-top-color: transparent;
-  border-radius: var(--radius-full);
-  vertical-align: -1px;
+  border-radius: 50%;
   animation: spinner-spin 600ms linear infinite;
-}
-.spinner-inverse {
-  border-color: var(--on-accent);
-  border-top-color: transparent;
 }
 @keyframes spinner-spin {
   to {

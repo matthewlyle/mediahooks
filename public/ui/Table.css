@@ -1,34 +1,9 @@
-.table-head {
-  font-size: var(--text-11);
-  color: var(--muted);
-}
-.table-row {
-  border-radius: var(--radius-2);
-}
-.table-row.open {
-  background: var(--inset);
-}
-.table-summary {
-  font-family: var(--sans);
-  text-align: left;
-  white-space: normal;
-  background: transparent;
-}
-@media (hover: hover) and (pointer: fine) {
-  .table-row .table-summary:not(:disabled):hover {
-    color: var(--fg);
-    background: var(--surface-hover);
-    box-shadow: none;
-    scale: none;
-  }
+.table {
+  list-style: none;
+  padding: 0;
 }
 .table-detail {
   grid-column: 1 / -1;
   min-width: 0;
   overflow: hidden;
-}
-.table {
-  list-style: none;
-  margin: 0;
-  padding: 0;
 }

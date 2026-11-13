@@ -1,56 +1,33 @@
 .page-detail {
   display: grid;
-  gap: var(--space-12);
 }
 .detail-nav {
   display: flex;
 }
-
 .detail-head {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: var(--space-12) var(--space-16);
   align-items: start;
 }
 .detail-main {
   min-width: 0;
 }
-.detail-error {
-  margin-top: var(--space-8);
-}
-
-.deliveries-head {
-  margin-bottom: var(--space-10);
-}
 .deliveries-list {
   list-style: none;
-  margin: 0;
   padding: 0;
   display: grid;
   grid-template-columns: fit-content(50%) minmax(0, 1fr) auto;
-  gap: var(--space-2) 0;
 }
 .d-row {
   grid-column: 1 / -1;
   display: grid;
   grid-template-columns: subgrid;
-  border-radius: var(--radius-2);
 }
 .d-summary {
   grid-column: 1 / -1;
   display: grid;
   grid-template-columns: subgrid;
   align-items: baseline;
-  column-gap: var(--space-12);
-  padding: var(--space-4) var(--space-8);
-  font-size: inherit;
-}
-.d-detail {
-  padding: var(--space-4) var(--space-8) var(--space-12);
-}
-.d-detail > p {
-  margin: 0;
-  font-size: var(--text-12);
 }
 .d-row .badge {
   justify-self: start;
@@ -60,15 +37,7 @@
 .d-what {
   display: flex;
   align-items: baseline;
-  gap: var(--space-8);
   min-width: 0;
-  font-size: var(--text-13);
-}
-.d-retries,
-.d-time {
-  font-family: var(--mono);
-  font-size: var(--text-11);
-  color: var(--muted);
 }
 .d-time {
   white-space: nowrap;
@@ -76,7 +45,6 @@
 .deliveries-empty {
   grid-column: 1 / -1;
 }
-
 @media (max-width: 640px) {
   .detail-head {
     grid-template-columns: 1fr;
@@ -87,7 +55,6 @@
   .detail-actions .badge {
     margin-right: auto;
   }
-
   .deliveries-head .refresh-status {
     white-space: normal;
     text-align: right;
@@ -95,25 +62,12 @@
   .deliveries-head .refresh-label {
     flex-wrap: wrap;
     justify-content: flex-end;
-    row-gap: 0;
   }
   .deliveries-list {
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: var(--space-4);
-  }
-  .d-row {
-    background-color: var(--inset);
-  }
-  .d-summary {
-    gap: var(--space-4) var(--space-10);
-    padding: var(--space-8);
   }
   .d-what {
     grid-column: 1 / -1;
     grid-row: 2;
   }
-}
-
-.deliveries .deliveries-failed {
-  margin: 1em 0;
 }

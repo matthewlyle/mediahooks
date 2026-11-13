@@ -1,6 +1,5 @@
 import { motion, type HTMLMotionProps } from "motion/react";
 import type { ElementType, ReactNode, Ref } from "react";
-import "./Panel.css";
 
 const TAGS = { section: motion.section, p: motion.p, form: motion.form } as const;
 
